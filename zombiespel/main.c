@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include "spel_gfx.h"
 
+// com
+
 int main(int argc, char *argv[])
 {
     bool quit = false;
