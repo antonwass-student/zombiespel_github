@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     bool quit = false;
     SDL_Event e;
-    printf("Charlie tog över moahaha");
+    printf("gustaf tog över moahaha");
     printf("blabla");
     printf("Starting graphics engine...\n");
 
