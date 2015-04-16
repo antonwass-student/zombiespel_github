@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 
     graphics_start();
     printf("hej");
+    printf("hej2");
     while(!quit)
     {
         while(SDL_PollEvent(&e) != 0)
