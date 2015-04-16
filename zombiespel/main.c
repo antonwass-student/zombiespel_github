@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     printf("Starting graphics engine...\n");
 
     graphics_start();
-
+    printf("hej");
     while(!quit)
     {
         while(SDL_PollEvent(&e) != 0)
