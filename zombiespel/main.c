@@ -4,11 +4,6 @@
 #include <SDL.h>
 #include "spel_gfx.h"
 
-<<<<<<< HEAD
-// hej
-=======
-// com
->>>>>>> origin/update
 
 int main(int argc, char *argv[])
 {
