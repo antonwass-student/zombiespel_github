@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     bool quit = false;
     SDL_Event e;
-    printf("Anton tog över moahaha");
+    printf("Gustaf tog över moahaha");
     printf("blabla");
     printf("Starting graphics engine...\n");
 

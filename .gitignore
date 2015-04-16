@@ -47,3 +47,9 @@ zombiespel/zombiespel.cbp
 *.layout
 zombiespel/Projekt/Projekt.cbp
 *.cbp
+zombiespel/bin/Debug/libjpeg-9.dll
+zombiespel/bin/Debug/libpng16-16.dll
+zombiespel/bin/Debug/libtiff-5.dll
+*.dll
+*.exe
+*.depend
