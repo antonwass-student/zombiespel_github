@@ -44,3 +44,6 @@ Temporary Items
 zombiespel/bin/Debug/zombiespel.exe
 *.o
 zombiespel/zombiespel.cbp
+*.layout
+zombiespel/Projekt/Projekt.cbp
+*.cbp
