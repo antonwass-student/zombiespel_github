@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1429036652 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<SDL.h>
+	"spel_gfx.h"
+
+1429036667 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gfx.h
+
