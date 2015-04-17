@@ -19,20 +19,18 @@ int main(int argc, char *argv[])
     GameObject test;
     test.id = TXT_PLAYER;
     test.name = "Test";
-    test.rect->h = 128;
-    test.rect->w = 128;
-    test.rect->x = 100;
-    test.rect->y = 100;
+
+    SDL_Rect test_rect = {100, 100, 128, 128};
+    test.rect = &test_rect;
 
     printf("Test1 created\n");
 
     GameObject test2;
     test2.id = TXT_ZOMBIE;
     test2.name = "Test2";
-    test2.rect->h = 128;
-    test2.rect->w = 128;
-    test2.rect->x = 80;
-    test2.rect->y = 80;
+
+    SDL_Rect test_rect2 = {80, 80, 128, 128};
+    test2.rect = &test_rect2;
 
     printf("Test2 created\n");
 
