@@ -1,9 +1,32 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdbool.h>
+#include "spel_structs.h"
+
+
+SDL_Texture* loadTexture(char* path);
+void graphics_start();
+void graphics_render();
+void graphics_stop();
+void loadSprites();
 
 SDL_Renderer* gRenderer;
 SDL_Texture* gTexture;
+SDL_Window* window = NULL;
+Sprite sprites[100];
+int spritesCount = 0;
+
+void loadSprites()
+{
+    sprites[0].id = TXT_PLAYER;
+    sprites[0].texture = loadTexture("textures/player.png");
+    sprites[1].id = TXT_WALL;
+    sprites[1].texture = loadTexture("textures/wall.png");
+    sprites[2].id = TXT_ZOMBIE;
+    sprites[2].texture = loadTexture("textures/zombie.png");
+
+    spritesCount = 3;
+}
 
 SDL_Texture* loadTexture(char* path)
 {
@@ -30,7 +53,7 @@ SDL_Texture* loadTexture(char* path)
 
 void graphics_start() //
 {
-    SDL_Window* window = NULL;
+
     SDL_Surface* screenSurface = NULL;
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -63,6 +86,7 @@ void graphics_start() //
                     printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
                 }
 
+                loadSprites();
                 gTexture = loadTexture("textures/test.png");
 
             }
@@ -73,16 +97,40 @@ void graphics_start() //
     printf("Graphics initialized successfully!\n");
 }
 
-void graphics_render()
+void graphics_render(GameObject objects[], int count)
 {
     SDL_RenderClear(gRenderer);
-    SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+
+    for(int i = 0; i < count; i++)
+    {
+        for(int j = 0; j < spritesCount; j++)
+        {
+            if(sprites[j].id == objects[i].id)
+            {
+                SDL_RenderCopy(gRenderer, sprites[j].texture, NULL, objects[i].rect);
+                break;
+            }
+        }
+    }
+    //SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+
     SDL_RenderPresent(gRenderer);
 }
 
 void graphics_stop()
 {
-    //SDL_DestroyWindow(window);
+    for(int i = 0; i < spritesCount; i++)
+    {
+        SDL_DestroyTexture(sprites[i].texture);
+    }
+
+    printf("Textures was destroyed successfully!\n");
+
+    SDL_DestroyRenderer(gRenderer);
+    SDL_DestroyWindow(window);
+
+    printf("Window and renderer was destroyed successfully!\n");
+
     SDL_Quit();
 }
 
