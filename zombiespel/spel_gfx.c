@@ -54,8 +54,6 @@ SDL_Texture* loadTexture(char* path)
 void graphics_start() //
 {
 
-    SDL_Surface* screenSurface = NULL;
-
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         printf("Could not initialize SDL! SDL_Error: %s\n", SDL_GetError());
@@ -86,9 +84,7 @@ void graphics_start() //
                     printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
                 }
 
-                printf("Loading sprites...\n");
                 loadSprites();
-                printf("Loaded sprites successfully!\n");
 
             }
 
@@ -98,7 +94,7 @@ void graphics_start() //
     printf("Graphics initialized successfully!\n");
 }
 
-void graphics_render(GameObject objects[], int count)
+void graphics_render(GameObject objects[], int count) // Ritar ut objekten i objects
 {
     SDL_RenderClear(gRenderer);
 
@@ -108,7 +104,7 @@ void graphics_render(GameObject objects[], int count)
         {
             if(sprites[j].id == objects[i].id)
             {
-                SDL_RenderCopy(gRenderer, sprites[j].texture, NULL, objects[i].rect);
+                SDL_RenderCopy(gRenderer, sprites[j].texture, NULL, &objects[i].rect);
                 break;
             }
         }
@@ -116,12 +112,12 @@ void graphics_render(GameObject objects[], int count)
 
     SDL_RenderPresent(gRenderer);
 
-    SDL_Delay(10);
+    SDL_Delay(100);
 }
 
 void graphics_stop()
 {
-    for(int i = 0; i < spritesCount; i++)
+    for(int i = 0; i < spritesCount; i++) //Släpper alla inladdade texturer.
     {
         SDL_DestroyTexture(sprites[i].texture);
     }
