@@ -27,7 +27,7 @@ typedef struct
 typedef struct{
     char* name;
     textureID_t id;
-    SDL_Rect* rect;
+    SDL_Rect rect;
 } GameObject;
 
 
