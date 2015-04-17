@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     int objectCount = 0;
 
 
-    printf("Starting graphics engine...\n");
+    printf("Starting graphics engine..\n");
 
     graphics_start();
 
