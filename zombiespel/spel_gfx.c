@@ -115,6 +115,8 @@ void graphics_render(GameObject objects[], int count)
     }
 
     SDL_RenderPresent(gRenderer);
+
+    SDL_Delay(10);
 }
 
 void graphics_stop()

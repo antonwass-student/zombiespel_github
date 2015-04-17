@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     test.rect->x = 100;
     test.rect->y = 100;
 
+    printf("Test1 created\n");
+
     GameObject test2;
     test2.id = TXT_ZOMBIE;
     test2.name = "Test2";
@@ -31,6 +33,8 @@ int main(int argc, char *argv[])
     test2.rect->w = 128;
     test2.rect->x = 80;
     test2.rect->y = 80;
+
+    printf("Test2 created\n");
 
     objects[0] = test;
     objects[1] = test2;
