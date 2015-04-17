@@ -86,8 +86,9 @@ void graphics_start() //
                     printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
                 }
 
+                printf("Loading sprites...\n");
                 loadSprites();
-                gTexture = loadTexture("textures/test.png");
+                printf("Loaded sprites successfully!\n");
 
             }
 
@@ -112,7 +113,6 @@ void graphics_render(GameObject objects[], int count)
             }
         }
     }
-    //SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 
     SDL_RenderPresent(gRenderer);
 }
