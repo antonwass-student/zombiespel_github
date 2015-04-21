@@ -4,26 +4,25 @@
 #include <SDL.h>
 #include "spel_gfx.h"
 #include "spel_structs.h"
+#include "spel_gameobject.h"
 
-GameObject createObject(char* name, int x, int y, int w, int h, textureID_t texture);
-void addObject(GameObject objects[], int *count, GameObject newObject);
 
 int main(int argc, char *argv[])
 {
     bool quit = false;
     SDL_Event e;
-    GameObject objects[100];
-    int objectCount = 0;
-
+    Scene level;
+    GameObject* player;
+    level.objectCount = 0;
 
     printf("Starting graphics engine..\n");
 
-    graphics_start();
+    graphics_start(); // kalla en gång
 
     //Skapar två objekt och lägger in dem i objektarrayen.
 
-    addObject(objects, &objectCount, createObject("Player 1",100, 100, 128, 128, TXT_PLAYER));
-    addObject(objects, &objectCount, createObject("ZOMBIE",120, 120, 128, 128, TXT_ZOMBIE));
+    player = addObjectToScene(&level, createObject("Player 1",100, 100, 128, 128, TXT_PLAYER));
+    addObjectToScene(&level, createObject("ZOMBIE",120, 120, 128, 128, TXT_ZOMBIE));
 
     // ----------
 
@@ -78,16 +77,16 @@ int main(int argc, char *argv[])
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
+                    printf("Moving object: %s", player->name);
+                    player->rect.x = e.button.x;
+                    player->rect.y = e.button.y;
                     x = e.button.x;
                     y = e.button.y;
-                    objects[0].rect.x = e.button.x;
-                    objects[0].rect.y = e.button.y;
-
                     printf("x: %d   y:%d\n", x, y);
                 }
             }
         }
-        graphics_render(objects, objectCount); // Skickar med objekt och antal objekt till grafikfunktion som ritar ut dessa.
+        graphics_render(level); // Skickar med objekt och antal objekt till grafikfunktion som ritar ut dessa.
     }
 
     graphics_stop();
@@ -95,37 +94,4 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-GameObject createObject(char* name, int x, int y, int w, int h, textureID_t texture) // Skapar nytt GameObject och returnerar denna
-{
-    GameObject temp;
-    temp.id = texture;
-    temp.name = name;
 
-    SDL_Rect temp_rect = {h, w, x, y};
-    temp.rect = temp_rect;
-
-    temp.rotation = 90;
-
-    temp.center = NULL;
-
-    temp.flip = SDL_FLIP_NONE;
-
-    return temp;
-}
-
-void addObject(GameObject objects[], int *count, GameObject newObject) //Lägger in ett GameObject i listan med GameObjects.
-{
-    if(*count < 100)
-    {
-        objects[*count] = newObject;
-        printf("%s was created.\n",objects[*count].name);
-        (*count)++;
-        printf("New object count is: %d\n", *count);
-
-    }
-    else
-    {
-        printf("Object limit reached\n");
-    }
-
-}

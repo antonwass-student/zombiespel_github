@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include <stdbool.h>
 #include "spel_structs.h"
+#include "spel_gameobject.h"
 
 
 SDL_Texture* loadTexture(char* path);
@@ -94,17 +95,18 @@ void graphics_start() //
     printf("Graphics initialized successfully!\n");
 }
 
-void graphics_render(GameObject objects[], int count) // Ritar ut objekten i objects
+void graphics_render(Scene level) // Ritar ut objekten i objects
 {
     SDL_RenderClear(gRenderer);
 
-    for(int i = 0; i < count; i++)
+    for(int i = 0; i < level.objectCount; i++)
     {
         for(int j = 0; j < spritesCount; j++)
         {
-            if(sprites[j].id == objects[i].id)
+            if(sprites[j].id == level.objects[i].id)
             {
-                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &objects[i].rect, objects[i].rotation, &objects[i].center, objects[i].flip);
+                SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].color.red, level.objects[i].color.green, level.objects[i].color.blue);
+                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &level.objects[i].rect, level.objects[i].rotation, &level.objects[i].center, level.objects[i].flip);
                 break;
             }
         }
