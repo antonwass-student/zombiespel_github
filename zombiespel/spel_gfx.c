@@ -104,7 +104,7 @@ void graphics_render(GameObject objects[], int count) // Ritar ut objekten i obj
         {
             if(sprites[j].id == objects[i].id)
             {
-                SDL_RenderCopy(gRenderer, sprites[j].texture, NULL, &objects[i].rect);
+                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &objects[i].rect, objects[i].rotation, &objects[i].center, objects[i].flip);
                 break;
             }
         }

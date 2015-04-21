@@ -28,6 +28,9 @@ typedef struct{
     char* name;
     textureID_t id;
     SDL_Rect rect;
+    double rotation;
+    SDL_Point* center;
+    SDL_RendererFlip flip;
 } GameObject;
 
 

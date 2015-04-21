@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     graphics_start();
 
-    //Skapar objekt
+    //Skapar två objekt och lägger in dem i objektarrayen.
 
     addObject(objects, &objectCount, createObject("Player 1",100, 100, 128, 128, TXT_PLAYER));
     addObject(objects, &objectCount, createObject("ZOMBIE",120, 120, 128, 128, TXT_ZOMBIE));
@@ -75,14 +75,13 @@ int main(int argc, char *argv[])
                     printf("Mouse is moving down\nX:%d     Y:%d\n",x,y);
                 }
 
-
-
-
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
                     x = e.button.x;
                     y = e.button.y;
+                    objects[0].rect.x = e.button.x;
+                    objects[0].rect.y = e.button.y;
 
                     printf("x: %d   y:%d\n", x, y);
                 }
@@ -104,6 +103,12 @@ GameObject createObject(char* name, int x, int y, int w, int h, textureID_t text
 
     SDL_Rect temp_rect = {h, w, x, y};
     temp.rect = temp_rect;
+
+    temp.rotation = 90;
+
+    temp.center = NULL;
+
+    temp.flip = SDL_FLIP_NONE;
 
     return temp;
 }
