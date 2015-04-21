@@ -40,8 +40,17 @@ int main(int argc, char *argv[])
             {
                 switch( e.key.keysym.sym )
                 {
-                    case SDLK_w:
-                        printf("w button was pressed!\n");
+                    case SDLK_UP:
+                        //PlayMovment.up=true;
+                        break;
+                    case SDLK_DOWN:
+                        //PlayMovment.down=true;
+                        break;
+                    case SDLK_LEFT:
+                        //PlayMovment.left=true;
+                        break;
+                    case SDLK_RIGHT:
+                        //PlayMovment.right=true;
                         break;
                 }
             }
