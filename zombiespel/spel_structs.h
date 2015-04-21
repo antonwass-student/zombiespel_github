@@ -1,6 +1,7 @@
 #ifndef SPEL_STRUCTS_H_INCLUDED
 #define SPEL_STRUCTS_H_INCLUDED
 
+#include <stdbool.h>
 #include <SDL.h>
 
 typedef struct{
@@ -33,6 +34,13 @@ typedef struct{
     Uint8 blue;
     Uint8 alpha;
 } ColorRGB;
+
+typedef struct{
+    bool up;
+    bool down;
+    bool left;
+    bool right;
+} PlayerMovement;
 
 typedef struct{
     char* name;

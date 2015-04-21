@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
 
 SDL_Texture* loadTexture(char* path);
@@ -61,7 +63,7 @@ void graphics_start() //
     }
     else
     {
-        window = SDL_CreateWindow("UNNAMED", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_SHOWN);
+        window = SDL_CreateWindow("UNNAMED", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
         if(window == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -95,18 +97,26 @@ void graphics_start() //
     printf("Graphics initialized successfully!\n");
 }
 
-void graphics_render(Scene level) // Ritar ut objekten i objects
+void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i objects
 {
     SDL_RenderClear(gRenderer);
 
-    for(int i = 0; i < level.objectCount; i++)
+    SDL_Rect newRect;
+
+    for(int i = 0; i < level.objectCount; i++) // Denna loop går igenom alla GameObjects i scenen som skickats med
     {
-        for(int j = 0; j < spritesCount; j++)
+        for(int j = 0; j < spritesCount; j++) //Denna loop letar reda på rätt textur i sprite arrayen
         {
             if(sprites[j].id == level.objects[i].id)
             {
+                //Räknar ut den relativa positionen för objekten
+                newRect = level.objects[i].rect;
+                newRect.x = newRect.x - relative->rect.x + SCREEN_WIDTH/2 - relative->rect.w/2;
+                newRect.y = newRect.y - relative->rect.y + SCREEN_HEIGHT/2 - relative->rect.h/2;
+                // **********************************************
+
                 SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].color.red, level.objects[i].color.green, level.objects[i].color.blue);
-                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &level.objects[i].rect, level.objects[i].rotation, &level.objects[i].center, level.objects[i].flip);
+                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
                 break;
             }
         }
@@ -114,7 +124,7 @@ void graphics_render(Scene level) // Ritar ut objekten i objects
 
     SDL_RenderPresent(gRenderer);
 
-    SDL_Delay(100);
+    SDL_Delay(10);
 }
 
 void graphics_stop()
