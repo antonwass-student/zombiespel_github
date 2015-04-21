@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <SDL.h>
+//#include <SDL.h>//windows
+#include <SDL2/SDL.h>//mac
 #include "spel_gfx.h"
 #include "spel_structs.h"
 #include "spel_gameobject.h"

@@ -1,5 +1,8 @@
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL.h>//mac
+#include <SDL2_image/SDL_image.h>//mac
+
+//#include <SDL.h>//windows
+//#include <SDL_image.h>//mac
 #include <stdbool.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -106,7 +109,7 @@ void graphics_render(Scene level) // Ritar ut objekten i objects
             if(sprites[j].id == level.objects[i].id)
             {
                 SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].color.red, level.objects[i].color.green, level.objects[i].color.blue);
-                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &level.objects[i].rect, level.objects[i].rotation, &level.objects[i].center, level.objects[i].flip);
+                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &level.objects[i].rect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
                 break;
             }
         }
