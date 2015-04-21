@@ -45,36 +45,6 @@ int main(int argc, char *argv[])
                         break;
                 }
             }
-            else if(e.type == SDL_MOUSEMOTION){
-
-                /* If the mouse is moving to the left */
-                if (e.motion.xrel < 0){
-                    x = e.motion.x;
-                    y = e.motion.y;
-                    printf("Mouse is moving left\nX:%d     Y:%d\n",x,y);
-                }
-                /* If the mouse is moving to the right */
-                else if (e.motion.xrel > 0){
-                    x = e.motion.x;
-                    y = e.motion.y;
-                    printf("Mouse is moving right\nX:%d     Y:%d\n",x,y);
-                }
-
-                /* If the mouse is moving up */
-                else if (e.motion.yrel < 0){
-                    x = e.motion.x;
-                    y = e.motion.y;
-                    printf("Mouse is moving up\nX:%d     Y:%d\n",x,y);
-                }
-
-                /* If the mouse is moving down */
-                else if (e.motion.yrel > 0){
-                    x = e.motion.x;
-                    y = e.motion.y;
-                    printf("Mouse is moving down\nX:%d     Y:%d\n",x,y);
-                }
-
-            }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
                     printf("Moving object: %s", player->name);
