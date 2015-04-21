@@ -37,6 +37,7 @@ GameObject* addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett
     else
     {
         printf("Object limit reached\n");
+        return NULL;
     }
 
 }

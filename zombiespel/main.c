@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <SDL.h>
+//#include <SDL.h>//windows
+#include <SDL2/SDL.h>//mac
 #include "spel_gfx.h"
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -40,8 +41,17 @@ int main(int argc, char *argv[])
             {
                 switch( e.key.keysym.sym )
                 {
-                    case SDLK_w:
-                        printf("w button was pressed!\n");
+                    case SDLK_UP:
+                        //PlayMovment.up=true;
+                        break;
+                    case SDLK_DOWN:
+                        //PlayMovment.down=true;
+                        break;
+                    case SDLK_LEFT:
+                        //PlayMovment.left=true;
+                        break;
+                    case SDLK_RIGHT:
+                        //PlayMovment.right=true;
                         break;
                 }
             }

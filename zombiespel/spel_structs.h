@@ -1,7 +1,9 @@
 #ifndef SPEL_STRUCTS_H_INCLUDED
 #define SPEL_STRUCTS_H_INCLUDED
 
-#include <SDL.h>
+//#include <SDL.h>//windows
+#include <SDL2/SDL.h>
+#include <stdbool.h>
 
 typedef struct{
     int x;
