@@ -19,8 +19,16 @@ typedef enum {
     OBJECT_PLAYER,
     OBJECT_NPC,
     OBJECT_ITEM,
-    OBJECT_BULLET
+    OBJECT_BULLET,
+    OBJECT_BUTTON
 } ObjectType_T;
+
+typedef enum{
+    BUTTON_QUIT,
+    BUTTON_GOTO_MENU,
+    BUTTON_GOTO_OPTIONS,
+    BUTTON_GOTO_LOBBY
+} ButtonAction_T;
 
 
 typedef enum {
@@ -67,6 +75,11 @@ typedef struct{
 }bulletInfo;
 
 typedef struct{
+    bool active;
+    ButtonAction_T btnAction;
+} ButtonInfo;
+
+typedef struct{
     char* name;
     ObjectType_T objectType;
     textureID_t id;
@@ -79,6 +92,8 @@ typedef struct{
     playerStats p_stats;
 
     bulletInfo bulletInfo;
+
+    ButtonInfo btnInfo;
 
 } GameObject;
 

@@ -55,3 +55,9 @@ void SetBulletStats(GameObject* bullet, int velocity, double angle)
     bullet->bulletInfo.angle = angle;
     bullet->bulletInfo.velocity = velocity;
 }
+
+void SetButtonStats(GameObject* button, ButtonAction_T action, bool active)
+{
+    button->btnInfo.btnAction = action;
+    button->btnInfo.active = active;
+}

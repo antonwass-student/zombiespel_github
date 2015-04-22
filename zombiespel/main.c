@@ -14,9 +14,10 @@
 int main(int argc, char *argv[])
 {
     bool quit = false;
+    bool inGame = true;
     SDL_Event e;
     Scene* activeScene;
-    Scene level;
+    Scene level, meny, options;
     GameObject* player;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
@@ -39,6 +40,10 @@ int main(int argc, char *argv[])
 
     SetPlayerStats(player, 100, 13, 20, CLASS_SOLDIER);
 
+    SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",100,0,100,100, TXT_WALL)), BUTTON_GOTO_MENU, true);
+
+    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to game",0,0,100,100, TXT_WALL)), BUTTON_GOTO_LOBBY, true);
+
 
     // Game loop
     while(!quit)
@@ -53,78 +58,120 @@ int main(int argc, char *argv[])
             }
             else if( e.type == SDL_KEYDOWN )
             {
-                switch( e.key.keysym.sym )
+                if(inGame)
                 {
-
-                    case SDLK_w:
-                        moving.up = true;
-                        break;
-                    case SDLK_s:
-                        moving.down = true;
-                        break;
-                    case SDLK_d:
-                        moving.right = true;
-                        break;
-                    case SDLK_a:
-                        moving.left = true;
-                        break;
-                    case SDLK_r:
-                        player->p_stats.ammo = 13;
-                        break;
-                    case SDLK_e:
-                        //USE
-                        break;
-                    case SDLK_f:
-                        //special item
-                        break;
+                    switch( e.key.keysym.sym )
+                    {
+                        case SDLK_w:
+                            moving.up = true;
+                            break;
+                        case SDLK_s:
+                            moving.down = true;
+                            break;
+                        case SDLK_d:
+                            moving.right = true;
+                            break;
+                        case SDLK_a:
+                            moving.left = true;
+                            break;
+                        case SDLK_r:
+                            player->p_stats.ammo = 13;
+                            break;
+                        case SDLK_e:
+                            //USE
+                            break;
+                        case SDLK_f:
+                            //special item
+                            break;
+                    }
                 }
             }
             else if( e.type == SDL_KEYUP )
             {
-                switch( e.key.keysym.sym )
+                if(inGame)
                 {
-                    case SDLK_w:
-                        moving.up = false;
-                        break;
-                    case SDLK_s:
-                        moving.down = false;
-                        break;
-                    case SDLK_d:
-                        moving.right = false;
-                        break;
-                    case SDLK_a:
-                        moving.left = false;
-                        break;
-                    case SDLK_r:
-                        break;
-                    case SDLK_e:
-                        //USE
-                        break;
-                    case SDLK_f:
-                        //special item
-                        break;
+                    switch( e.key.keysym.sym )
+                    {
+                        case SDLK_w:
+                            moving.up = false;
+                            break;
+                        case SDLK_s:
+                            moving.down = false;
+                            break;
+                        case SDLK_d:
+                            moving.right = false;
+                            break;
+                        case SDLK_a:
+                            moving.left = false;
+                            break;
+                        case SDLK_r:
+                            break;
+                        case SDLK_e:
+                            //USE
+                            break;
+                        case SDLK_f:
+                            //special item
+                            break;
+                    }
                 }
             }
             else if(e.type == SDL_MOUSEMOTION){
-                    mouseX = e.motion.x - (SCREEN_WIDTH/2);
-                    mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
-                    player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
-
+                    if(inGame)
+                    {
+                        mouseX = e.motion.x - (SCREEN_WIDTH/2);
+                        mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
+                        player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
+                    }
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
                     //Vänsterklick
-                    GameObject bullet;
-                    if(shoot(player, &bullet))
-                        addObjectToScene(activeScene, bullet);
+
+                    for(int i = 0; i < activeScene->objectCount; i++)
+                    {
+                        if(activeScene->objects[i].objectType == OBJECT_BUTTON)
+                        {
+                            if(e.button.x > activeScene->objects[i].rect.x && e.button.x < activeScene->objects[i].rect.x + activeScene->objects[i].rect.w)
+                            {
+                                if(e.button.y > activeScene->objects[i].rect.y && e.button.y < activeScene->objects[i].rect.y + activeScene->objects[i].rect.h)
+                                {
+                                    switch(activeScene->objects[i].btnInfo.btnAction)
+                                    {
+                                        case BUTTON_GOTO_LOBBY:
+                                            activeScene = &level;
+                                            break;
+                                        case BUTTON_GOTO_MENU:
+                                            activeScene = &meny;
+                                            break;
+                                        case BUTTON_GOTO_OPTIONS:
+                                            activeScene = &options;
+                                            break;
+                                        case BUTTON_QUIT:
+                                            quit = true;
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if(inGame)
+                    {
+                        GameObject bullet;
+                        if(shoot(player, &bullet))
+                            addObjectToScene(activeScene, bullet);
+                    }
+
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
                     //högerklick
                 }
             }
         }
-
         // ************ INPUTS END **********
+
+
+
 
         if(moving.up)
             player->rect.y -= player->p_stats.speed;

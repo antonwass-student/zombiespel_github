@@ -113,11 +113,13 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
         {
             if(sprites[j].id == level.objects[i].id)
             {
-                //Räknar ut den relativa positionen för objekten
+
                 newRect = level.objects[i].rect;
-                newRect.x = newRect.x - relative->rect.x + SCREEN_WIDTH/2 - relative->rect.w/2;
-                newRect.y = newRect.y - relative->rect.y + SCREEN_HEIGHT/2 - relative->rect.h/2;
-                // **********************************************
+                if(level.objects[i].objectType != OBJECT_BUTTON) //Räknar ut den relativa positionen för objekten (ej knappar, UI)
+                {
+                    newRect.x = newRect.x - relative->rect.x + SCREEN_WIDTH/2 - relative->rect.w/2;
+                    newRect.y = newRect.y - relative->rect.y + SCREEN_HEIGHT/2 - relative->rect.h/2;
+                }
 
                 SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].color.red, level.objects[i].color.green, level.objects[i].color.blue);
                 SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
