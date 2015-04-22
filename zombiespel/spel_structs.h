@@ -1,8 +1,9 @@
 #ifndef SPEL_STRUCTS_H_INCLUDED
 #define SPEL_STRUCTS_H_INCLUDED
 
-#include <SDL.h> //windows
-//#include <SDL2/SDL.h> // MAC
+//#include <SDL.h> //windows
+#include <SDL2/SDL.h> // MAC
+
 #include <stdbool.h>
 
 typedef struct{
@@ -42,7 +43,8 @@ typedef enum {
     TXT_ZOMBIE,
     TXT_GUN,
     TXT_BULLET,
-    TXT_OPTION_BUTTON
+    TXT_OPTION_BUTTON,
+    TXT_PLAYGROUND
 } textureID_t;
 
 typedef struct

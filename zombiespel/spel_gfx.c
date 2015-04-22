@@ -1,8 +1,9 @@
-//#include <SDL2/SDL.h>//mac
-//#include <SDL2_image/SDL_image.h>//mac
+#include <SDL2/SDL.h>//mac
+#include <SDL2_image/SDL_image.h>//mac
 
-#include <SDL.h>//windows
-#include <SDL_image.h>//windows
+//#include <SDL.h>//windows
+//#include <SDL_image.h>//windows
+
 #include <stdbool.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -35,8 +36,10 @@ void loadSprites()
 
     sprites[4].id = TXT_OPTION_BUTTON;
     sprites[4].texture = loadTexture("textures/optionButton.png");
+    sprites[5].id = TXT_PLAYGROUND;
+    sprites[5].texture = loadTexture("textures/playground.png");
 
-    spritesCount = 5;
+    spritesCount = 6;
 }
 
 SDL_Texture* loadTexture(char* path)

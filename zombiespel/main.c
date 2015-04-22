@@ -1,8 +1,10 @@
+//#include <SDL.h>//windows
+#include <SDL2/SDL.h>//mac
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <SDL.h>//windows
-//#include <SDL2/SDL.h>//mac
+
 #include "spel_gfx.h"
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -33,11 +35,12 @@ int main(int argc, char *argv[])
     /*
      *Skapar två objekt och lägger in dem i objektarrayen.
      */
-
+    addObjectToScene(&level, createObject(OBJECT_ITEM, "playground",0, 0, 3000, 3000, TXT_PLAYGROUND));
     player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",100, 100, 128, 128, TXT_PLAYER));
     addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE));
     addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE));
-
+    
+    
     SetPlayerStats(player, 100, 13, 20, CLASS_SOLDIER);
 
     SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",100,0,100,100, TXT_WALL)), BUTTON_GOTO_MENU, true);
