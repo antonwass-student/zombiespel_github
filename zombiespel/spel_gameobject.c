@@ -1,8 +1,9 @@
 #include "spel_structs.h"
 
-GameObject createObject(char* name, int x, int y, int w, int h, textureID_t texture) // Skapar nytt GameObject och returnerar denna
+GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture) // Skapar nytt GameObject och returnerar denna
 {
     GameObject temp;
+    temp.objectType = objectType;
     temp.id = texture;
     temp.name = name;
 
@@ -39,5 +40,12 @@ GameObject* addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett
         printf("Object limit reached\n");
         return NULL;
     }
+}
 
+void SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
+{
+    player->p_stats.ammo = ammo;
+    player->p_stats.health = health;
+    player->p_stats.speed = speed;
+    player->p_stats.pClass = pClass;
 }

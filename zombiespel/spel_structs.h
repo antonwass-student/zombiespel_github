@@ -16,6 +16,18 @@ typedef struct{
 }Size;
 
 typedef enum {
+    OBJECT_PLAYER,
+    OBJECT_NPC,
+    OBJECT_ITEM,
+    OBJECT_BULLET
+} ObjectType_T;
+
+
+typedef enum {
+    CLASS_SOLDIER
+} playerClass_T;
+
+typedef enum {
     TXT_NONE,
     TXT_PLAYER,
     TXT_WALL,
@@ -42,12 +54,15 @@ typedef struct{
     bool left;
     bool right;
 } PlayerMovement;
+
 typedef struct{
-    int klass, health, ammo, speed;
+    int health, ammo, speed;
+    playerClass_T pClass;
 }playerStats;
 
 typedef struct{
     char* name;
+    ObjectType_T objectType;
     textureID_t id;
     SDL_Rect rect;
     double rotation;
