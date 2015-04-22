@@ -2,7 +2,7 @@
 #define SPEL_STRUCTS_H_INCLUDED
 
 #include <stdbool.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 typedef struct{
     int x;
