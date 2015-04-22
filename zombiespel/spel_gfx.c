@@ -127,7 +127,7 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
 
     SDL_RenderPresent(gRenderer);
 
-    SDL_Delay(10);
+    SDL_Delay(17);
 }
 
 void graphics_stop()
