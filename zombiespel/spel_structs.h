@@ -2,10 +2,13 @@
 #define SPEL_STRUCTS_H_INCLUDED
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //#include <SDL.h>//windows
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 =======
+=======
+>>>>>>> origin/update
 #include <stdbool.h>
 #include <SDL.h>
 >>>>>>> origin/update
