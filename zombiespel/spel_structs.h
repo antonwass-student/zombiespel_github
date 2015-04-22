@@ -21,7 +21,8 @@ typedef enum {
     OBJECT_NPC,
     OBJECT_ITEM,
     OBJECT_BULLET,
-    OBJECT_BUTTON
+    OBJECT_BUTTON,
+    OBJECT_BACKGROUND
 } ObjectType_T;
 
 typedef enum{
@@ -43,8 +44,10 @@ typedef enum {
     TXT_ZOMBIE,
     TXT_GUN,
     TXT_BULLET,
-    TXT_OPTION_BUTTON,
-    TXT_PLAYGROUND
+    TXT_BUTTON,
+    TXT_PLAYGROUND,
+    TXT_MENU_BACKGROUND
+
 } textureID_t;
 
 typedef struct
