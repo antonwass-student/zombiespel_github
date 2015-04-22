@@ -1,8 +1,9 @@
-//#include <SDL2/SDL.h>//mac
-//#include <SDL2_image/SDL_image.h>//mac
+#include <SDL2/SDL.h>//mac
+#include <SDL2_image/SDL_image.h>//mac
 
-#include <SDL.h>//windows
-#include <SDL_image.h>//windows
+//#include <SDL.h>//windows
+//#include <SDL_image.h>//windows
+
 #include <stdbool.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -26,17 +27,27 @@ void loadSprites()
 {
     sprites[0].id = TXT_PLAYER;
     sprites[0].texture = loadTexture("textures/gubbe1.png");
+
     sprites[1].id = TXT_WALL;
     sprites[1].texture = loadTexture("textures/wall.png");
+
     sprites[2].id = TXT_ZOMBIE;
     sprites[2].texture = loadTexture("textures/gubbe2.png");
+
     sprites[3].id = TXT_BULLET;
     sprites[3].texture = loadTexture("textures/bullet.png");
 
-    sprites[4].id = TXT_OPTION_BUTTON;
-    sprites[4].texture = loadTexture("textures/optionButton.png");
 
-    spritesCount = 5;
+    sprites[4].id = TXT_BUTTON;
+    sprites[4].texture = loadTexture("textures/button.png");
+
+    sprites[6].id = TXT_PLAYGROUND;
+    sprites[6].texture = loadTexture("textures/playground.png");
+
+    sprites[5].id = TXT_MENU_BACKGROUND;
+    sprites[5].texture = loadTexture("textures/ugly_ass_background.png");
+
+    spritesCount = 7;
 }
 
 SDL_Texture* loadTexture(char* path)
