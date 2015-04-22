@@ -111,9 +111,7 @@ int main(int argc, char *argv[])
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
                     //Vänsterklick
-                    shoot(player);
-
-
+                    addObjectToScene(&level, shoot(player));
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
                     //högerklick
@@ -132,6 +130,15 @@ int main(int argc, char *argv[])
             player->rect.x -= player->p_stats.speed;
         else if(moving.right)
             player->rect.x += player->p_stats.speed;
+
+        for(int i = 0; i < level.objectCount; i++)
+        {
+            if(level.objects[i].objectType == OBJECT_BULLET)
+            {
+                level.objects[i].rect.y += sin(level.objects[i].bulletInfo.angle) * level.objects[i].bulletInfo.velocity;
+                level.objects[i].rect.x += cos(level.objects[i].bulletInfo.angle) * level.objects[i].bulletInfo.velocity;
+            }
+        }
 
 
         //player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI);

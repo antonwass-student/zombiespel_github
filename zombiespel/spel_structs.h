@@ -32,7 +32,8 @@ typedef enum {
     TXT_PLAYER,
     TXT_WALL,
     TXT_ZOMBIE,
-    TXT_GUN
+    TXT_GUN,
+    TXT_BULLET
 } textureID_t;
 
 typedef struct
@@ -61,6 +62,11 @@ typedef struct{
 }playerStats;
 
 typedef struct{
+    int velocity;
+    double angle;
+}bulletInfo;
+
+typedef struct{
     char* name;
     ObjectType_T objectType;
     textureID_t id;
@@ -69,7 +75,11 @@ typedef struct{
     SDL_Point* center;
     SDL_RendererFlip flip;
     ColorRGB color;
+
     playerStats p_stats;
+
+    bulletInfo bulletInfo;
+
 } GameObject;
 
 typedef struct{

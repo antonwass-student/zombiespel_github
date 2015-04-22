@@ -30,8 +30,9 @@ void loadSprites()
     sprites[1].texture = loadTexture("textures/wall.png");
     sprites[2].id = TXT_ZOMBIE;
     sprites[2].texture = loadTexture("textures/zombie.png");
-
-    spritesCount = 3;
+    sprites[3].id = TXT_BULLET;
+    sprites[3].texture = loadTexture("textures/bullet.png");
+    spritesCount = 4;
 }
 
 SDL_Texture* loadTexture(char* path)

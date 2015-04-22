@@ -49,3 +49,9 @@ void SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerC
     player->p_stats.speed = speed;
     player->p_stats.pClass = pClass;
 }
+
+void SetBulletStats(GameObject* bullet, int velocity, double angle)
+{
+    bullet->bulletInfo.angle = angle;
+    bullet->bulletInfo.velocity = velocity;
+}
