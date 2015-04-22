@@ -15,13 +15,15 @@ int main(int argc, char *argv[])
 {
     bool quit = false;
     SDL_Event e;
+    Scene* activeScene;
     Scene level;
     GameObject* player;
-
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
 
     level.objectCount = 0;
+
+    activeScene = &level;
 
     printf("Starting graphics engine..\n");
 
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
     addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE));
     addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE));
 
-    SetPlayerStats(player, 100, 13, 5, CLASS_SOLDIER);
+    SetPlayerStats(player, 100, 13, 20, CLASS_SOLDIER);
 
 
     // Game loop
@@ -106,7 +108,7 @@ int main(int argc, char *argv[])
             else if(e.type == SDL_MOUSEMOTION){
                     mouseX = e.motion.x - (SCREEN_WIDTH/2);
                     mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
-                    player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI);
+                    player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
 
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
@@ -114,11 +116,10 @@ int main(int argc, char *argv[])
                     //Vänsterklick
                     GameObject bullet;
                     if(shoot(player, &bullet))
-                        addObjectToScene(&level, bullet);
+                        addObjectToScene(activeScene, bullet);
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
                     //högerklick
-
                 }
             }
         }
@@ -134,19 +135,16 @@ int main(int argc, char *argv[])
         else if(moving.right)
             player->rect.x += player->p_stats.speed;
 
-        for(int i = 0; i < level.objectCount; i++)
+        for(int i = 0; i < activeScene->objectCount; i++)
         {
-            if(level.objects[i].objectType == OBJECT_BULLET)
+            if(activeScene->objects[i].objectType == OBJECT_BULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
             {
-                level.objects[i].rect.y -= sin((level.objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * level.objects[i].bulletInfo.velocity;
-                level.objects[i].rect.x -= cos((level.objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * level.objects[i].bulletInfo.velocity;
+                activeScene->objects[i].rect.y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
+                activeScene->objects[i].rect.x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
             }
         }
 
-
-        //player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI);
-
-        graphics_render(level, player); // Skickar med en "Scene" och ett relativt objekt (objekt ritas ut relativt till det objektet)
+        graphics_render((*activeScene), player); // Skickar med en "Scene" och ett relativt objekt (objekt ritas ut relativt till det objektet)
     }
 
     graphics_stop();
