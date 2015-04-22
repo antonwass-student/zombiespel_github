@@ -7,6 +7,7 @@
 #include "spel_structs.h"
 #include "spel_gameobject.h"
 #include <math.h>
+#include "spel_actions.h"
 
 
 
@@ -16,8 +17,11 @@ int main(int argc, char *argv[])
     SDL_Event e;
     Scene level;
     GameObject* player;
+
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
+
+    playerStats stats = {100, 20, 1};
 
     level.objectCount = 0;
 
@@ -33,12 +37,12 @@ int main(int argc, char *argv[])
     addObjectToScene(&level, createObject("ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE));
     addObjectToScene(&level, createObject("ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE));
 
-    // ----------
+    // ----------rotation
 
     // Game loop
-
     while(!quit)
     {
+
         // ******** INPUTS ***********
         while(SDL_PollEvent(&e) != 0)
         {
@@ -81,6 +85,18 @@ int main(int argc, char *argv[])
                     case SDLK_a:
                         moving.left = false;
                         break;
+                    case SDLK_r:
+                        //
+                        if(stats.klass == 1){
+                            stats.ammo = 20;
+                        }else printf("Fork u\n");
+                        break;
+                    case SDLK_e:
+                        //USE
+                        break;
+                    case SDLK_f:
+                        //special item
+                        break;
                 }
             }
             else if(e.type == SDL_MOUSEMOTION){
@@ -91,20 +107,37 @@ int main(int argc, char *argv[])
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
-                        //Vänsterklick
+                    //Vänsterklick
+                    stats.ammo = stats.ammo - 1;
+                    if(stats.ammo >= 0){
+                        printf("Ammo count %d\n", stats.ammo);
+                    }else{printf("Reload\n");}
+
+
+                }
+                if(e.button.button == SDL_BUTTON_RIGHT){
+                    //högerklick
+
                 }
             }
+
         }
+
+
+
         // ************ INPUTS END **********
 
         if(moving.up)
-            player->rect.y -= 2;
+            player->rect.y -= 3;
         else if(moving.down)
-            player->rect.y += 2;
+            player->rect.y += 3;
         if(moving.left)
-            player->rect.x -= 2;
+            player->rect.x -= 3;
         else if(moving.right)
-            player->rect.x += 2;
+            player->rect.x += 3;
+
+
+        //player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI);
 
         graphics_render(level, player); // Skickar med en "Scene" och ett relativt objekt (objekt ritas ut relativt till det objektet)
     }

@@ -58,8 +58,9 @@ typedef struct{
     GameObject objects[128];
     int objectCount;
 } Scene;
-
-
+typedef struct{
+    int klass, health, ammo, speed;
+}playerStats;
 
 
 
