@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
      *Skapar två objekt och lägger in dem i objektarrayen.
      */
 
-    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",100, 100, 128, 128, TXT_PLAYER));
+    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",0, 0, 128, 128, TXT_PLAYER));
     addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE));
     addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE));
 
@@ -43,6 +43,10 @@ int main(int argc, char *argv[])
     SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",100,0,100,100, TXT_WALL)), BUTTON_GOTO_MENU, true);
 
     SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to game",0,0,100,100, TXT_WALL)), BUTTON_GOTO_LOBBY, true);
+
+    //addObjectToScene(&meny, createObject(OBJECT_BACKGROUND, "Menu Background", 0, 0, 480, 640, TXT_MENU_BACKGROUND));
+    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "BACKGROUND", 0, 0, 480, 640, TXT_MENU_BACKGROUND)), BUTTON_GOTO_MENU, true);
+    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to options", 100, 100, 70, 350, TXT_BUTTON)), BUTTON_GOTO_OPTIONS, true);
 
 
     // Game loop

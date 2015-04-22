@@ -33,10 +33,13 @@ void loadSprites()
     sprites[3].id = TXT_BULLET;
     sprites[3].texture = loadTexture("textures/bullet.png");
 
-    sprites[4].id = TXT_OPTION_BUTTON;
-    sprites[4].texture = loadTexture("textures/optionButton.png");
+    sprites[4].id = TXT_BUTTON;
+    sprites[4].texture = loadTexture("textures/button.png");
 
-    spritesCount = 5;
+    sprites[5].id = TXT_MENU_BACKGROUND;
+    sprites[5].texture = loadTexture("textures/ugly_ass_background.png");
+
+    spritesCount = 6;
 }
 
 SDL_Texture* loadTexture(char* path)
