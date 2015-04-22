@@ -108,10 +108,8 @@ int main(int argc, char *argv[])
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
                     //Vänsterklick
-                    stats.ammo = stats.ammo - 1;
-                    if(stats.ammo >= 0){
-                        printf("Ammo count %d\n", stats.ammo);
-                    }else{printf("Reload\n");}
+                    printf("asda");
+                    shoot(player);
 
 
                 }

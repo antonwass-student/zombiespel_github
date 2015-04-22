@@ -42,6 +42,9 @@ typedef struct{
     bool left;
     bool right;
 } PlayerMovement;
+typedef struct{
+    int klass, health, ammo, speed;
+}playerStats;
 
 typedef struct{
     char* name;
@@ -51,6 +54,7 @@ typedef struct{
     SDL_Point* center;
     SDL_RendererFlip flip;
     ColorRGB color;
+    playerStats p_stats;
 } GameObject;
 
 typedef struct{
@@ -58,9 +62,7 @@ typedef struct{
     GameObject objects[128];
     int objectCount;
 } Scene;
-typedef struct{
-    int klass, health, ammo, speed;
-}playerStats;
+
 
 
 
