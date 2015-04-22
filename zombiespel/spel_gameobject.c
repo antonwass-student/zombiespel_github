@@ -1,8 +1,9 @@
 #include "spel_structs.h"
 
-GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture) // Skapar nytt GameObject och returnerar denna
+GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
     GameObject temp;
+    temp.solid = solid;
     temp.objectType = objectType;
     temp.id = texture;
     temp.name = name;

@@ -8,6 +8,7 @@
 #include "spel_gameobject.h"
 #include <math.h>
 #include "spel_actions.h"
+#include "spel_physics.h"
 
 
 
@@ -23,6 +24,7 @@ int main(int argc, char *argv[])
     int mouseX, mouseY;
 
     level.objectCount = 0;
+    meny.objectCount = 0;
 
     activeScene = &level;
 
@@ -34,15 +36,14 @@ int main(int argc, char *argv[])
      *Skapar två objekt och lägger in dem i objektarrayen.
      */
 
-    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",100, 100, 128, 128, TXT_PLAYER));
-    addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE));
-    addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE));
+    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",0, 0, 128, 128, TXT_PLAYER, true));
+    addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE 1",128, 128, 128, 128, TXT_ZOMBIE, false));
+    addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE 2",240, 240, 128, 128, TXT_ZOMBIE, true));
 
     SetPlayerStats(player, 100, 13, 20, CLASS_SOLDIER);
 
-    SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",100,0,100,100, TXT_WALL)), BUTTON_GOTO_MENU, true);
-
-    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to game",0,0,100,100, TXT_WALL)), BUTTON_GOTO_LOBBY, true);
+    SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",100,0,100,100, TXT_WALL, false)), BUTTON_GOTO_MENU, true);
+    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to game",0,0,100,100, TXT_WALL, false)), BUTTON_GOTO_LOBBY, true);
 
 
     // Game loop
@@ -170,24 +171,29 @@ int main(int argc, char *argv[])
         }
         // ************ INPUTS END **********
 
+        if(inGame)
+        {
+            int x = 0, y = 0;
+            if(moving.up)
+                y -= player->p_stats.speed;
+            else if(moving.down)
+                y += player->p_stats.speed;
+            if(moving.left)
+                x -= player->p_stats.speed;
+            else if(moving.right)
+                x += player->p_stats.speed;
 
-
-
-        if(moving.up)
-            player->rect.y -= player->p_stats.speed;
-        else if(moving.down)
-            player->rect.y += player->p_stats.speed;
-        if(moving.left)
-            player->rect.x -= player->p_stats.speed;
-        else if(moving.right)
-            player->rect.x += player->p_stats.speed;
+            MoveObject(player, activeScene, x, y);
+        }
 
         for(int i = 0; i < activeScene->objectCount; i++)
         {
+            int x = 0,y = 0;
             if(activeScene->objects[i].objectType == OBJECT_BULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
             {
-                activeScene->objects[i].rect.y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
-                activeScene->objects[i].rect.x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
+                y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
+                x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
+                MoveObject(&activeScene->objects[i],activeScene, x,y);
             }
         }
 

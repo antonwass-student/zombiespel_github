@@ -25,11 +25,11 @@ int spritesCount = 0;
 void loadSprites()
 {
     sprites[0].id = TXT_PLAYER;
-    sprites[0].texture = loadTexture("textures/player.png");
+    sprites[0].texture = loadTexture("textures/gubbe1.png");
     sprites[1].id = TXT_WALL;
     sprites[1].texture = loadTexture("textures/wall.png");
     sprites[2].id = TXT_ZOMBIE;
-    sprites[2].texture = loadTexture("textures/zombie.png");
+    sprites[2].texture = loadTexture("textures/gubbe2.png");
     sprites[3].id = TXT_BULLET;
     sprites[3].texture = loadTexture("textures/bullet.png");
 

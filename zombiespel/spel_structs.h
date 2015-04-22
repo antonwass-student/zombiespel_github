@@ -82,6 +82,7 @@ typedef struct{
 
 typedef struct{
     char* name;
+    bool solid;
     ObjectType_T objectType;
     textureID_t id;
     SDL_Rect rect;
