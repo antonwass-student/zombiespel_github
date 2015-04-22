@@ -6,7 +6,7 @@ GameObject createObject(char* name, int x, int y, int w, int h, textureID_t text
     temp.id = texture;
     temp.name = name;
 
-    SDL_Rect temp_rect = {h, w, x, y};
+    SDL_Rect temp_rect = {x, y, h, w};
     temp.rect = temp_rect;
 
     temp.rotation = 0;
