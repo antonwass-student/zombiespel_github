@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE));
     addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE));
 
-    SetPlayerStats(player, 100, 10, 10, CLASS_SOLDIER);
+    SetPlayerStats(player, 100, 13, 5, CLASS_SOLDIER);
 
 
     // Game loop
@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
                         moving.left = true;
                         break;
                     case SDLK_r:
+                        player->p_stats.ammo = 13;
                         break;
                     case SDLK_e:
                         //USE
@@ -111,7 +112,9 @@ int main(int argc, char *argv[])
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
                     //Vänsterklick
-                    addObjectToScene(&level, shoot(player));
+                    GameObject bullet;
+                    if(shoot(player, &bullet))
+                        addObjectToScene(&level, bullet);
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
                     //högerklick
@@ -135,8 +138,8 @@ int main(int argc, char *argv[])
         {
             if(level.objects[i].objectType == OBJECT_BULLET)
             {
-                level.objects[i].rect.y += sin(level.objects[i].bulletInfo.angle) * level.objects[i].bulletInfo.velocity;
-                level.objects[i].rect.x += cos(level.objects[i].bulletInfo.angle) * level.objects[i].bulletInfo.velocity;
+                level.objects[i].rect.y -= sin((level.objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * level.objects[i].bulletInfo.velocity;
+                level.objects[i].rect.x -= cos((level.objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * level.objects[i].bulletInfo.velocity;
             }
         }
 

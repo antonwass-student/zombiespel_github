@@ -1,6 +1,6 @@
 #ifndef SPEL_ACTIONS_H_INCLUDED
 #define SPEL_ACTIONS_H_INCLUDED
 
-GameObject shoot();
+bool shoot();
 
 #endif // SPEL_ACTIONS_H_INCLUDED
