@@ -33,7 +33,8 @@ typedef enum {
     TXT_WALL,
     TXT_ZOMBIE,
     TXT_GUN,
-    TXT_BULLET
+    TXT_BULLET,
+    TXT_OPTION_BUTTON
 } textureID_t;
 
 typedef struct
