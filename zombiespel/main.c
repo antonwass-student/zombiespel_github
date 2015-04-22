@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-//#include <SDL.h>//windows
-#include <SDL2/SDL.h>//mac
+#include <SDL.h>//windows
+//#include <SDL2/SDL.h>//mac
 #include "spel_gfx.h"
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -62,7 +62,6 @@ int main(int argc, char *argv[])
                         break;
                     case SDLK_a:
                         moving.left = true;
-<<<<<<< HEAD
                         break;
                 }
             }
@@ -84,29 +83,6 @@ int main(int argc, char *argv[])
                         break;
                 }
             }
-=======
-                        break;
-                }
-            }
-            else if( e.type == SDL_KEYUP )
-            {
-                switch( e.key.keysym.sym )
-                {
-                    case SDLK_w:
-                        moving.up = false;
-                        break;
-                    case SDLK_s:
-                        moving.down = false;
-                        break;
-                    case SDLK_d:
-                        moving.right = false;
-                        break;
-                    case SDLK_a:
-                        moving.left = false;
-                        break;
-                }
-            }
->>>>>>> origin/update
             else if(e.type == SDL_MOUSEMOTION){
                     mouseX = e.motion.x - (SCREEN_WIDTH/2);
                     mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
