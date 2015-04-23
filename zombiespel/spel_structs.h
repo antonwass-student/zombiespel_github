@@ -17,6 +17,11 @@ typedef struct{
 }Size;
 
 typedef enum {
+    AI_ZOMBIE,
+    AI_SUPERZOMBIE
+} AI_T;
+
+typedef enum {
     SCENE_LEVEL,
     SCENE_MENU,
     SCENE_OPTIONS,
@@ -93,6 +98,15 @@ typedef struct{
 } ButtonInfo;
 
 typedef struct{
+    AI_T ai;
+    int health;
+    int speed;
+    int damage;
+    int detectRange;
+    SDL_Rect* target;
+}AI;
+
+typedef struct{
     char* name;
     bool solid;
     bool drawText;
@@ -111,6 +125,8 @@ typedef struct{
     bulletInfo bulletInfo;
 
     ButtonInfo btnInfo;
+
+    AI ai;
 
 } GameObject;
 

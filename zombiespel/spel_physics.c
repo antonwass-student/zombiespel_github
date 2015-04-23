@@ -14,6 +14,8 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY)
             continue;
         if(scene->objects[i].objectType == OBJECT_BULLET && movingObject->objectType == OBJECT_BULLET)
             continue;
+        if(scene->objects[i].objectType == OBJECT_NPC && movingObject->objectType == OBJECT_NPC)
+            continue;
 
         if(movingObject->rect.x <= scene->objects[i].rect.x + scene->objects[i].rect.w &&
            movingObject->rect.x >= scene->objects[i].rect.x) // kollision vänster av objekt

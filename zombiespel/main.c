@@ -11,6 +11,7 @@
 #include <math.h>
 #include "spel_actions.h"
 #include "spel_physics.h"
+#include "spel_AI.h"
 
 
 
@@ -44,9 +45,9 @@ int main(int argc, char *argv[])
 
     addObjectToScene(&level, createObject(OBJECT_ITEM, "playground",0, 0, 3000, 3000, TXT_PLAYGROUND, false));
 
-    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",100, 100, 128, 128, TXT_PLAYER, true));
-    addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE, false));
-    addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE, true));
+    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",300, 100, 56, 128, TXT_PLAYER, true));
+    SetAI(addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE 1",128, 128, 128, 128, TXT_ZOMBIE, true)),AI_ZOMBIE, 5, 10, 10, 100);
+    SetAI(addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE 2",240, 240, 128, 128, TXT_ZOMBIE, true)),AI_ZOMBIE, 3, 10, 10, 100);
 
     SetPlayerStats(player, 100, 13, 20, CLASS_SOLDIER);
 
@@ -162,14 +163,12 @@ int main(int argc, char *argv[])
                                             nextScene = &options;
                                             break;
                                         case BUTTON_QUIT:
-                                            printf("Object:%s\nAction: %d",activeScene->objects[i].name, activeScene->objects[i].btnInfo.btnAction);
                                             quit = true;
                                             break;
                                     }
                                 }
                             }
                         }
-
                     }
 
                     if(activeScene->sceneName == SCENE_LEVEL)
@@ -178,7 +177,6 @@ int main(int argc, char *argv[])
                         if(shoot(player, &bullet))
                             addObjectToScene(activeScene, bullet);
                     }
-
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
                     //högerklick
@@ -211,6 +209,15 @@ int main(int argc, char *argv[])
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 MoveObject(&activeScene->objects[i],activeScene, x,y);
             }
+
+            else if(activeScene->objects[i].objectType == OBJECT_NPC)
+            {
+                if(activeScene->objects[i].ai.ai == AI_ZOMBIE)
+                {
+                    Zombie_UseBrain(activeScene, &activeScene->objects[i]);
+                }
+            }
+
         }
 
         activeScene = nextScene;

@@ -80,3 +80,12 @@ GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textCol
 
     return object;
 }
+
+GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health )
+{
+    object->ai.speed = speed;
+    object->ai.detectRange = range;
+    object->ai.damage = damage;
+    object->ai.health = health;
+    object->ai.ai = aiType;
+}
