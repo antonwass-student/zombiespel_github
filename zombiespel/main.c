@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     addObjectToScene(&meny, createObject(OBJECT_BACKGROUND, "BACKGROUND", 0, 0, 480, 640, TXT_MENU_BACKGROUND, false));
 
     addObjectToScene(&level, createObject(OBJECT_ITEM, "playground",0, 0, 3000, 3000, TXT_PLAYGROUND, false));
+
     player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",100, 100, 128, 128, TXT_PLAYER, true));
     addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE, false));
     addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE, true));
@@ -57,7 +58,6 @@ int main(int argc, char *argv[])
             "Spelet", true, white);
     SetText(SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to options", 100, 100, 70, 350, TXT_BUTTON, false)), BUTTON_GOTO_OPTIONS, true)
             ,"Options", true, white);
-
 
     // Game loop
     while(!quit)
