@@ -1,8 +1,8 @@
-#include <SDL2/SDL.h>//mac
-#include <SDL2_image/SDL_image.h>//mac
+//#include <SDL2/SDL.h>//mac
+//#include <SDL2_image/SDL_image.h>//mac
 
-//#include <SDL.h>//windows
-//#include <SDL_image.h>//windows
+#include <SDL.h>//windows
+#include <SDL_image.h>//windows
 
 #include <stdbool.h>
 #include "spel_structs.h"
