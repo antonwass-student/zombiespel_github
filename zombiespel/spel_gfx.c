@@ -1,8 +1,9 @@
-#include <SDL2/SDL.h>//mac
-#include <SDL2_image/SDL_image.h>//mac
+//#include <SDL2/SDL.h>//mac
+//#include <SDL2_image/SDL_image.h>//mac
 
-//#include <SDL.h>//windows
-//#include <SDL_image.h>//windows
+#include <SDL.h>//windows
+#include <SDL_image.h>//windows
+#include <SDL_ttf.h> // windows
 
 #include <stdbool.h>
 #include "spel_structs.h"
@@ -20,8 +21,19 @@ void loadSprites();
 SDL_Renderer* gRenderer;
 SDL_Texture* gTexture;
 SDL_Window* window = NULL;
+TTF_Font* gFont;
 Sprite sprites[100];
 int spritesCount = 0;
+
+
+void SetFont()
+{
+    gFont = TTF_OpenFont("fonts/Verdana.ttf", 60);
+    if(gFont == NULL)
+    {
+        printf("could not load font\n");
+    }
+}
 
 void loadSprites()
 {
@@ -76,6 +88,8 @@ SDL_Texture* loadTexture(char* path)
 void graphics_start() //
 {
 
+    TTF_Init();
+    SetFont();
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         printf("Could not initialize SDL! SDL_Error: %s\n", SDL_GetError());
@@ -119,8 +133,9 @@ void graphics_start() //
 void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i objects
 {
     SDL_RenderClear(gRenderer);
-
     SDL_Rect newRect;
+    SDL_Surface* surface;
+    SDL_Texture* textTexture;
 
     for(int i = 0; i < level.objectCount; i++) // Denna loop går igenom alla GameObjects i scenen som skickats med
     {
@@ -130,7 +145,7 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
             {
 
                 newRect = level.objects[i].rect;
-                if(level.objects[i].objectType != OBJECT_BUTTON) //Räknar ut den relativa positionen för objekten (ej knappar, UI)
+                if(level.objects[i].objectType != OBJECT_BUTTON && level.objects[i].objectType != OBJECT_BACKGROUND) //Räknar ut den relativa positionen för objekten (ej knappar, UI)
                 {
                     newRect.x = newRect.x - relative->rect.x + SCREEN_WIDTH/2 - relative->rect.w/2;
                     newRect.y = newRect.y - relative->rect.y + SCREEN_HEIGHT/2 - relative->rect.h/2;
@@ -138,6 +153,15 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
 
                 SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].color.red, level.objects[i].color.green, level.objects[i].color.blue);
                 SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
+
+                if(level.objects[i].drawText) //Ritar ut text
+                {
+                    surface = TTF_RenderText_Solid(gFont, level.objects[i].text, level.objects[i].textColor);
+                    textTexture = SDL_CreateTextureFromSurface(gRenderer, surface);
+                    SDL_RenderCopy(gRenderer, textTexture, NULL, &newRect);
+                }
+
+
                 break;
             }
         }

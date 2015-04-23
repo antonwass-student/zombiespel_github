@@ -1,8 +1,8 @@
 #ifndef SPEL_STRUCTS_H_INCLUDED
 #define SPEL_STRUCTS_H_INCLUDED
 
-//#include <SDL.h> //windows
-#include <SDL2/SDL.h> // MAC
+#include <SDL.h> //windows
+//#include <SDL2/SDL.h> // MAC
 
 #include <stdbool.h>
 
@@ -15,6 +15,13 @@ typedef struct{
     int width;
     int height;
 }Size;
+
+typedef enum {
+    SCENE_LEVEL,
+    SCENE_MENU,
+    SCENE_OPTIONS,
+    SCENE_LOBBY
+}SceneName_T;
 
 typedef enum {
     OBJECT_PLAYER,
@@ -88,6 +95,9 @@ typedef struct{
 typedef struct{
     char* name;
     bool solid;
+    bool drawText;
+    char text[100];
+    SDL_Color textColor;
     ObjectType_T objectType;
     textureID_t id;
     SDL_Rect rect;
@@ -105,7 +115,7 @@ typedef struct{
 } GameObject;
 
 typedef struct{
-    char* name;
+    SceneName_T sceneName;
     GameObject objects[128];
     int objectCount;
 } Scene;

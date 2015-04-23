@@ -1,4 +1,5 @@
 #include "spel_structs.h"
+#include <strings.h>
 
 GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
@@ -16,6 +17,8 @@ GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w
     temp.center = NULL;
 
     temp.flip = SDL_FLIP_NONE;
+
+    temp.drawText = false;
 
     temp.color.red = 255;
     temp.color.green = 255;
@@ -43,22 +46,37 @@ GameObject* addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett
     }
 }
 
-void SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;
     player->p_stats.speed = speed;
     player->p_stats.pClass = pClass;
+
+    return player;
 }
 
-void SetBulletStats(GameObject* bullet, int velocity, double angle)
+GameObject* SetBulletStats(GameObject* bullet, int velocity, double angle)
 {
     bullet->bulletInfo.angle = angle;
     bullet->bulletInfo.velocity = velocity;
+
+    return bullet;
 }
 
-void SetButtonStats(GameObject* button, ButtonAction_T action, bool active)
+GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool active)
 {
- //   button->btnInfo.btnAction = action;
-    //button->btnInfo.active = active;
+    button->btnInfo.btnAction = action;
+    button->btnInfo.active = active;
+
+    return button;
+}
+
+GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor)
+{
+    strcpy(object->text, text);
+    object->drawText = draw;
+    object->textColor = textColor;
+
+    return object;
 }

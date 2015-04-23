@@ -1,5 +1,5 @@
-//#include <SDL.h>//windows
-#include <SDL2/SDL.h>//mac
+#include <SDL.h>//windows
+//#include <SDL2/SDL.h>//mac
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,18 +17,20 @@
 int main(int argc, char *argv[])
 {
     bool quit = false;
-    bool inGame = true;
     SDL_Event e;
-    Scene* activeScene;
+    Scene *activeScene, *nextScene;
     Scene level, meny, options;
     GameObject* player;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
 
     level.objectCount = 0;
+    level.sceneName = SCENE_LEVEL;
     meny.objectCount = 0;
+    meny.sceneName = SCENE_MENU;
 
     activeScene = &level;
+    nextScene = &level;
 
     printf("Starting graphics engine..\n");
 
@@ -38,19 +40,23 @@ int main(int argc, char *argv[])
      *Skapar två objekt och lägger in dem i objektarrayen.
      */
 
-    addObjectToScene(&level, createObject(OBJECT_ITEM, "playground",0, 0, 3000, 3000, TXT_PLAYGROUND));
-    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",100, 100, 128, 128, TXT_PLAYER));
-    addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE));
-    addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE));
+    addObjectToScene(&meny, createObject(OBJECT_BACKGROUND, "BACKGROUND", 0, 0, 480, 640, TXT_MENU_BACKGROUND, false));
+
+    addObjectToScene(&level, createObject(OBJECT_ITEM, "playground",0, 0, 3000, 3000, TXT_PLAYGROUND, false));
+    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",100, 100, 128, 128, TXT_PLAYER, true));
+    addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE",128, 128, 128, 128, TXT_ZOMBIE, false));
+    addObjectToScene(&level, createObject(OBJECT_NPC,"ZOMBIE",240, 240, 128, 128, TXT_ZOMBIE, true));
 
     SetPlayerStats(player, 100, 13, 20, CLASS_SOLDIER);
 
-    SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",100,0,100,100, TXT_WALL, false)), BUTTON_GOTO_MENU, true);
-    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to game",0,0,100,100, TXT_WALL, false)), BUTTON_GOTO_LOBBY, true);
+    SDL_Color white = {0,0,0};
 
-    //addObjectToScene(&meny, createObject(OBJECT_BACKGROUND, "Menu Background", 0, 0, 480, 640, TXT_MENU_BACKGROUND));
-    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "BACKGROUND", 0, 0, 480, 640, TXT_MENU_BACKGROUND)), BUTTON_GOTO_MENU, true);
-    SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to options", 100, 100, 70, 350, TXT_BUTTON)), BUTTON_GOTO_OPTIONS, true);
+    SetText(SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",0,0,40,100, TXT_BUTTON, false)), BUTTON_GOTO_MENU, true)
+            ,"Menu", true, white);
+    SetText(SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to game", 0,0,40,100, TXT_BUTTON, false)), BUTTON_GOTO_LOBBY, true),
+            "Spelet", true, white);
+    SetText(SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to options", 100, 100, 70, 350, TXT_BUTTON, false)), BUTTON_GOTO_OPTIONS, true)
+            ,"Options", true, white);
 
 
     // Game loop
@@ -66,7 +72,7 @@ int main(int argc, char *argv[])
             }
             else if( e.type == SDL_KEYDOWN )
             {
-                if(inGame)
+                if(activeScene->sceneName == SCENE_LEVEL)
                 {
                     switch( e.key.keysym.sym )
                     {
@@ -96,7 +102,7 @@ int main(int argc, char *argv[])
             }
             else if( e.type == SDL_KEYUP )
             {
-                if(inGame)
+                if(activeScene->sceneName == SCENE_LEVEL)
                 {
                     switch( e.key.keysym.sym )
                     {
@@ -124,7 +130,7 @@ int main(int argc, char *argv[])
                 }
             }
             else if(e.type == SDL_MOUSEMOTION){
-                    if(inGame)
+                    if(activeScene->sceneName == SCENE_LEVEL)
                     {
                         mouseX = e.motion.x - (SCREEN_WIDTH/2);
                         mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
@@ -137,6 +143,7 @@ int main(int argc, char *argv[])
 
                     for(int i = 0; i < activeScene->objectCount; i++)
                     {
+                        bool changedScene = false;
                         if(activeScene->objects[i].objectType == OBJECT_BUTTON)
                         {
                             if(e.button.x > activeScene->objects[i].rect.x && e.button.x < activeScene->objects[i].rect.x + activeScene->objects[i].rect.w)
@@ -146,24 +153,26 @@ int main(int argc, char *argv[])
                                     switch(activeScene->objects[i].btnInfo.btnAction)
                                     {
                                         case BUTTON_GOTO_LOBBY:
-                                            activeScene = &level;
+                                            nextScene = &level;
                                             break;
                                         case BUTTON_GOTO_MENU:
-                                            activeScene = &meny;
+                                            nextScene = &meny;
                                             break;
                                         case BUTTON_GOTO_OPTIONS:
-                                            activeScene = &options;
+                                            nextScene = &options;
                                             break;
                                         case BUTTON_QUIT:
+                                            printf("Object:%s\nAction: %d",activeScene->objects[i].name, activeScene->objects[i].btnInfo.btnAction);
                                             quit = true;
                                             break;
                                     }
                                 }
                             }
                         }
+
                     }
 
-                    if(inGame)
+                    if(activeScene->sceneName == SCENE_LEVEL)
                     {
                         GameObject bullet;
                         if(shoot(player, &bullet))
@@ -178,7 +187,7 @@ int main(int argc, char *argv[])
         }
         // ************ INPUTS END **********
 
-        if(inGame)
+        if(activeScene->sceneName == SCENE_LEVEL)
         {
             int x = 0, y = 0;
             if(moving.up)
@@ -204,7 +213,9 @@ int main(int argc, char *argv[])
             }
         }
 
+        activeScene = nextScene;
         graphics_render((*activeScene), player); // Skickar med en "Scene" och ett relativt objekt (objekt ritas ut relativt till det objektet)
+
     }
 
     graphics_stop();

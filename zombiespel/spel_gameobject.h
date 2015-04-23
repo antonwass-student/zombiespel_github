@@ -4,7 +4,8 @@
 
 GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid);
 GameObject* addObjectToScene(Scene* level, GameObject newObject);
-void SetBulletStats(GameObject* bullet, int velocity, double angle);
-void SetButtonStats(GameObject* button, ButtonAction_T action, bool active);
+GameObject* SetBulletStats(GameObject* bullet, int velocity, double angle);
+GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool active);
+GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor);
 
 #endif // SPEL_GAMEOBJECT_H_INCLUDED

@@ -39,7 +39,7 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY)
 
         if((colLeft || colRight) && (colUp || colDown))
         {
-            printf("Collision with%s\n", scene->objects[i].name);
+            //printf("Collision with%s\n", scene->objects[i].name);
         }
 
         if(movingObject->solid && scene->objects[i].solid) //Rättar till positionen om en kollision uppsttått
@@ -72,6 +72,6 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY)
         colUp = false;
         colDown = false;
     }
-
+    return true;
 
 }
