@@ -1,5 +1,7 @@
 //#include <SDL.h>//windows
+#include <SDL_net.h>//windows
 #include <SDL2/SDL.h>//mac
+#include <SDL2_net/SDL_net.h>//mac
 
 #include <math.h>
 #include <stdio.h>
@@ -13,10 +15,46 @@
 #include "spel_physics.h"
 #include "spel_AI.h"
 
+TCPsocket net_start(int *argc, char **argv){
+    IPaddress ip;		/* Server address */
+    TCPsocket sd;
+    
+    /* Simple parameter checking */
+    if (*argc < 3)
+    {
+        fprintf(stderr, "Usage: %s host port\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+    
+    if (SDLNet_Init() < 0)
+    {
+        fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
+    
+    /* Resolve the host we are connecting to */
+    if (SDLNet_ResolveHost(&ip, argv[1], atoi(argv[2])) < 0)
+    {
+        fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
+    
+    /* Open a connection with the IP provided (listen on the host's port) */
+    if (!(sd = SDLNet_TCP_Open(&ip)))
+    {
+        fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
+    printf("Connection stablished!\n");
+    return sd;
+}
+
 
 
 int main(int argc, char *argv[])
 {
+    //char buffer[512];
+
     bool quit = false;
     SDL_Event e;
     Scene *activeScene, *nextScene;
@@ -36,6 +74,10 @@ int main(int argc, char *argv[])
     printf("Starting graphics engine..\n");
 
     graphics_start(); // kalla en gång
+
+    //printf("Starting connection to server..\n");
+    //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
+
 
     /*
      *Skapar två objekt och lägger in dem i objektarrayen.
@@ -224,7 +266,9 @@ int main(int argc, char *argv[])
         graphics_render((*activeScene), player); // Skickar med en "Scene" och ett relativt objekt (objekt ritas ut relativt till det objektet)
 
     }
-
+    //SDLNet_TCP_Send(sd, "exit",10);
+    //SDLNet_TCP_Close(sd);
+    //SDLNet_Quit();
     graphics_stop();
 
     return 0;
