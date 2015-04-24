@@ -1,5 +1,7 @@
+//#include <SDL.h>
+#include <SDL2/SDL.h>
+
 #include <math.h>
-#include <SDL.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
 #include "spel_AI.h"
