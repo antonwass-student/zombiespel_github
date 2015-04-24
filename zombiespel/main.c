@@ -1,6 +1,7 @@
-#include <SDL.h>//windows
-//#include <SDL2/SDL.h>//mac
+//#include <SDL.h>//windows
+#include <SDL2/SDL.h>//mac
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -8,7 +9,6 @@
 #include "spel_gfx.h"
 #include "spel_structs.h"
 #include "spel_gameobject.h"
-#include <math.h>
 #include "spel_actions.h"
 #include "spel_physics.h"
 #include "spel_AI.h"
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     level.objectCount = 0;
     level.sceneName = SCENE_LEVEL;
-    meny.objectCount = 0;
+    meny.objectCount=0;
     meny.sceneName = SCENE_MENU;
 
     activeScene = &level;
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
                     for(int i = 0; i < activeScene->objectCount; i++)
                     {
-                        bool changedScene = false;
+                        //behövs denna bool changedScene = false;
                         if(activeScene->objects[i].objectType == OBJECT_BUTTON)
                         {
                             if(e.button.x > activeScene->objects[i].rect.x && e.button.x < activeScene->objects[i].rect.x + activeScene->objects[i].rect.w)

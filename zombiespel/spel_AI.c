@@ -1,5 +1,7 @@
+//#include <SDL.h>
+#include <SDL2/SDL.h>
+
 #include <math.h>
-#include <SDL.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
 #include "spel_AI.h"
@@ -23,9 +25,7 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
     dy -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed;
     dx -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed;
 
-    //zombie->rect.x += dx;
-    //zombie->rect.y += dy;
-    //SDL_Delay(1000);
+
     MoveObject(zombie, scene, dx,dy);
 
 }

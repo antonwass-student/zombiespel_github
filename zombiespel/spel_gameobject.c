@@ -88,4 +88,6 @@ GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int da
     object->ai.damage = damage;
     object->ai.health = health;
     object->ai.ai = aiType;
+    object->ai.target = NULL;
+    return object;
 }
