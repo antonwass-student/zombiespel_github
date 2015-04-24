@@ -1,4 +1,9 @@
 #include "spel_gameobject.h"
+#include "spel_physics.h"
+
+
+
+void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene);
 bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, int objectIndex)
 {
     bool colUp = false, colDown = false, colLeft = false, colRight = false;

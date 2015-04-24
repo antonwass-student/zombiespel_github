@@ -1,7 +1,7 @@
-#include <SDL.h>//windows
-#include <SDL_net.h>//windows
-//#include <SDL2/SDL.h>//mac
-//#include <SDL2_net/SDL_net.h>//mac
+/*#include <SDL.h>//windows
+#include <SDL_net.h>//windows*/
+#include <SDL2/SDL.h>//mac
+#include <SDL2_net/SDL_net.h>//mac*/
 
 #include <math.h>
 #include <stdio.h>
@@ -14,7 +14,7 @@
 #include "spel_actions.h"
 #include "spel_physics.h"
 #include "spel_AI.h"
-
+#include "spel_network.h"
 int main(int argc, char *argv[])
 {
     //char buffer[512];
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     graphics_start(); // kalla en gång
 
     printf("Starting connection to server..\n");
-    TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
+    TCPsocket sd = net_start(&argc, argv);/* Starts network connection */
 
 
     /*

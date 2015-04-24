@@ -1,8 +1,8 @@
 #ifndef SPEL_STRUCTS_H_INCLUDED
 #define SPEL_STRUCTS_H_INCLUDED
 
-#include <SDL.h> //windows
-//#include <SDL2/SDL.h> // MAC
+//#include <SDL.h> //windows
+#include <SDL2/SDL.h> // MAC
 
 #include <stdbool.h>
 

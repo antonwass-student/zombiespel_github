@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL_net.h>
-#include <SDL.h>
+/*#include <SDL_net.h>
+#include <SDL.h>//windows*/
+
+#include <SDL2/SDL.h>
+#include <SDL2_net/SDL_net.h>
 
 TCPsocket net_start(int *argc, char **argv){
     IPaddress ip;		/* Server address */

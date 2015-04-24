@@ -1,5 +1,5 @@
-#include <SDL.h> //windows
-//#include <SDL2/SDL.h>
+//#include <SDL.h> //windows
+#include <SDL2/SDL.h>//mac
 
 #include <math.h>
 #include "spel_structs.h"
