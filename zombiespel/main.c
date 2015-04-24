@@ -15,42 +15,6 @@
 #include "spel_physics.h"
 #include "spel_AI.h"
 
-TCPsocket net_start(int *argc, char **argv){
-    IPaddress ip;		/* Server address */
-    TCPsocket sd;
-
-    /* Simple parameter checking */
-    if (*argc < 3)
-    {
-        fprintf(stderr, "Usage: %s host port\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-
-    if (SDLNet_Init() < 0)
-    {
-        fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
-
-    /* Resolve the host we are connecting to */
-    if (SDLNet_ResolveHost(&ip, argv[1], atoi(argv[2])) < 0)
-    {
-        fprintf(stderr, "SDLNet_ResolveHost: %s\n", SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
-
-    /* Open a connection with the IP provided (listen on the host's port) */
-    if (!(sd = SDLNet_TCP_Open(&ip)))
-    {
-        fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
-        exit(EXIT_FAILURE);
-    }
-    printf("Connection stablished!\n");
-    return sd;
-}
-
-
-
 int main(int argc, char *argv[])
 {
     //char buffer[512];
@@ -79,8 +43,8 @@ int main(int argc, char *argv[])
 
     graphics_start(); // kalla en gång
 
-    //printf("Starting connection to server..\n");
-    //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
+    printf("Starting connection to server..\n");
+    TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
 
 
     /*
@@ -257,6 +221,11 @@ int main(int argc, char *argv[])
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 MoveObject(&activeScene->objects[i],activeScene, x,y, i);
+                activeScene->objects[i].bulletInfo.timetolive--;
+                if(activeScene->objects[i].bulletInfo.timetolive <= 0)
+                {
+                    RemoveObjectFromScene(activeScene, i);
+                }
             }
 
             else if(activeScene->objects[i].objectType == OBJECT_NPC)
@@ -281,9 +250,10 @@ int main(int argc, char *argv[])
         frames++;
     }
 
-    //SDLNet_TCP_Send(sd, "exit",10);
-    //SDLNet_TCP_Close(sd);
-    //SDLNet_Quit();
+    SDLNet_TCP_Send(sd, "exit",10);
+    SDLNet_TCP_Close(sd);
+    SDLNet_Quit();
+
     graphics_stop();
 
     return 0;

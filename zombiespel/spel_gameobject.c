@@ -67,10 +67,12 @@ GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, 
     return player;
 }
 
-GameObject* SetBulletStats(GameObject* bullet, int velocity, double angle)
+GameObject* SetBulletStats(GameObject* bullet, int velocity, double angle, int damage)
 {
     bullet->bulletInfo.angle = angle;
     bullet->bulletInfo.velocity = velocity;
+    bullet->bulletInfo.damage = damage;
+    bullet->bulletInfo.timetolive = 120;
 
     return bullet;
 }

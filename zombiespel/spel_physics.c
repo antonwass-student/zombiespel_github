@@ -86,11 +86,11 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
     if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_NPC) //Bullet med zombie
     {
         printf("Bullet collided with NPC\n");
+        collider2->ai.health -= collider1->bulletInfo.damage;
+
+        if(collider2->ai.health <= 0)
+            RemoveObjectFromScene(scene, c2_index);
+
         RemoveObjectFromScene(scene, c1_index);
-    }
-    else if(collider1->objectType == OBJECT_NPC && collider2->objectType == OBJECT_BULLET) //Bullet med zombie
-    {
-        printf("Bullet collided with NPC\n");
-        RemoveObjectFromScene(scene, c2_index);
     }
 }
