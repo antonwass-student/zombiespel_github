@@ -1,7 +1,7 @@
 #include "spel_structs.h"
 #include <strings.h>
 
-GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
+int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
     GameObject temp;
     temp.solid = solid;
@@ -9,7 +9,7 @@ GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w
     temp.id = texture;
     temp.name = name;
 
-    SDL_Rect temp_rect = {x, y, h, w};
+    SDL_Rect temp_rect = {x, y, w, h};
     temp.rect = temp_rect;
 
     temp.rotation = 0;
@@ -24,10 +24,12 @@ GameObject createObject(ObjectType_T objectType, char* name, int x, int y, int w
     temp.color.green = 255;
     temp.color.blue = 255;
     temp.color.alpha = 255;
-    return temp;
+
+
+    return addObjectToScene(scene, temp);
 }
 
-GameObject* addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett GameObject i listan med GameObjects.
+int addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett GameObject i listan med GameObjects.
 {
     printf("Adding object: %s to the scene.\n", newObject.name);
     if(level->objectCount < 100)
@@ -37,13 +39,22 @@ GameObject* addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett
         level->objectCount++;
         printf("New object count is: %d\n", level->objectCount);
 
-        return &level->objects[level->objectCount - 1];
+        return level->objectCount - 1;
     }
     else
     {
         printf("Object limit reached\n");
-        return NULL;
+        return -1;
     }
+}
+bool RemoveObjectFromScene(Scene *scene, int index)
+{
+    printf("Removing object %s from scene\n", scene->objects[index].name);
+    for(int i = index; i < scene->objectCount - 1; i++)
+    {
+        scene->objects[i] = scene->objects[i + 1];
+    }
+    scene->objectCount--;
 }
 
 GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
@@ -88,4 +99,7 @@ GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int da
     object->ai.damage = damage;
     object->ai.health = health;
     object->ai.ai = aiType;
+    object->ai.target = NULL;
+
+    return object;
 }

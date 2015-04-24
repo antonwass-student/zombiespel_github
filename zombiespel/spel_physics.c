@@ -1,5 +1,5 @@
 #include "spel_gameobject.h"
-bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY)
+bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, int objectIndex)
 {
     bool colUp = false, colDown = false, colLeft = false, colRight = false;
 
@@ -15,6 +15,8 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY)
         if(scene->objects[i].objectType == OBJECT_BULLET && movingObject->objectType == OBJECT_BULLET)
             continue;
         if(scene->objects[i].objectType == OBJECT_NPC && movingObject->objectType == OBJECT_NPC)
+            continue;
+        if(scene->objects[i].objectType == OBJECT_BACKGROUND)
             continue;
 
         if(movingObject->rect.x <= scene->objects[i].rect.x + scene->objects[i].rect.w &&
@@ -39,9 +41,10 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY)
             colDown = true;
         }
 
-        if((colLeft || colRight) && (colUp || colDown))
+        if((colLeft || colRight) && (colUp || colDown)) // Collision between objects!
         {
-            //printf("Collision with%s\n", scene->objects[i].name);
+            //printf("Collision detected with %s and %s\n", scene->objects[i].name, movingObject->name);
+            CollisionHandler(movingObject, &scene->objects[i], objectIndex, i, scene);
         }
 
         if(movingObject->solid && scene->objects[i].solid) //Rättar till positionen om en kollision uppsttått
@@ -75,5 +78,19 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY)
         colDown = false;
     }
     return true;
+}
 
+void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene)
+{
+    //printf("CollisionHandler with object1:%s and object2:%s",collider1->name,collider2->name);
+    if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_NPC) //Bullet med zombie
+    {
+        printf("Bullet collided with NPC\n");
+        RemoveObjectFromScene(scene, c1_index);
+    }
+    else if(collider1->objectType == OBJECT_NPC && collider2->objectType == OBJECT_BULLET) //Bullet med zombie
+    {
+        printf("Bullet collided with NPC\n");
+        RemoveObjectFromScene(scene, c2_index);
+    }
 }

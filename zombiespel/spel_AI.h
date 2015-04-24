@@ -4,7 +4,7 @@
 
 
 void Zombie_UseBrain(Scene* scene, GameObject* zombie);
-SDL_Rect* FindPlayer(Scene* scene, int range);
+SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range);
 
 
 #endif // SPEL_AI_H_INCLUDED

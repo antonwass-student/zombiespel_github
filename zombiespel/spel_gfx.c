@@ -8,8 +8,8 @@
 #include <stdbool.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 800
 
 
 SDL_Texture* loadTexture(char* path);
@@ -168,8 +168,6 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
     }
 
     SDL_RenderPresent(gRenderer);
-
-    SDL_Delay(17);
 }
 
 void graphics_stop()

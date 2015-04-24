@@ -34,7 +34,8 @@ typedef enum {
     OBJECT_ITEM,
     OBJECT_BULLET,
     OBJECT_BUTTON,
-    OBJECT_BACKGROUND
+    OBJECT_BACKGROUND,
+    OBJECT_GAME_BACKGROUND
 } ObjectType_T;
 
 typedef enum{

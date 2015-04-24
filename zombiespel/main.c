@@ -21,9 +21,13 @@ int main(int argc, char *argv[])
     SDL_Event e;
     Scene *activeScene, *nextScene;
     Scene level, meny, options;
-    GameObject* player;
+    int player, newObject;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
+    SDL_Color white = {0,0,0};
+    int timeStamp = 0;
+    long frames = 0;
+    int deltaTime = 0;
 
     level.objectCount = 0;
     level.sceneName = SCENE_LEVEL;
@@ -38,31 +42,33 @@ int main(int argc, char *argv[])
     graphics_start(); // kalla en gång
 
     /*
-     *Skapar två objekt och lägger in dem i objektarrayen.
+     * Skapar objekt
      */
 
-    addObjectToScene(&meny, createObject(OBJECT_BACKGROUND, "BACKGROUND", 0, 0, 480, 640, TXT_MENU_BACKGROUND, false));
+    newObject = createObject(&meny, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
+    newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 1024, 800, TXT_PLAYGROUND, false);
 
-    addObjectToScene(&level, createObject(OBJECT_ITEM, "playground",0, 0, 3000, 3000, TXT_PLAYGROUND, false));
+    player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 56, TXT_PLAYER, true);
+    SetPlayerStats(&level.objects[player], 100, 13, 20, CLASS_SOLDIER);
 
-    player = addObjectToScene(&level, createObject(OBJECT_PLAYER, "Player 1",300, 100, 56, 128, TXT_PLAYER, true));
-    SetAI(addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE 1",128, 128, 128, 128, TXT_ZOMBIE, true)),AI_ZOMBIE, 5, 10, 10, 100);
-    SetAI(addObjectToScene(&level, createObject(OBJECT_NPC, "ZOMBIE 2",240, 240, 128, 128, TXT_ZOMBIE, true)),AI_ZOMBIE, 3, 10, 10, 100);
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 0, 0, 128, 128, TXT_ZOMBIE, false);
+    SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 100, 10, 100);
 
-    SetPlayerStats(player, 100, 13, 20, CLASS_SOLDIER);
+    newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
+    SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, white);
 
-    SDL_Color white = {0,0,0};
+    newObject = createObject(&meny, OBJECT_BUTTON, "go to game", 0,0,100, 40, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Spela", true, white);
 
-    SetText(SetButtonStats(addObjectToScene(&level, createObject(OBJECT_BUTTON, "go to menu",0,0,40,100, TXT_BUTTON, false)), BUTTON_GOTO_MENU, true)
-            ,"Menu", true, white);
-    SetText(SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to game", 0,0,40,100, TXT_BUTTON, false)), BUTTON_GOTO_LOBBY, true),
-            "Spelet", true, white);
-    SetText(SetButtonStats(addObjectToScene(&meny, createObject(OBJECT_BUTTON, "go to options", 100, 100, 70, 350, TXT_BUTTON, false)), BUTTON_GOTO_OPTIONS, true)
-            ,"Options", true, white);
+    newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 100, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, white);
+
+    printf("All objects was created successfully!\n");
 
     // Game loop
     while(!quit)
     {
+        timeStamp = SDL_GetTicks();
 
         // ******** INPUTS ***********
         while(SDL_PollEvent(&e) != 0)
@@ -90,7 +96,7 @@ int main(int argc, char *argv[])
                             moving.left = true;
                             break;
                         case SDLK_r:
-                            player->p_stats.ammo = 13;
+                            level.objects[player].p_stats.ammo = 13;
                             break;
                         case SDLK_e:
                             //USE
@@ -135,7 +141,7 @@ int main(int argc, char *argv[])
                     {
                         mouseX = e.motion.x - (SCREEN_WIDTH/2);
                         mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
-                        player->rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
+                        level.objects[player].rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
                     }
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
@@ -173,9 +179,9 @@ int main(int argc, char *argv[])
 
                     if(activeScene->sceneName == SCENE_LEVEL)
                     {
+                        printf("Trying to shoot\n");
                         GameObject bullet;
-                        if(shoot(player, &bullet))
-                            addObjectToScene(activeScene, bullet);
+                        shoot(activeScene, player, &bullet);
                     }
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
@@ -189,25 +195,26 @@ int main(int argc, char *argv[])
         {
             int x = 0, y = 0;
             if(moving.up)
-                y -= player->p_stats.speed;
+                y -= level.objects[player].p_stats.speed;
             else if(moving.down)
-                y += player->p_stats.speed;
+                y += level.objects[player].p_stats.speed;
             if(moving.left)
-                x -= player->p_stats.speed;
+                x -= level.objects[player].p_stats.speed;
             else if(moving.right)
-                x += player->p_stats.speed;
+                x += level.objects[player].p_stats.speed;
 
-            MoveObject(player, activeScene, x, y);
+            MoveObject(&level.objects[player], activeScene, x, y, player);
         }
 
         for(int i = 0; i < activeScene->objectCount; i++)
         {
             int x = 0,y = 0;
+
             if(activeScene->objects[i].objectType == OBJECT_BULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
             {
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
-                MoveObject(&activeScene->objects[i],activeScene, x,y);
+                MoveObject(&activeScene->objects[i],activeScene, x,y, i);
             }
 
             else if(activeScene->objects[i].objectType == OBJECT_NPC)
@@ -221,9 +228,17 @@ int main(int argc, char *argv[])
         }
 
         activeScene = nextScene;
-        graphics_render((*activeScene), player); // Skickar med en "Scene" och ett relativt objekt (objekt ritas ut relativt till det objektet)
+        graphics_render((*activeScene), &level.objects[player]); // Skickar med en "Scene" och ett relativt objekt (objekt ritas ut relativt till det objektet)
 
+        deltaTime = SDL_GetTicks() - timeStamp;
+
+        if( deltaTime < 17 )
+        {
+            SDL_Delay(17 - deltaTime);
+        }
+        frames++;
     }
+
 
     graphics_stop();
 
