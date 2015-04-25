@@ -1,7 +1,7 @@
-/*#include <SDL.h>//windows
-#include <SDL_net.h>//windows*/
-#include <SDL2/SDL.h>//mac
-#include <SDL2_net/SDL_net.h>//mac*/
+#include <SDL.h>//windows
+#include <SDL_net.h>//windows
+//#include <SDL2/SDL.h>//mac
+//#include <SDL2_net/SDL_net.h>//mac*/
 
 #include <math.h>
 #include <stdio.h>
@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 {
     //char buffer[512];
 
+    music_init();
     bool quit = false;
     SDL_Event e;
     Scene *activeScene, *nextScene;
@@ -102,6 +103,7 @@ int main(int argc, char *argv[])
                             moving.left = true;
                             break;
                         case SDLK_r:
+                            play_sound(SOUND_RELOAD);
                             level.objects[player].p_stats.ammo = 13;
                             break;
                         case SDLK_e:
@@ -109,6 +111,7 @@ int main(int argc, char *argv[])
                             break;
                         case SDLK_f:
                             //special item
+                            play_sound(SOUND_INGAME);
                             break;
                     }
                 }
