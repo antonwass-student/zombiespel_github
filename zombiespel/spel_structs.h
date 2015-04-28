@@ -112,9 +112,12 @@ typedef struct{
 typedef struct{
     char* name;
     bool solid;
+
     bool drawText;
     char text[100];
     SDL_Color textColor;
+    SDL_Texture* textTexture;
+
     ObjectType_T objectType;
     textureID_t id;
     SDL_Rect rect;
@@ -138,6 +141,12 @@ typedef struct{
     GameObject objects[128];
     int objectCount;
 } Scene;
+
+typedef struct{
+    SDL_mutex* mtx;
+    char pool [128][512];
+    int Size;
+} threadCom;
 
 
 

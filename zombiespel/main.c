@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     graphics_start(); // kalla en gång
 
     printf("Starting connection to server..\n");
-    TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
+    //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
 
 
     /*
@@ -250,9 +250,9 @@ int main(int argc, char *argv[])
         frames++;
     }
 
-    SDLNet_TCP_Send(sd, "exit",10);
-    SDLNet_TCP_Close(sd);
-    SDLNet_Quit();
+    //SDLNet_TCP_Send(sd, "exit",10);
+    //SDLNet_TCP_Close(sd);
+    //SDLNet_Quit();
 
     graphics_stop();
 

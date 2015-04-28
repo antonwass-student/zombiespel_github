@@ -24,7 +24,7 @@ void loadSprites();
 SDL_Renderer* gRenderer;
 SDL_Texture* gTexture;
 SDL_Window* window = NULL;
-TTF_Font* gFont;
+TTF_Font* gFont = NULL;
 Sprite sprites[100];
 int spritesCount = 0;
 
@@ -36,6 +36,18 @@ void SetFont()
     {
         printf("could not load font\n");
     }
+}
+
+GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor)
+{
+    strcpy(object->text, text);
+    object->drawText = draw;
+    object->textColor = textColor;
+    SDL_Surface* srf;
+    srf = TTF_RenderText_Solid(gFont, text, textColor);
+    object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
+
+    return object;
 }
 
 void loadSprites()
@@ -159,9 +171,10 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
 
                 if(level.objects[i].drawText) //Ritar ut text
                 {
-                    surface = TTF_RenderText_Solid(gFont, level.objects[i].text, level.objects[i].textColor);
-                    textTexture = SDL_CreateTextureFromSurface(gRenderer, surface);
-                    SDL_RenderCopy(gRenderer, textTexture, NULL, &newRect);
+
+                    // MINNESLÄCKA!!!! Måste fixas för att få texter tillbaka.
+
+                    SDL_RenderCopy(gRenderer, level.objects[i].textTexture, NULL, &newRect);
                 }
 
 

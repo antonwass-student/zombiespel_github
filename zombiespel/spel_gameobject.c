@@ -85,15 +85,6 @@ GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool activ
     return button;
 }
 
-GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor)
-{
-    strcpy(object->text, text);
-    object->drawText = draw;
-    object->textColor = textColor;
-
-    return object;
-}
-
 GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health )
 {
     object->ai.speed = speed;
