@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include <SDL_net.h>
 #include <SDL.h>
+#include <SDL_thread.h>
+#include "spel_structs.h"
+int SendThread();
+int RecvThread();
+
+//Global array
+threadCom sendPool;
+threadCom recvPool;
 
 TCPsocket net_start(int *argc, char **argv){
     IPaddress ip;		/* Server address */
@@ -33,6 +41,81 @@ TCPsocket net_start(int *argc, char **argv){
         fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-    printf("Connection stablished!\n");
+    printf("Connection established!\n");
+
+    sendPool.mtx = SDL_CreateMutex();
+    recvPool.mtx = SDL_CreateMutex();
+    sendPool.Size = 0;
+    recvPool.Size = 0;
+
+    //SDL_CreateThread(SendThread, "Sending thread", (void *)sd);
+    //SDL_CreateThread(RecvThread, "Receiving thread", (void *)sd);
+
+    AddToPool(sendPool, "hej");
+
     return sd;
 }
+
+int SendThread(void* ptr)
+{
+    TCPsocket sd = (TCPsocket)ptr;
+    char buffer[512];
+
+    while(1)
+    {
+        while(sendPool.Size <= 0)
+        {
+
+        }
+        while(sendPool.Size > 0)
+        {
+            ReadPool(sendPool, buffer);
+            SDLNet_TCP_Send(sd, buffer, 512);
+        }
+    }
+    return 1;
+}
+
+int RecvThread(void* ptr)
+{
+    TCPsocket sd = (TCPsocket)ptr;
+
+    char msg[512];
+    while(SDLNet_TCP_Recv(sd, msg, 512))
+    {
+        printf("%s\n",msg);
+    }
+
+    return 1;
+}
+
+int AddToPool(threadCom* pool, char* msg)
+{
+    SDL_LockMutex(pool->mtx);
+    strcpy(pool->pool[pool->Size], msg);
+    pool->Size++;
+    SDL_UnlockMutex(pool->mtx);
+
+    return 1;
+}
+
+int ReadPool(threadCom* pool, char* msg)
+{
+    SDL_LockMutex(pool->mtx);
+    if(pool->Size > 0)
+    {
+        strcpy(pool->pool[0], msg);
+
+        for(int i = 0; i < pool->Size - 1; i++)
+        {
+            strcpy(pool->pool[i+1],pool->pool[i]);
+        }
+    }
+
+    SDL_UnlockMutex(pool->mtx);
+
+    return 1;
+}
+
+
+
