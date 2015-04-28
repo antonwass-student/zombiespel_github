@@ -202,4 +202,3 @@ void graphics_stop()
 
     SDL_Quit();
 }
-

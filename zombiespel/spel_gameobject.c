@@ -55,6 +55,7 @@ bool RemoveObjectFromScene(Scene *scene, int index)
         scene->objects[i] = scene->objects[i + 1];
     }
     scene->objectCount--;
+    return NULL;
 }
 
 GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)

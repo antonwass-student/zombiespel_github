@@ -1,7 +1,7 @@
 #include <SDL.h>//windows
-#include <SDL_net.h>//windows
-//#include <SDL2/SDL.h>//mac
-//#include <SDL2_net/SDL_net.h>//mac
+#include <SDL_net.h>//windows*/
+/*#include <SDL2/SDL.h>//mac
+#include <SDL2_net/SDL_net.h>//mac*/
 
 #include <math.h>
 #include <stdio.h>
@@ -14,7 +14,7 @@
 #include "spel_actions.h"
 #include "spel_physics.h"
 #include "spel_AI.h"
-
+#include "spel_network.h"
 int main(int argc, char *argv[])
 {
     //char buffer[512];
@@ -44,8 +44,8 @@ int main(int argc, char *argv[])
     graphics_start(); // kalla en gång
 
     printf("Starting connection to server..\n");
-    //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
 
+    //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
 
     /*
      * Skapar objekt
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
             int x = 0,y = 0;
 
             if(activeScene->objects[i].objectType == OBJECT_BULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
-            {
+            {GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor);
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 MoveObject(&activeScene->objects[i],activeScene, x,y, i);
