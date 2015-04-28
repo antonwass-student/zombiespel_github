@@ -1,12 +1,10 @@
 #ifndef SPEL_STRUCTS_H_INCLUDED
 #define SPEL_STRUCTS_H_INCLUDED
 
-#include <SDL.h> //windows
-//#include <SDL2/SDL.h> // MAC
+//#include <SDL.h> //windows
+#include <SDL2/SDL.h> // MAC
 
 #include <stdbool.h>
-#include <SDL_mixer.h>
-
 
 typedef struct{
     int x;
@@ -70,19 +68,6 @@ typedef struct
     SDL_Texture* texture;
     textureID_t id;
 } Sprite;
-typedef enum
-{
-    SOUND_INGAME,
-    SOUND_GUN,
-    SOUND_RELOAD
-} soundID_t;
-typedef struct
-{
-    //Mix_Music *Music;
-    Mix_Music* Music;
-    Mix_Chunk* soundEffect;
-    soundID_t name;
-} Sound;
 
 typedef struct{
     Uint8 red;
