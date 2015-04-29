@@ -98,4 +98,27 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 
         RemoveObjectFromScene(scene, c1_index);
     }
+
+    else if(collider1->objectType == OBJECT_PLAYER && collider2->objectType == OBJECT_NPC)
+    {
+        if (collider2->ai.atkTimer == 0)
+        {
+            //Attack player
+            //
+            collider1->p_stats.health -= collider2->ai.damage;
+            //Set timer
+            //
+            collider2->ai.atkTimer = (int)(collider2->ai.atkCd * 60.0f);
+            printf("ai.atkTimer = %d\n", collider2->ai.atkTimer);
+            if(collider1->p_stats.health <= 0)
+            {
+                printf("Player died!\n");
+                collider1->rect.x = 0;
+                collider1->rect.y = 0;
+                collider1->p_stats.health = 100;
+                collider2->ai.target = NULL;
+            }
+            printf("Player health is now: %d\n",collider1->p_stats.health);
+        }
+    }
 }

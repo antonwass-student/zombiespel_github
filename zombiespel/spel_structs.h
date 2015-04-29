@@ -6,6 +6,15 @@
 
 #include <stdbool.h>
 
+typedef enum{
+    NET_CHAT_MSG = 0,
+    NET_OBJECT_POS,
+    NET_PLAYER_MOVE,
+    NET_PLAYER_SHOOT,
+    NET_OBJECT_NEW,
+    NET_OBJECT_REMOVE
+} NetMessages_T;
+
 typedef struct{
     int x;
     int y;
@@ -106,11 +115,14 @@ typedef struct{
     int speed;
     int damage;
     int detectRange;
+    float atkCd;
+    int atkTimer;
     SDL_Rect* target;
 }AI;
 
 typedef struct{
     char* name;
+    int objectID;
     bool solid;
 
     bool drawText;

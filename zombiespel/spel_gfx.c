@@ -53,13 +53,13 @@ GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textCol
 void loadSprites()
 {
     sprites[0].id = TXT_PLAYER;
-    sprites[0].texture = loadTexture("textures/gubbe5.png");
+    sprites[0].texture = loadTexture("textures/gubbe4.png");
 
     sprites[1].id = TXT_WALL;
     sprites[1].texture = loadTexture("textures/wall.png");
 
     sprites[2].id = TXT_ZOMBIE;
-    sprites[2].texture = loadTexture("textures/gubbe3.png");
+    sprites[2].texture = loadTexture("textures/zombie1.png");
 
     sprites[3].id = TXT_BULLET;
     sprites[3].texture = loadTexture("textures/bullet.png");

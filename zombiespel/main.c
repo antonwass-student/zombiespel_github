@@ -15,6 +15,10 @@
 #include "spel_physics.h"
 #include "spel_AI.h"
 #include "spel_network.h"
+
+
+
+
 int main(int argc, char *argv[])
 {
     //char buffer[512];
@@ -31,6 +35,10 @@ int main(int argc, char *argv[])
     long frames = 0;
     int deltaTime = 0;
 
+    char netMsg[512];
+    int netMsgSize = 0;
+    int netMsgIndex = 0;
+
     level.objectCount = 0;
     level.sceneName = SCENE_LEVEL;
     meny.objectCount=0;
@@ -43,8 +51,12 @@ int main(int argc, char *argv[])
 
     graphics_start(); // kalla en gång
 
-    printf("Starting connection to server..\n");
+    // ***Test***
+    Converter_Int32ToBytes(netMsg, &netMsgSize, 1337);
+    printf("TEST: %d\n", Converter_BytesToInt32(netMsg, &netMsgIndex));
+    // ************
 
+    //printf("Starting connection to server..\n");
     //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
 
     /*
@@ -54,11 +66,11 @@ int main(int argc, char *argv[])
     newObject = createObject(&meny, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
     newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 1024, 800, TXT_PLAYGROUND, false);
 
-    player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 56, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 100, 13, 20, CLASS_SOLDIER);
+    player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 128, TXT_PLAYER, true);
+    SetPlayerStats(&level.objects[player], 100, 13, 4, CLASS_SOLDIER);
 
-    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 0, 0, 128, 128, TXT_ZOMBIE, false);
-    SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 100, 10, 100);
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 0, 0, 118, 65, TXT_ZOMBIE, false);
+    SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
     SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, white);
@@ -69,14 +81,21 @@ int main(int argc, char *argv[])
     newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 100, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, white);
 
-    printf("All objects was created successfully!\n");
-
     // Game loop
     while(!quit)
     {
         timeStamp = SDL_GetTicks();
 
-        // ******** INPUTS ***********
+        // ***** NETWORK MESSAGES *****
+
+        while(recvPool.Size > 0)
+        {
+            ReadPool(recvPool, netMsg);
+            ProcessMessage(netMsg, activeScene);
+        }
+
+
+        // ******** INPUTS ************
         while(SDL_PollEvent(&e) != 0)
         {
             if(e.type == SDL_QUIT)
@@ -154,7 +173,7 @@ int main(int argc, char *argv[])
                 if(e.button.button == SDL_BUTTON_LEFT){
                     //Vänsterklick
 
-                    for(int i = 0; i < activeScene->objectCount; i++)
+                    for(int i = 0; i < activeScene->objectCount; i++) //Kollar efter alla knappar i den aktiva scenen.
                     {
                         //behövs denna bool changedScene = false;
                         if(activeScene->objects[i].objectType == OBJECT_BUTTON)
@@ -217,7 +236,7 @@ int main(int argc, char *argv[])
             int x = 0,y = 0;
 
             if(activeScene->objects[i].objectType == OBJECT_BULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
-            {GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor);
+            {
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 MoveObject(&activeScene->objects[i],activeScene, x,y, i);

@@ -10,6 +10,11 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
 {
     int dx, dy;
 
+    if(zombie->ai.atkTimer > 0)
+    {
+        zombie->ai.atkTimer--;
+    }
+
     if(zombie->ai.target == NULL)
     {
         zombie->ai.target = FindPlayer(scene, zombie,zombie->ai.detectRange);

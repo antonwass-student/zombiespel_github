@@ -86,7 +86,7 @@ GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool activ
     return button;
 }
 
-GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health )
+GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health, float attackCooldown)
 {
     object->ai.speed = speed;
     object->ai.detectRange = range;
@@ -94,6 +94,8 @@ GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int da
     object->ai.health = health;
     object->ai.ai = aiType;
     object->ai.target = NULL;
+    object->ai.atkCd = attackCooldown;
+    object->ai.atkTimer = 0;
 
     return object;
 }

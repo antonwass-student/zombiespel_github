@@ -56,6 +56,69 @@ TCPsocket net_start(int *argc, char **argv){
     return sd;
 }
 
+int ProcessMessage(char data[], Scene* scene)
+{
+    switch((NetMessages_T)data[0])
+    {
+        case NET_CHAT_MSG:
+            printf("Chat message was received\n");
+            break;
+        case NET_OBJECT_POS:
+            printf("Object position was received\n");
+            Net_ChangeObjectPos(data, scene);
+            break;
+        default:
+            printf("Could not identify header.\n");
+            break;
+    }
+    return 0;
+}
+
+int Converter_BytesToInt32(char data[], int* index){
+
+    int value;
+
+    value = ((int)data[*index] << 24) + ((int)data[*index + 1] << 16)
+        + ((int)data[*index + 2] << 8) + ((int)data[*index + 3]);
+
+    *index += 4;
+
+    return value;
+}
+
+int Converter_Int32ToBytes(char data[], int* size, int value)
+{
+    data[*size] = value >> 24;
+    data[*size + 1] = value >> 16;
+    data[*size + 2] = value >> 8;
+    data[*size + 3] = value;
+    *size += 4;
+
+    return 0;
+}
+
+int Net_ChangeObjectPos(char data[], Scene* scene)
+{
+    int readingIndex = 1;
+    int objectId, x, y;
+
+    objectId = Converter_BytesToInt32(data, &readingIndex);
+    x = Converter_BytesToInt32(data, &readingIndex);
+    y = Converter_BytesToInt32(data, &readingIndex);
+
+    for(int i = 0; i < scene->objectCount; i++)
+    {
+        if(scene->objects[i].objectID == objectId)
+        {
+            scene->objects[i].rect.x = x;
+            scene->objects[i].rect.y = y;
+            return 1;
+        }
+    }
+
+    printf("Object with id: %d was not found.\n", objectId);
+}
+
 int SendThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
@@ -63,12 +126,10 @@ int SendThread(void* ptr)
 
     while(1)
     {
-        while(sendPool.Size <= 0)
-        {
-
-        }
+        while(sendPool.Size <= 0){};
         while(sendPool.Size > 0)
         {
+            printf("Size changed. Reading pool\n");
             ReadPool(sendPool, buffer);
             SDLNet_TCP_Send(sd, buffer, 512);
         }
@@ -83,6 +144,7 @@ int RecvThread(void* ptr)
     char msg[512];
     while(SDLNet_TCP_Recv(sd, msg, 512))
     {
+        AddToPool(recvPool, msg);
         printf("%s\n",msg);
     }
 
