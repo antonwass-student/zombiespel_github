@@ -5,6 +5,8 @@
 //#include <SDL2/SDL.h> // MAC
 
 #include <stdbool.h>
+#include <SDL_mixer.h>
+
 
 typedef enum{
     NET_CHAT_MSG = 0,
@@ -57,7 +59,8 @@ typedef enum{
     BUTTON_QUIT,
     BUTTON_GOTO_MENU,
     BUTTON_GOTO_OPTIONS,
-    BUTTON_GOTO_LOBBY
+    BUTTON_GOTO_LOBBY,
+    BUTTON_TOGGLE_MUSIC
 } ButtonAction_T;
 
 
@@ -83,6 +86,19 @@ typedef struct
     SDL_Texture* texture;
     textureID_t id;
 } Sprite;
+typedef enum
+{
+    SOUND_ODE_TO_DUB_STEP,
+    SOUND_GUN,
+    SOUND_RELOAD
+} soundID_t;
+typedef struct
+{
+    //Mix_Music *Music;
+    Mix_Music* Music;
+    Mix_Chunk* soundEffect;
+    soundID_t name;
+} Sound;
 
 typedef struct{
     Uint8 red;
