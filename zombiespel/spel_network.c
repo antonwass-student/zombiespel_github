@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL_net.h>
-#include <SDL.h>
-#include <SDL_thread.h>
 #include "spel_structs.h"
-int SendThread();
-int RecvThread();
 
-//Global array
+#include <SDL_net.h>
+#include <SDL.h>//windows*/
+
+/*#include <SDL2/SDL.h>
+#include <SDL2_net/SDL_net.h>*///mac
+
 threadCom sendPool;
 threadCom recvPool;
 
@@ -41,17 +41,10 @@ TCPsocket net_start(int *argc, char **argv){
         fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-    printf("Connection established!\n");
+    printf("Connection stablished!\n");
 
-    sendPool.mtx = SDL_CreateMutex();
-    recvPool.mtx = SDL_CreateMutex();
     sendPool.Size = 0;
     recvPool.Size = 0;
-
-    //SDL_CreateThread(SendThread, "Sending thread", (void *)sd);
-    //SDL_CreateThread(RecvThread, "Receiving thread", (void *)sd);
-
-    AddToPool(sendPool, "hej");
 
     return sd;
 }
@@ -178,6 +171,3 @@ int ReadPool(threadCom* pool, char* msg)
 
     return 1;
 }
-
-
-

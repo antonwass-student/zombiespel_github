@@ -8,6 +8,5 @@ SDL_Texture* loadTexture(char* path);
 void graphics_start();
 void graphics_render(Scene level, GameObject* relative);
 void graphics_stop();
-GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor);
 
 #endif // SPEL_GFX_H_INCLUDED

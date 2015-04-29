@@ -171,9 +171,6 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
 
                 if(level.objects[i].drawText) //Ritar ut text
                 {
-
-                    // MINNESLÄCKA!!!! Måste fixas för att få texter tillbaka.
-
                     SDL_RenderCopy(gRenderer, level.objects[i].textTexture, NULL, &newRect);
                 }
 
@@ -202,3 +199,4 @@ void graphics_stop()
 
     SDL_Quit();
 }
+

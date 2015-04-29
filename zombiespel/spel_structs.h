@@ -124,12 +124,10 @@ typedef struct{
     char* name;
     int objectID;
     bool solid;
-
     bool drawText;
     char text[100];
-    SDL_Color textColor;
     SDL_Texture* textTexture;
-
+    SDL_Color textColor;
     ObjectType_T objectType;
     textureID_t id;
     SDL_Rect rect;
@@ -159,8 +157,6 @@ typedef struct{
     char pool [128][512];
     int Size;
 } threadCom;
-
-
 
 
 #endif // SPEL_STRUCTS_H_INCLUDED
