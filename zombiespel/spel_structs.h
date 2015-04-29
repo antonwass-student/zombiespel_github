@@ -40,6 +40,11 @@ typedef enum {
 }SceneName_T;
 
 typedef enum {
+    ANIM_IDLE,
+    ANIM_MOVING
+} AnimState_T;
+
+typedef enum {
     OBJECT_PLAYER,
     OBJECT_NPC,
     OBJECT_ITEM,
@@ -137,13 +142,26 @@ typedef struct{
 }AI;
 
 typedef struct{
+    bool animated;
+    int idleOffset;
+    int idleFrames;
+    int movingOffset;
+    int movingFrames;
+    int currentCycle;
+    float animationSpeed; //Frames per texture
+    int animationTimer;
+} AnimationStruct;
+
+typedef struct{
     char* name;
     int objectID;
     bool solid;
+
     bool drawText;
     char text[100];
     SDL_Texture* textTexture;
     SDL_Color textColor;
+
     ObjectType_T objectType;
     textureID_t id;
     SDL_Rect rect;
@@ -152,11 +170,15 @@ typedef struct{
     SDL_RendererFlip flip;
     ColorRGB color;
 
+    AnimState_T state;
+
     playerStats p_stats;
 
     bulletInfo bulletInfo;
 
     ButtonInfo btnInfo;
+
+    AnimationStruct anim;
 
     AI ai;
 

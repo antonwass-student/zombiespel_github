@@ -17,6 +17,16 @@
 #include "spel_network.h"
 
 
+bool checkIfMoving(PlayerMovement mv)
+{
+    if(mv.down || mv.up || mv.left ||mv.right)
+    {
+        return true;
+    }
+    else
+        return false;
+}
+
 int main(int argc, char *argv[])
 {
     //char buffer[512];
@@ -79,6 +89,7 @@ int main(int argc, char *argv[])
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 128, TXT_PLAYER, true);
     SetPlayerStats(&level.objects[player], 100, 13, 4, CLASS_SOLDIER);
+    SetAnimation(&level.objects[player],10,0,1,128,2);
 
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 0, 0, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
@@ -252,6 +263,16 @@ int main(int argc, char *argv[])
         for(int i = 0; i < activeScene->objectCount; i++)
         {
             int x = 0,y = 0;
+
+            if(activeScene->objects[i].anim.animated)
+            {
+                if(checkIfMoving(moving))
+                    activeScene->objects[i].state = ANIM_MOVING;
+                else
+                    activeScene->objects[i].state = ANIM_IDLE;
+
+                CalcAnimation(&activeScene->objects[i]);
+            }
 
             if(activeScene->objects[i].objectType == OBJECT_BULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
             {
