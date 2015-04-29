@@ -52,14 +52,17 @@ typedef enum {
     OBJECT_BUTTON,
     OBJECT_BACKGROUND,
     OBJECT_GAME_BACKGROUND,
-    OBJECT_UI
+    OBJECT_UI,
+    OBJECT_EMPTY
 } ObjectType_T;
+
 typedef enum{
     ITEM_MEDKIT,
     ITEM_AMMO
 } ItemType_T;
+
 typedef struct{
-    ItemType_T Item;
+    ItemType_T itemType;
     int amount;
 } ItemInfo;
 
@@ -101,6 +104,7 @@ typedef enum
     SOUND_RELOAD,
     SOUND_NPC_HIT
 } soundID_t;
+
 typedef struct
 {
     //Mix_Music *Music;
@@ -201,7 +205,7 @@ typedef struct{
 typedef struct{
     SceneName_T sceneName;
     GameObject objects[128];
-    int objectCount;
+    int objectLimit;
 } Scene;
 
 typedef struct{

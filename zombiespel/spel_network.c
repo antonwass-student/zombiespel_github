@@ -99,7 +99,7 @@ int Net_ChangeObjectPos(char data[], Scene* scene)
     x = Converter_BytesToInt32(data, &readingIndex);
     y = Converter_BytesToInt32(data, &readingIndex);
 
-    for(int i = 0; i < scene->objectCount; i++)
+    for(int i = 0; i < scene->objectLimit; i++)
     {
         if(scene->objects[i].objectID == objectId)
         {

@@ -83,12 +83,17 @@ int main(int argc, char *argv[])
     int netMsgSize = 0;
     int netMsgIndex = 0;
 
+    SceneInit(&level);
+    SceneInit(&meny);
+    SceneInit(&options);
+
+    /*
     level.objectCount = 0;
     level.sceneName = SCENE_LEVEL;
     meny.objectCount=0;
     meny.sceneName = SCENE_MENU;
     options.objectCount = 0;
-    options.sceneName = SCENE_OPTIONS;
+    options.sceneName = SCENE_OPTIONS;*/
 
     activeScene = &level;
     nextScene = &level;
@@ -243,7 +248,7 @@ int main(int argc, char *argv[])
                 if(e.button.button == SDL_BUTTON_LEFT){
                     //Vänsterklick
 
-                    for(int i = 0; i < activeScene->objectCount; i++) //Kollar efter alla knappar i den aktiva scenen.
+                    for(int i = 0; i < activeScene->objectLimit; i++) //Kollar efter alla knappar i den aktiva scenen.
                     {
                         //behövs denna bool changedScene = false;
                         if(activeScene->objects[i].objectType == OBJECT_BUTTON)
@@ -304,8 +309,11 @@ int main(int argc, char *argv[])
             MoveObject(&level.objects[player], activeScene, x, y, player);
         }
 
-        for(int i = 0; i < activeScene->objectCount; i++)
+        for(int i = 0; i < 100; i++)
         {
+            if(activeScene->objects[i].objectType == OBJECT_EMPTY)
+                continue;
+
             int x = 0,y = 0;
 
             if(activeScene->objects[i].anim.animated)
@@ -326,6 +334,7 @@ int main(int argc, char *argv[])
                 activeScene->objects[i].bulletInfo.timetolive--;
                 if(activeScene->objects[i].bulletInfo.timetolive <= 0)
                 {
+                    printf("Removing bullet...\n");
                     RemoveObjectFromScene(activeScene, i);
                 }
             }

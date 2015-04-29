@@ -1,21 +1,24 @@
 # depslib dependency file v1.0
-1429879495 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\main.c
+1430324319 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\main.c
 	<SDL.h>
+	<SDL_net.h>
+	<SDL2_net/SDL_net.h>
+	<math.h>
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
 	"spel_gfx.h"
 	"spel_structs.h"
 	"spel_gameobject.h"
-	<math.h>
 	"spel_actions.h"
 	"spel_physics.h"
 	"spel_AI.h"
+	"spel_network.h"
 
-1429874006 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gfx.h
+1430302774 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gfx.h
 	"spel_gameobject.h"
 
-1429879976 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gfx.c
+1430324402 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gfx.c
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
@@ -346,38 +349,78 @@
 	"begin_code.h"
 	"close_code.h"
 
-1429881092 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_structs.h
+1430324272 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_structs.h
 	<SDL.h>
 	<stdbool.h>
+	<SDL_mixer.h>
 
-1429877091 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gameobject.h
+1430305547 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gameobject.h
 	"spel_structs.h"
 
-1429879534 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gameobject.c
+1430324391 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_gameobject.c
 	"spel_structs.h"
 	<strings.h>
 
-1429878046 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_actions.c
+1430320412 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_actions.c
 	"spel_gameobject.h"
 
-1429878939 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_actions.h
+1430319947 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_actions.h
 
-1429875351 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_physics.h
+1430302774 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_physics.h
 
-1429879322 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_physics.c
+1430324424 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_physics.c
 	"spel_gameobject.h"
+	"spel_physics.h"
 
 1376160143 c:\dev\sdl2_ttf\include\sdl2\sdl_ttf.h
 	"SDL.h"
 	"begin_code.h"
 	"close_code.h"
 
-1429873597 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_ai.c
-	<math.h>
+1430324336 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_ai.c
 	<SDL.h>
+	<math.h>
 	"spel_structs.h"
 	"spel_gameobject.h"
 	"spel_AI.h"
 
 1429871758 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_ai.h
+
+1376160025 c:\dev\sdl2_mixer\include\sdl2\sdl_mixer.h
+	"SDL_stdinc.h"
+	"SDL_rwops.h"
+	"SDL_audio.h"
+	"SDL_endian.h"
+	"SDL_version.h"
+	"begin_code.h"
+	"close_code.h"
+
+1430324418 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_network.c
+	<stdio.h>
+	<stdlib.h>
+	"spel_structs.h"
+	<SDL_net.h>
+	<SDL.h>
+	<SDL2_net/SDL_net.h>
+
+1376160103 c:\dev\sdl2_net\include\sdl2\sdl_net.h
+	<stdint.h>
+	"SDL.h"
+	"SDL_endian.h"
+	"SDL_version.h"
+	"begin_code.h"
+	"close_code.h"
+
+1430303292 c:\users\anton\dropbox\kth\zombiespel\zombiespel\spel_network.h
+	"spel_structs.h"
+
+1430321790 source:c:\users\anton\dropbox\kth\zombiespel\zombiespel\music.c
+	<SDL.h>
+	"spel_structs.h"
+	<SDL_mixer.h>
+	"music.h"
+	<stdbool.h>
+	"spel_gameobject.h"
+
+1430320202 c:\users\anton\dropbox\kth\zombiespel\zombiespel\music.h
 

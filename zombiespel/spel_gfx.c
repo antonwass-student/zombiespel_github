@@ -208,8 +208,10 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
     SDL_Surface* surface;
     SDL_Texture* textTexture;
 
-    for(int i = 0; i < level.objectCount; i++) // Denna loop går igenom alla GameObjects i scenen som skickats med
+    for(int i = 0; i < level.objectLimit; i++) // Denna loop går igenom alla GameObjects i scenen som skickats med
     {
+        if(level.objects[i].objectType == OBJECT_EMPTY)
+            continue;
         for(int j = 0; j < spritesCount; j++) //Denna loop letar reda på rätt textur i sprite arrayen
         {
             if(sprites[j].id == level.objects[i].id)

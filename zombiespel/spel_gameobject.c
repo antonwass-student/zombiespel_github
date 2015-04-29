@@ -29,10 +29,19 @@ int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y
     return addObjectToScene(scene, temp);
 }
 
-int addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett GameObject i listan med GameObjects.
+int SceneInit(Scene* scene)
+{
+    scene->objectLimit = 100;
+    for(int i = 0; i < 100; i++)
+    {
+        scene->objects[i].objectType = OBJECT_EMPTY;
+    }
+}
+
+/*int addObjectToScene2(Scene* level, GameObject newObject) //Lägger in ett GameObject i listan med GameObjects.
 {
     printf("Adding object: %s to the scene.\n", newObject.name);
-    if(level->objectCount < 100)
+    if(level->objectLimit < 100)
     {
         level->objects[level->objectCount] = newObject;
         printf("%s was created.\n",level->objects[level->objectCount].name);
@@ -46,8 +55,28 @@ int addObjectToScene(Scene* level, GameObject newObject) //Lägger in ett GameObj
         printf("Object limit reached\n");
         return -1;
     }
+}*/
+
+int addObjectToScene(Scene* level, GameObject newObject)
+{
+    printf("Searching\n");
+
+    for(int i = 0; i < 100; i++)
+    {
+        if(level->objects[i].objectType == OBJECT_EMPTY)
+        {
+            level->objects[i] = newObject;
+            //level->objectCount++;
+            return i;
+        }
+
+    }
+
+    printf("GameObject limit reached!\n");
+    return -1;
 }
-bool RemoveObjectFromScene(Scene *scene, int index)
+
+/*bool RemoveObjectFromScene2(Scene *scene, int index)
 {
     printf("Removing object %s from scene\n", scene->objects[index].name);
     for(int i = index; i < scene->objectCount - 1; i++)
@@ -56,6 +85,12 @@ bool RemoveObjectFromScene(Scene *scene, int index)
     }
     scene->objectCount--;
     return NULL;
+}*/
+
+bool RemoveObjectFromScene(Scene *scene, int index)
+{
+    scene->objects[index].objectType = OBJECT_EMPTY;
+    //scene->objectCount--;
 }
 
 GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
@@ -112,4 +147,10 @@ GameObject* SetAnimation(GameObject* object, float animSpeed, int idleOffset, in
     object->anim.animationTimer = animSpeed;
 
     object->state = ANIM_MOVING;
+}
+
+GameObject* SetItemInfo(GameObject* object, ItemType_T type, int amount)
+{
+    object->itemInfo.itemType = type;
+    object->itemInfo.amount = amount;
 }
