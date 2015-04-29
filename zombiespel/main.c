@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     bool quit = false;
     SDL_Event e;
     Scene *activeScene, *nextScene;
-    Scene level, meny, options;
+    Scene level, meny, options, pause;
     int player, newObject;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
@@ -86,6 +86,13 @@ int main(int argc, char *argv[])
     newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 130, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, black);
 
+    newObject = createObject(&meny, OBJECT_BUTTON, "Go to level", 100, 230, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Level", TXT_BUTTON, false);
+
+    newObject = createObject(&meny, OBJECT_BUTTON, "Quit game", 100, 330, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_QUIT, true), "QUIT", TXT_BUTTON, false);
+
+
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 128, TXT_PLAYER, true);
     SetPlayerStats(&level.objects[player], 100, 13, 4, CLASS_SOLDIER);
@@ -97,13 +104,14 @@ int main(int argc, char *argv[])
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
     SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black);
 
-
     //OPTINS
     newObject = createObject(&options, OBJECT_BUTTON, "Toggle music", 100, 100, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[newObject], BUTTON_TOGGLE_MUSIC, true), "Toggle music", true, black);
 
     newObject = createObject(&options, OBJECT_BUTTON, "Go to menu", 650, 650, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[newObject], BUTTON_GOTO_MENU, true), "Back", true, black);
+
+
 
 
     // Game loop

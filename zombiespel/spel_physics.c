@@ -92,6 +92,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
     {
         printf("Bullet collided with NPC\n");
         collider2->ai.health -= collider1->bulletInfo.damage;
+        play_sound(SOUND_NPC_HIT);
 
         if(collider2->ai.health <= 0)
             RemoveObjectFromScene(scene, c2_index);
@@ -121,4 +122,9 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
             printf("Player health is now: %d\n",collider1->p_stats.health);
         }
     }
+    else if(collider1->objectType == OBJECT_PLAYER && collider2->objectType == OBJECT_ITEM) //player med item
+    {
+        RemoveObjectFromScene(scene, c2_index);
+    }
+
 }
