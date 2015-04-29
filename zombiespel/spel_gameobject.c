@@ -3,6 +3,7 @@
 
 int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
+    SDL_Color white = {255,255,255};
     GameObject temp;
     temp.solid = solid;
     temp.objectType = objectType;
@@ -20,10 +21,7 @@ int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y
 
     temp.drawText = false;
 
-    temp.color.red = 255;
-    temp.color.green = 255;
-    temp.color.blue = 255;
-    temp.color.alpha = 255;
+    temp.drawColor = white;
 
     temp.anim.animated = false;
 

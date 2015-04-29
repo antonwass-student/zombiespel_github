@@ -16,6 +16,8 @@
 #include "spel_AI.h"
 #include "spel_network.h"
 
+GameObject* gUI_Health = NULL;
+GameObject* gUI_Ammo = NULL;
 
 bool checkIfMoving(PlayerMovement mv)
 {
@@ -27,8 +29,38 @@ bool checkIfMoving(PlayerMovement mv)
         return false;
 }
 
+void UI_HealthChanged(int health)
+{
+    printf("Changing health\n");
+    ChangeTextInt(gUI_Health, "Health: ", health);
+}
 
+void UI_AmmoChanged(int ammo)
+{
 
+    ChangeTextInt(gUI_Ammo, "Ammo: ", ammo);
+}
+
+void CreateUI(Scene *scene, int player)
+{
+    int newObject;
+    char str[15];
+    SDL_Color red = {255,0,0};
+    SDL_Color black = {0,0,0};
+    SDL_Color white = {255,255,255};
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 720, 200, 80, TXT_BUTTON, false);
+    gUI_Health = &scene->objects[newObject];
+    sprintf(str, "HP:%d", scene->objects[player].p_stats.health);
+    SetText(&scene->objects[newObject], str, true, black, 20);
+    scene->objects[newObject].drawColor = red;
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 200,720,200,80, TXT_BUTTON, false);
+    gUI_Ammo = &scene->objects[newObject];
+    sprintf(str, "Ammo:%d", scene->objects[player].p_stats.ammo);
+    SetText(&scene->objects[newObject], str, true, black, 20);
+    scene->objects[newObject].drawColor = white;
+}
 
 int main(int argc, char *argv[])
 {
@@ -78,20 +110,22 @@ int main(int argc, char *argv[])
     newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 1024, 800, TXT_PLAYGROUND, false);
 
     player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 100, 13, 4, CLASS_SOLDIER);
+    SetPlayerStats(&level.objects[player], 110, 13, 4, CLASS_SOLDIER);
     SetAnimation(&level.objects[player],10,0,1,128,2);
+
+    CreateUI(activeScene, player);
 
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 0, 0, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
-    SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, white);
+    SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, white, 5);
 
     newObject = createObject(&meny, OBJECT_BUTTON, "go to game", 0,0,100, 40, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Spela", true, white);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Spela", true, white, 5);
 
     newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 100, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, white);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, white, 20);
 
     // Game loop
     while(!quit)
@@ -133,7 +167,7 @@ int main(int argc, char *argv[])
                             moving.left = true;
                             break;
                         case SDLK_r:
-                            level.objects[player].p_stats.ammo = 13;
+                            reload(activeScene, player);
                             break;
                         case SDLK_e:
                             //USE

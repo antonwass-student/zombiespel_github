@@ -38,17 +38,42 @@ void SetFont()
     }
 }
 
-GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor)
+GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor, int padding)
 {
     strcpy(object->text, text);
     object->drawText = draw;
     object->textColor = textColor;
+    object->textPadding = padding;
     SDL_Surface* srf;
     srf = TTF_RenderText_Solid(gFont, text, textColor);
     object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
 
     return object;
 }
+
+GameObject* ChangeTextStr(GameObject* object, char* text)
+{
+    strcpy(object->text, text);
+    SDL_Surface* srf;
+    srf = TTF_RenderText_Solid(gFont, text, object->textColor);
+    SDL_DestroyTexture(object->textTexture);
+    object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
+
+    return object;
+}
+GameObject* ChangeTextInt(GameObject* object, char* text, int value)
+{
+    char str[15];
+
+    sprintf(str, "%s%d", text, value);
+    strcpy(object->text, str);    SDL_Surface* srf;
+    srf = TTF_RenderText_Solid(gFont, str, object->textColor);
+    object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
+    printf("New text is:%s\n",object->text);
+
+    return object;
+}
+
 
 void loadSprites()
 {
@@ -198,16 +223,13 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
                     srcRect.h = 128;
                 }
 
-
-
-
-                if(level.objects[i].objectType != OBJECT_BUTTON && level.objects[i].objectType != OBJECT_BACKGROUND) //Räknar ut den relativa positionen för objekten (ej knappar, UI)
+                if(level.objects[i].objectType != OBJECT_BUTTON && level.objects[i].objectType != OBJECT_BACKGROUND && level.objects[i].objectType != OBJECT_UI) //Räknar ut den relativa positionen för objekten (ej knappar, UI)
                 {
                     newRect.x = newRect.x - relative->rect.x + SCREEN_WIDTH/2 - relative->rect.w/2;
                     newRect.y = newRect.y - relative->rect.y + SCREEN_HEIGHT/2 - relative->rect.h/2;
                 }
 
-                SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].color.red, level.objects[i].color.green, level.objects[i].color.blue);
+                SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].drawColor.r, level.objects[i].drawColor.g, level.objects[i].drawColor.b);
 
                 if(level.objects[i].anim.animated)
                 {
@@ -220,6 +242,11 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
 
                 if(level.objects[i].drawText) //Ritar ut text
                 {
+                    //Textpadding
+                    newRect.x += level.objects[i].textPadding;
+                    newRect.y += level.objects[i].textPadding;
+                    newRect.h -= level.objects[i].textPadding * 2;
+                    newRect.w -= level.objects[i].textPadding * 2;
                     SDL_RenderCopy(gRenderer, level.objects[i].textTexture, NULL, &newRect);
                 }
 

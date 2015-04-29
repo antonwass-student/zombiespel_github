@@ -118,7 +118,8 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
                 collider1->p_stats.health = 100;
                 collider2->ai.target = NULL;
             }
-            printf("Player health is now: %d\n",collider1->p_stats.health);
+            printf("Player health is now: %d\n", collider1->p_stats.health);
+            UI_HealthChanged(collider1->p_stats.health);
         }
     }
 }
