@@ -51,7 +51,8 @@ typedef enum {
     OBJECT_BULLET,
     OBJECT_BUTTON,
     OBJECT_BACKGROUND,
-    OBJECT_GAME_BACKGROUND
+    OBJECT_GAME_BACKGROUND,
+    OBJECT_UI
 } ObjectType_T;
 typedef enum{
     ITEM_MEDKIT,
@@ -170,6 +171,7 @@ typedef struct{
     char text[100];
     SDL_Texture* textTexture;
     SDL_Color textColor;
+    int textPadding;
 
     ObjectType_T objectType;
     textureID_t id;
@@ -178,7 +180,7 @@ typedef struct{
     double rotation;
     SDL_Point* center;
     SDL_RendererFlip flip;
-    ColorRGB color;
+    SDL_Color drawColor;
 
     AnimState_T state;
 
