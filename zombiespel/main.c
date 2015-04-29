@@ -17,8 +17,6 @@
 #include "spel_network.h"
 
 
-
-
 int main(int argc, char *argv[])
 {
     //char buffer[512];
@@ -30,7 +28,8 @@ int main(int argc, char *argv[])
     int player, newObject;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
-    SDL_Color white = {0,0,0};
+    SDL_Color black = {0,0,0};
+    SDL_Color white = {255,255,255};
     int timeStamp = 0;
     long frames = 0;
     int deltaTime = 0;
@@ -43,6 +42,8 @@ int main(int argc, char *argv[])
     level.sceneName = SCENE_LEVEL;
     meny.objectCount=0;
     meny.sceneName = SCENE_MENU;
+    options.objectCount = 0;
+    options.sceneName = SCENE_OPTIONS;
 
     activeScene = &level;
     nextScene = &level;
@@ -50,6 +51,7 @@ int main(int argc, char *argv[])
     printf("Starting graphics engine..\n");
 
     graphics_start(); // kalla en gång
+    music_init();
 
     // ***Test***
     Converter_Int32ToBytes(netMsg, &netMsgSize, 1337);
@@ -63,9 +65,18 @@ int main(int argc, char *argv[])
      * Skapar objekt
      */
 
+
+    //MENY
     newObject = createObject(&meny, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
     newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 1024, 800, TXT_PLAYGROUND, false);
 
+    newObject = createObject(&meny, OBJECT_BUTTON, "go to game", 0,0,100, 40, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Spela", true, black);
+
+    newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 130, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, black);
+
+    //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 128, TXT_PLAYER, true);
     SetPlayerStats(&level.objects[player], 100, 13, 4, CLASS_SOLDIER);
 
@@ -73,13 +84,16 @@ int main(int argc, char *argv[])
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
-    SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, white);
+    SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black);
 
-    newObject = createObject(&meny, OBJECT_BUTTON, "go to game", 0,0,100, 40, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Spela", true, white);
 
-    newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 100, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, white);
+    //OPTINS
+    newObject = createObject(&options, OBJECT_BUTTON, "Toggle music", 100, 100, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&options.objects[newObject], BUTTON_TOGGLE_MUSIC, true), "Toggle music", true, black);
+
+    newObject = createObject(&options, OBJECT_BUTTON, "Go to menu", 650, 650, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&options.objects[newObject], BUTTON_GOTO_MENU, true), "Back", true, black);
+
 
     // Game loop
     while(!quit)
@@ -122,6 +136,7 @@ int main(int argc, char *argv[])
                             break;
                         case SDLK_r:
                             level.objects[player].p_stats.ammo = 13;
+                            play_sound(SOUND_RELOAD);
                             break;
                         case SDLK_e:
                             //USE
@@ -195,6 +210,9 @@ int main(int argc, char *argv[])
                                             break;
                                         case BUTTON_QUIT:
                                             quit = true;
+                                            break;
+                                        case BUTTON_TOGGLE_MUSIC:
+                                            play_sound(SOUND_ODE_TO_DUB_STEP);
                                             break;
                                     }
                                 }
@@ -274,6 +292,7 @@ int main(int argc, char *argv[])
     //SDLNet_Quit();
 
     graphics_stop();
+    music_stop();
 
     return 0;
 }
