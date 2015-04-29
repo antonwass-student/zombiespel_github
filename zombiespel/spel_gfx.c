@@ -53,7 +53,7 @@ GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textCol
 void loadSprites()
 {
     sprites[0].id = TXT_PLAYER;
-    sprites[0].texture = loadTexture("textures/gubbe4.png");
+    sprites[0].texture = loadTexture("textures/man3_anim.png");
 
     sprites[1].id = TXT_WALL;
     sprites[1].texture = loadTexture("textures/wall.png");
@@ -145,10 +145,38 @@ void graphics_start() //
     printf("Graphics initialized successfully!\n");
 }
 
+void CalcAnimation(GameObject* object)
+{
+    if(object->state == ANIM_MOVING)
+    {
+        if(object->anim.animationTimer > 0)
+        {
+            object->anim.animationTimer -= 1;
+        }
+        if (object->anim.animationTimer == 0)
+        {
+            if(object->anim.currentCycle < object->anim.movingFrames)
+            {
+                object->anim.currentCycle++;
+            }
+            else if(object->anim.currentCycle == object->anim.movingFrames)
+            {
+                object->anim.currentCycle = 1;
+            }
+            object->anim.animationTimer = object->anim.animationSpeed;
+        }
+    }
+    else
+    {
+        object->anim.currentCycle = 0;
+    }
+}
+
 void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i objects
 {
     SDL_RenderClear(gRenderer);
     SDL_Rect newRect;
+    SDL_Rect srcRect;
     SDL_Surface* surface;
     SDL_Texture* textTexture;
 
@@ -158,8 +186,21 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
         {
             if(sprites[j].id == level.objects[i].id)
             {
-
                 newRect = level.objects[i].rect;
+                srcRect = level.objects[i].rect;
+
+
+                if(level.objects[i].anim.animated)
+                {
+                    srcRect.x = level.objects[i].anim.currentCycle * level.objects[i].anim.movingOffset;
+                    srcRect.y = 0;
+                    srcRect.w = 128;
+                    srcRect.h = 128;
+                }
+
+
+
+
                 if(level.objects[i].objectType != OBJECT_BUTTON && level.objects[i].objectType != OBJECT_BACKGROUND) //Räknar ut den relativa positionen för objekten (ej knappar, UI)
                 {
                     newRect.x = newRect.x - relative->rect.x + SCREEN_WIDTH/2 - relative->rect.w/2;
@@ -167,7 +208,15 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
                 }
 
                 SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].color.red, level.objects[i].color.green, level.objects[i].color.blue);
-                SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
+
+                if(level.objects[i].anim.animated)
+                {
+                    SDL_RenderCopyEx(gRenderer, sprites[j].texture, &srcRect, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
+                }
+                else
+                {
+                    SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
+                }
 
                 if(level.objects[i].drawText) //Ritar ut text
                 {

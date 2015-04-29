@@ -25,6 +25,8 @@ int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y
     temp.color.blue = 255;
     temp.color.alpha = 255;
 
+    temp.anim.animated = false;
+
 
     return addObjectToScene(scene, temp);
 }
@@ -98,4 +100,18 @@ GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int da
     object->ai.atkTimer = 0;
 
     return object;
+}
+
+GameObject* SetAnimation(GameObject* object, float animSpeed, int idleOffset, int idleFrames, int movingOffset, int movingFrames)
+{
+    object->anim.animated = true;
+    object->anim.idleOffset = idleOffset;
+    object->anim.idleFrames = idleFrames;
+    object->anim.movingOffset = movingOffset;
+    object->anim.movingFrames = movingFrames;
+    object->anim.animationSpeed = animSpeed;
+    object->anim.currentCycle = 1;
+    object->anim.animationTimer = animSpeed;
+
+    object->state = ANIM_MOVING;
 }
