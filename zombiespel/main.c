@@ -16,6 +16,8 @@
 #include "spel_AI.h"
 #include "spel_network.h"
 
+GameObject* gUI_Health = NULL;
+GameObject* gUI_Ammo = NULL;
 
 bool checkIfMoving(PlayerMovement mv)
 {
@@ -27,6 +29,39 @@ bool checkIfMoving(PlayerMovement mv)
         return false;
 }
 
+void UI_HealthChanged(int health)
+{
+    printf("Changing health\n");
+    ChangeTextInt(gUI_Health, "Health: ", health);
+}
+
+void UI_AmmoChanged(int ammo)
+{
+
+    ChangeTextInt(gUI_Ammo, "Ammo: ", ammo);
+}
+
+void CreateUI(Scene *scene, int player)
+{
+    int newObject;
+    char str[15];
+    SDL_Color red = {255,0,0};
+    SDL_Color black = {0,0,0};
+    SDL_Color white = {255,255,255};
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 720, 200, 80, TXT_BUTTON, false);
+    gUI_Health = &scene->objects[newObject];
+    sprintf(str, "HP:%d", scene->objects[player].p_stats.health);
+    SetText(&scene->objects[newObject], str, true, black, 20);
+    scene->objects[newObject].drawColor = red;
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 200,720,200,80, TXT_BUTTON, false);
+    gUI_Ammo = &scene->objects[newObject];
+    sprintf(str, "Ammo:%d", scene->objects[player].p_stats.ammo);
+    SetText(&scene->objects[newObject], str, true, black, 20);
+    scene->objects[newObject].drawColor = white;
+}
+
 int main(int argc, char *argv[])
 {
     //char buffer[512];
@@ -34,7 +69,7 @@ int main(int argc, char *argv[])
     bool quit = false;
     SDL_Event e;
     Scene *activeScene, *nextScene;
-    Scene level, meny, options;
+    Scene level, meny, options, pause;
     int player, newObject;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
@@ -48,12 +83,17 @@ int main(int argc, char *argv[])
     int netMsgSize = 0;
     int netMsgIndex = 0;
 
+    SceneInit(&level);
+    SceneInit(&meny);
+    SceneInit(&options);
+
+    /*
     level.objectCount = 0;
     level.sceneName = SCENE_LEVEL;
     meny.objectCount=0;
     meny.sceneName = SCENE_MENU;
     options.objectCount = 0;
-    options.sceneName = SCENE_OPTIONS;
+    options.sceneName = SCENE_OPTIONS;*/
 
     activeScene = &level;
     nextScene = &level;
@@ -84,26 +124,35 @@ int main(int argc, char *argv[])
     SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Spela", true, black);
 
     newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 130, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, black);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, black, 10);
+
+    newObject = createObject(&meny, OBJECT_BUTTON, "Go to level", 100, 230, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Level", true, black, 10);
+
+    newObject = createObject(&meny, OBJECT_BUTTON, "Quit game", 100, 330, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_QUIT, true), "QUIT", true, black, 10);
+
 
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 100, 13, 4, CLASS_SOLDIER);
+    SetPlayerStats(&level.objects[player], 110, 13, 4, CLASS_SOLDIER);
     SetAnimation(&level.objects[player],10,0,1,128,2);
+
+    CreateUI(activeScene, player);
 
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 0, 0, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
 
+    //Options
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
-    SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black);
+    SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black, 5);
 
-
-    //OPTINS
     newObject = createObject(&options, OBJECT_BUTTON, "Toggle music", 100, 100, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&options.objects[newObject], BUTTON_TOGGLE_MUSIC, true), "Toggle music", true, black);
+    SetText(SetButtonStats(&options.objects[newObject], BUTTON_TOGGLE_MUSIC, true), "Toggle music", true, black, 5);
 
     newObject = createObject(&options, OBJECT_BUTTON, "Go to menu", 650, 650, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&options.objects[newObject], BUTTON_GOTO_MENU, true), "Back", true, black);
+    SetText(SetButtonStats(&options.objects[newObject], BUTTON_GOTO_MENU, true), "Back", true, black, 5);
+
 
 
     // Game loop
@@ -146,7 +195,7 @@ int main(int argc, char *argv[])
                             moving.left = true;
                             break;
                         case SDLK_r:
-                            level.objects[player].p_stats.ammo = 13;
+                            reload(activeScene, player);
                             play_sound(SOUND_RELOAD);
                             break;
                         case SDLK_e:
@@ -199,7 +248,7 @@ int main(int argc, char *argv[])
                 if(e.button.button == SDL_BUTTON_LEFT){
                     //Vänsterklick
 
-                    for(int i = 0; i < activeScene->objectCount; i++) //Kollar efter alla knappar i den aktiva scenen.
+                    for(int i = 0; i < activeScene->objectLimit; i++) //Kollar efter alla knappar i den aktiva scenen.
                     {
                         //behövs denna bool changedScene = false;
                         if(activeScene->objects[i].objectType == OBJECT_BUTTON)
@@ -260,8 +309,11 @@ int main(int argc, char *argv[])
             MoveObject(&level.objects[player], activeScene, x, y, player);
         }
 
-        for(int i = 0; i < activeScene->objectCount; i++)
+        for(int i = 0; i < 100; i++)
         {
+            if(activeScene->objects[i].objectType == OBJECT_EMPTY)
+                continue;
+
             int x = 0,y = 0;
 
             if(activeScene->objects[i].anim.animated)
@@ -282,6 +334,7 @@ int main(int argc, char *argv[])
                 activeScene->objects[i].bulletInfo.timetolive--;
                 if(activeScene->objects[i].bulletInfo.timetolive <= 0)
                 {
+                    printf("Removing bullet...\n");
                     RemoveObjectFromScene(activeScene, i);
                 }
             }

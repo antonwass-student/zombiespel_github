@@ -38,7 +38,7 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
 
 SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range)
 {
-    for(int i = 0; i < scene->objectCount ; i++)
+    for(int i = 0; i < scene->objectLimit ; i++)
     {
         int distance = 10;
 

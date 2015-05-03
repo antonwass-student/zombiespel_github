@@ -37,7 +37,7 @@ typedef enum {
     SCENE_MENU,
     SCENE_OPTIONS,
     SCENE_LOBBY
-}SceneName_T;
+    }SceneName_T;
 
 typedef enum {
     ANIM_IDLE,
@@ -51,8 +51,20 @@ typedef enum {
     OBJECT_BULLET,
     OBJECT_BUTTON,
     OBJECT_BACKGROUND,
-    OBJECT_GAME_BACKGROUND
+    OBJECT_GAME_BACKGROUND,
+    OBJECT_UI,
+    OBJECT_EMPTY
 } ObjectType_T;
+
+typedef enum{
+    ITEM_MEDKIT,
+    ITEM_AMMO
+} ItemType_T;
+
+typedef struct{
+    ItemType_T itemType;
+    int amount;
+} ItemInfo;
 
 typedef enum{
     BUTTON_QUIT,
@@ -76,8 +88,8 @@ typedef enum {
     TXT_BULLET,
     TXT_BUTTON,
     TXT_PLAYGROUND,
-    TXT_MENU_BACKGROUND
-
+    TXT_MENU_BACKGROUND,
+    TXT_MEDKIT
 } textureID_t;
 
 typedef struct
@@ -89,8 +101,10 @@ typedef enum
 {
     SOUND_ODE_TO_DUB_STEP,
     SOUND_GUN,
-    SOUND_RELOAD
+    SOUND_RELOAD,
+    SOUND_NPC_HIT
 } soundID_t;
+
 typedef struct
 {
     //Mix_Music *Music;
@@ -161,14 +175,16 @@ typedef struct{
     char text[100];
     SDL_Texture* textTexture;
     SDL_Color textColor;
+    int textPadding;
 
     ObjectType_T objectType;
     textureID_t id;
+
     SDL_Rect rect;
     double rotation;
     SDL_Point* center;
     SDL_RendererFlip flip;
-    ColorRGB color;
+    SDL_Color drawColor;
 
     AnimState_T state;
 
@@ -182,12 +198,14 @@ typedef struct{
 
     AI ai;
 
+    ItemInfo itemInfo;
+
 } GameObject;
 
 typedef struct{
     SceneName_T sceneName;
     GameObject objects[128];
-    int objectCount;
+    int objectLimit;
 } Scene;
 
 typedef struct{

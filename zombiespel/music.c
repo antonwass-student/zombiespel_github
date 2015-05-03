@@ -47,6 +47,9 @@ void load_music(){
     sound[2].name = SOUND_RELOAD;
     sound[2].soundEffect = Mix_LoadWAV("music/gun_reload.wav");
 
+    sound[3].name = SOUND_NPC_HIT;
+    sound[3].soundEffect = Mix_LoadWAV("music/zombie_hit.wav");
+
 }
 void play_sound(soundID_t id){
     int i;
@@ -79,6 +82,10 @@ void play_sound(soundID_t id){
     if(id == SOUND_RELOAD){
         Mix_PlayChannel( -1, sound[2].soundEffect, 0 );
     }
+    if(id == SOUND_NPC_HIT){
+        Mix_PlayChannel(-1, sound[3].soundEffect, 0);
+    }
+
 
 }
 void music_stop(){
