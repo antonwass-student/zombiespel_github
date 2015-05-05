@@ -78,8 +78,11 @@ int ProcessMessage(char data[], Scene* scene)
             break;
         case 2:
             printf("Object position was received\n");
-            Net_ChangeObjectPos(data, scene);
+            net_ChangeObjectPos(data, scene);
             break;
+        case 5:
+            printf("New object was received\n");
+            net_NewObject(data, scene);
         default:
             printf("Could not identify header.\n");
             break;
@@ -110,30 +113,7 @@ int Converter_Int32ToBytes(char data[], int* size, int value)
     return 0;
 }
 
-int Net_ChangeObjectPos(char data[], Scene* scene)
-{
-    int readingIndex = 1;
-    int objectId, x, y, angle;
 
-    objectId = Converter_BytesToInt32(data, &readingIndex);
-    x = Converter_BytesToInt32(data, &readingIndex);
-    y = Converter_BytesToInt32(data, &readingIndex);
-    angle = Converter_BytesToInt32(data, &readingIndex);
-
-    for(int i = 0; i < scene->objectLimit; i++)
-    {
-        if(scene->objects[i].objectID == objectId)
-        {
-            scene->objects[i].rect.x = x;
-            scene->objects[i].rect.y = y;
-            scene->objects[i].rotation = (double)angle;
-            printf("Object %s's position changed.\n",scene->objects[i].name);
-            return 1;
-        }
-    }
-
-    printf("Object with id: %d was not found.\n", objectId);
-}
 
 int SendThread(void* ptr)
 {

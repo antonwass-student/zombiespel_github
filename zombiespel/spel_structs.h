@@ -17,6 +17,12 @@ typedef enum{
     NET_OBJECT_REMOVE
 } NetMessages_T;
 
+typedef enum{
+    SERVEROBJ_ZOMBIE_NORMAL,
+    SERVEROBJ_WALL,
+    SERVEROBJ_MEDKIT
+}ServerObject_T;
+
 typedef struct{
     int x;
     int y;
