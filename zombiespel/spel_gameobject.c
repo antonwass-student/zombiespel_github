@@ -59,7 +59,6 @@ int SceneInit(Scene* scene)
 
 int addObjectToScene(Scene* level, GameObject newObject)
 {
-    printf("Searching\n");
 
     for(int i = 0; i < 100; i++)
     {

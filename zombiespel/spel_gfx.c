@@ -31,7 +31,7 @@ int spritesCount = 0;
 
 void SetFont()
 {
-    gFont = TTF_OpenFont("fonts/Verdana.ttf", 60);
+    gFont = TTF_OpenFont("fonts/Capture_it.ttf", 24);
     if(gFont == NULL)
     {
         printf("could not load font\n");

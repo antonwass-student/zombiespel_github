@@ -11,9 +11,16 @@
 threadCom sendPool;
 threadCom recvPool;
 
+int RecvThread(void* ptr);
+int SendThread(void* ptr);
+
 TCPsocket net_start(int *argc, char **argv){
     IPaddress ip;		/* Server address */
     TCPsocket sd;
+
+    char buffer[512];
+    int bufferSize = 0;
+    int readIndex = 0;
 
     /* Simple parameter checking */
     if (*argc < 3)
@@ -41,22 +48,35 @@ TCPsocket net_start(int *argc, char **argv){
         fprintf(stderr, "SDLNet_TCP_Open: %s\n", SDLNet_GetError());
         exit(EXIT_FAILURE);
     }
-    printf("Connection stablished!\n");
+    printf("Connection established!\n");
 
     sendPool.Size = 0;
     recvPool.Size = 0;
+
+
+    //Converter_Int32ToBytes(buffer, &bufferSize, 1337);
+    //AddToPool(&sendPool, buffer);
+
+    SDL_Delay(100);
+
+    SDL_CreateThread(SendThread,"Sending thread", (void*)sd);
+    //SDL_Delay(10);
+    SDL_CreateThread(RecvThread,"Listen thread", (void*)sd);
+
+
+    SDL_Delay(100);
 
     return sd;
 }
 
 int ProcessMessage(char data[], Scene* scene)
 {
-    switch((NetMessages_T)data[0])
+    switch(data[0])
     {
         case NET_CHAT_MSG:
             printf("Chat message was received\n");
             break;
-        case NET_OBJECT_POS:
+        case 2:
             printf("Object position was received\n");
             Net_ChangeObjectPos(data, scene);
             break;
@@ -93,11 +113,12 @@ int Converter_Int32ToBytes(char data[], int* size, int value)
 int Net_ChangeObjectPos(char data[], Scene* scene)
 {
     int readingIndex = 1;
-    int objectId, x, y;
+    int objectId, x, y, angle;
 
     objectId = Converter_BytesToInt32(data, &readingIndex);
     x = Converter_BytesToInt32(data, &readingIndex);
     y = Converter_BytesToInt32(data, &readingIndex);
+    angle = Converter_BytesToInt32(data, &readingIndex);
 
     for(int i = 0; i < scene->objectLimit; i++)
     {
@@ -105,6 +126,8 @@ int Net_ChangeObjectPos(char data[], Scene* scene)
         {
             scene->objects[i].rect.x = x;
             scene->objects[i].rect.y = y;
+            scene->objects[i].rotation = (double)angle;
+            printf("Object %s's position changed.\n",scene->objects[i].name);
             return 1;
         }
     }
@@ -116,41 +139,55 @@ int SendThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
     char buffer[512];
+    printf("SendThread started!\n");
+
+    int tempIndex = 0;
 
     while(1)
     {
-        while(sendPool.Size <= 0){};
+        while(sendPool.Size <= 0){
+            SDL_Delay(10);
+        }
         while(sendPool.Size > 0)
         {
             printf("Size changed. Reading pool\n");
-            ReadPool(sendPool, buffer);
+            ReadPool(&sendPool, buffer);
+            printf("Pool read. new size is:%d\n", sendPool.Size);
             SDLNet_TCP_Send(sd, buffer, 512);
+            printf("int: (%d) was sent\n", Converter_BytesToInt32(buffer, &tempIndex));
+            break;
         }
+        printf("Size is 0, waiting...\n");
     }
     return 1;
 }
 
 int RecvThread(void* ptr)
 {
+    printf("RecvThread started\n");
     TCPsocket sd = (TCPsocket)ptr;
+    int temp;
+    int index = 0;
 
     char msg[512];
     while(SDLNet_TCP_Recv(sd, msg, 512))
     {
-        AddToPool(recvPool, msg);
-        printf("%s\n",msg);
+        printf("Received message from server\n");
+        AddToPool(&recvPool, msg);
+        temp = Converter_BytesToInt32(msg, &index);
+        printf("This int was returned: %d\n",temp);
+        printf("Waiting for new message...\n");
+        index = 0;
     }
-
     return 1;
 }
 
 int AddToPool(threadCom* pool, char* msg)
 {
     SDL_LockMutex(pool->mtx);
-    strcpy(pool->pool[pool->Size], msg);
+    memcpy(pool->pool[pool->Size], msg, 512);
     pool->Size++;
     SDL_UnlockMutex(pool->mtx);
-
     return 1;
 }
 
@@ -159,15 +196,16 @@ int ReadPool(threadCom* pool, char* msg)
     SDL_LockMutex(pool->mtx);
     if(pool->Size > 0)
     {
-        strcpy(pool->pool[0], msg);
+        memcpy(msg, pool->pool[0], 512);
 
         for(int i = 0; i < pool->Size - 1; i++)
         {
-            strcpy(pool->pool[i+1],pool->pool[i]);
+            memcpy(pool->pool[i+1], pool->pool[i], 512);
         }
+        pool->Size--;
     }
 
-    SDL_UnlockMutex(pool->mtx);
+    SDL_UnlockMutex(&pool->mtx);
 
     return 1;
 }

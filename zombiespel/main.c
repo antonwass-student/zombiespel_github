@@ -108,8 +108,8 @@ int main(int argc, char *argv[])
     printf("TEST: %d\n", Converter_BytesToInt32(netMsg, &netMsgIndex));
     // ************
 
-    //printf("Starting connection to server..\n");
-    //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
+    printf("Starting connection to server..\n");
+    TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
 
     /*
      * Skapar objekt
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 
     //MENY
     newObject = createObject(&meny, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
-    newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 1024, 800, TXT_PLAYGROUND, false);
+    newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 4000, 6000, TXT_PLAYGROUND, false);
 
     newObject = createObject(&meny, OBJECT_BUTTON, "go to game", 0,0,100, 40, TXT_BUTTON, false);
     SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Spela", true, black);
@@ -140,8 +140,9 @@ int main(int argc, char *argv[])
 
     CreateUI(activeScene, player);
 
-    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 0, 0, 118, 65, TXT_ZOMBIE, false);
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 1000, 1000, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
+    level.objects[newObject].objectID = 25;
 
     //Options
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
@@ -164,7 +165,7 @@ int main(int argc, char *argv[])
 
         while(recvPool.Size > 0)
         {
-            ReadPool(recvPool, netMsg);
+            ReadPool(&recvPool, netMsg);
             ProcessMessage(netMsg, activeScene);
         }
 
@@ -361,9 +362,9 @@ int main(int argc, char *argv[])
         frames++;
     }
 
-    //SDLNet_TCP_Send(sd, "exit",10);
-    //SDLNet_TCP_Close(sd);
-    //SDLNet_Quit();
+    SDLNet_TCP_Send(sd, "exit",10);
+    SDLNet_TCP_Close(sd);
+    SDLNet_Quit();
 
     graphics_stop();
     music_stop();
