@@ -39,7 +39,8 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
     dy -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed;
     dx -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed;
 
-    MoveObject(zombie, scene, dx,dy);
+    if(GetDistance(*zombie->ai.target,zombie->rect) > 10)
+        MoveObject(zombie, scene, dx,dy);
 
 }
 
@@ -62,4 +63,9 @@ SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range)
     }
 
     return NULL;
+}
+
+int GetDistance(SDL_Rect obj1, SDL_Rect obj2)
+{
+    return (int)(sqrt(pow(obj1.x - obj2.x, 2) + pow(obj1.y - obj2.y, 2)));
 }

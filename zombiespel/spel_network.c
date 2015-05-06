@@ -93,6 +93,9 @@ int ProcessMessage(char data[], Scene* scene)
         case 5:
             printf("New object was received\n");
             net_NewObject(data, scene);
+            break;
+        case NET_PLAYER_ID:
+            net_SetPlayerId(data);
         default:
             printf("Could not identify header.\n");
             break;
@@ -100,7 +103,7 @@ int ProcessMessage(char data[], Scene* scene)
     return 0;
 }
 
-int Converter_BytesToInt32(char data[], int* index){
+int Converter_BytesToInt32(char data[], int* index){ // Gör om en byte-array till en int.
 
     int value;
 
@@ -112,7 +115,7 @@ int Converter_BytesToInt32(char data[], int* index){
     return value;
 }
 
-int Converter_Int32ToBytes(char data[], int* size, int value)
+int Converter_Int32ToBytes(char data[], int* size, int value) //Gör om en int till en byte array.
 {
     data[*size] = value >> 24;
     data[*size + 1] = value >> 16;
@@ -123,13 +126,10 @@ int Converter_Int32ToBytes(char data[], int* size, int value)
     return 0;
 }
 
-
-
 int SendThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
     char buffer[512];
-    printf("SendThread started!\n");
 
     int tempIndex = 0;
 
@@ -140,21 +140,16 @@ int SendThread(void* ptr)
         }
         while(sendPool.Size > 0)
         {
-            printf("Size changed. Reading pool\n");
             ReadPool(&sendPool, buffer);
-            printf("Pool read. new size is:%d\n", sendPool.Size);
             SDLNet_TCP_Send(sd, buffer, 512);
-            printf("int: (%d) was sent\n", Converter_BytesToInt32(buffer, &tempIndex));
             break;
         }
-        printf("Size is 0, waiting...\n");
     }
     return 1;
 }
 
-int RecvThread(void* ptr)
+int RecvThread(void* ptr) //Lyssnar efter meddelanden från servern och lägger dem i en stack som main läser av varje update.
 {
-    printf("RecvThread started\n");
     TCPsocket sd = (TCPsocket)ptr;
     int temp;
     int index = 0;
@@ -162,17 +157,14 @@ int RecvThread(void* ptr)
     char msg[512];
     while(SDLNet_TCP_Recv(sd, msg, 512))
     {
-        printf("Received message from server\n");
+        printf("Message was received.\n");
         AddToPool(&recvPool, msg);
-        temp = Converter_BytesToInt32(msg, &index);
-        printf("This int was returned: %d\n",temp);
-        printf("Waiting for new message...\n");
-        index = 0;
+        printf("Added message to pool\n");
     }
     return 1;
 }
 
-int AddToPool(threadCom* pool, char* msg)
+int AddToPool(threadCom* pool, char* msg) // Funktion för att lägga till meddelanden i stacks ( pools).
 {
     SDL_LockMutex(pool->mtx);
     memcpy(pool->pool[pool->Size], msg, 512);
@@ -187,15 +179,13 @@ int ReadPool(threadCom* pool, char* msg)
     if(pool->Size > 0)
     {
         memcpy(msg, pool->pool[0], 512);
-
         for(int i = 0; i < pool->Size - 1; i++)
         {
             memcpy(pool->pool[i+1], pool->pool[i], 512);
         }
         pool->Size--;
     }
-
-    SDL_UnlockMutex(&pool->mtx);
+    SDL_UnlockMutex(pool->mtx);
 
     return 1;
 }
