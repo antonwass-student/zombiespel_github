@@ -5,8 +5,8 @@
 #include <SDL_net.h>
 
 TCPsocket net_start(int *argc, char **argv);
-threadCom sendPool;
-threadCom recvPool;
+extern threadCom sendPool;
+extern threadCom recvPool;
 
 
 #endif // SPEL_NETWORK_H_INCLUDED
