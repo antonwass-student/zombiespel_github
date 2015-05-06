@@ -1,17 +1,21 @@
-//#include <SDL2/SDL.h>//mac
-//#include <SDL2_ttf/SDL_ttf.h>//mac
-//#include <SDL2_image/SDL_image.h>//mac
+#ifdef _WIN32
+//define something for Windows (32-bit and 64-bit, this part is common)
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 
+#elif __APPLE__
+#include <SDL2/SDL.h>
+#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_image/SDL_image.h>
 
-#include <SDL.h>//windows
-#include <SDL_image.h>//windows
-#include <SDL_ttf.h> // windows */
-
+#elif __linux
+#endif
 
 #include <stdbool.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
-#define SCREEN_WIDTH 1024
+#define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 800
 
 
@@ -44,7 +48,8 @@ GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textCol
     object->drawText = draw;
     object->textColor = textColor;
     object->textPadding = padding;
-    SDL_Surface* srf;
+
+    SDL_Surface* srf;
     srf = TTF_RenderText_Solid(gFont, text, textColor);
     object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
 
@@ -54,7 +59,8 @@ GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textCol
 GameObject* ChangeTextStr(GameObject* object, char* text)
 {
     strcpy(object->text, text);
-    SDL_Surface* srf;
+
+    SDL_Surface* srf;
     srf = TTF_RenderText_Solid(gFont, text, object->textColor);
     SDL_DestroyTexture(object->textTexture);
     object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
@@ -66,7 +72,8 @@ GameObject* ChangeTextInt(GameObject* object, char* text, int value)
     char str[15];
 
     sprintf(str, "%s%d", text, value);
-    strcpy(object->text, str);    SDL_Surface* srf;
+    strcpy(object->text, str);
+    SDL_Surface* srf;
     srf = TTF_RenderText_Solid(gFont, str, object->textColor);
     object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
     printf("New text is:%s\n",object->text);
