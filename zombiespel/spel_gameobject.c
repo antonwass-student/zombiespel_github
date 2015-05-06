@@ -66,9 +66,12 @@ int addObjectToScene(Scene* level, GameObject newObject)
         if(level->objects[i].objectType == OBJECT_EMPTY)
         {
             level->objects[i] = newObject;
+            //level->objectCount++;
             return i;
         }
+
     }
+
     printf("GameObject limit reached!\n");
     return -1;
 }

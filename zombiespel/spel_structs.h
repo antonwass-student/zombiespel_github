@@ -18,13 +18,12 @@
 
 
 typedef enum{
-    NET_CHAT_MSG = 1,
+    NET_CHAT_MSG = 0,
     NET_OBJECT_POS,
     NET_PLAYER_MOVE,
     NET_PLAYER_SHOOT,
     NET_OBJECT_NEW,
-    NET_OBJECT_REMOVE,
-    NET_PLAYER_ID
+    NET_OBJECT_REMOVE
 } NetMessages_T;
 
 typedef enum{
