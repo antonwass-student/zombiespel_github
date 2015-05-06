@@ -49,13 +49,16 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     }
 
     printf("Object with id: %d was not found.\n", objectId);
+    return EXIT_SUCCESS;
 }
 
 
-void Create_Zombie_Normal(Scene* scene, int id, int x, int y)
+int Create_Zombie_Normal(Scene* scene, int id, int x, int y)
 {
     int newObject;
     newObject = createObject(scene, OBJECT_NPC, "zombieNormal",x, y, 118, 65, TXT_ZOMBIE, false);
     SetAI(&scene->objects[newObject], AI_ZOMBIE, 5, 300, 10, 100, 1.0f);
     scene->objects[newObject].objectID = id;
+    return EXIT_SUCCESS;
+
 }

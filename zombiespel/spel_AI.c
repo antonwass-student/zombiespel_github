@@ -1,5 +1,12 @@
-#include <SDL.h> //windows
-//#include <SDL2/SDL.h>//mac
+#ifdef _WIN32
+//define something for Windows (32-bit and 64-bit, this part is common)
+#include <SDL.h>
+
+#elif __APPLE__
+#include <SDL2/SDL.h>
+
+#elif __linux
+#endif
 
 #include <math.h>
 #include "spel_structs.h"

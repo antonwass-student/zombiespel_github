@@ -1,11 +1,19 @@
-#include <SDL.h>//windows
-//#include <SDL2/SDL.h>//mac
+#ifdef _WIN32
+//define something for Windows (32-bit and 64-bit, this part is common)
+#include <SDL.h>
+#include <SDL2_mixer.h>
 
-#include "spel_structs.h"
-#include <SDL_mixer.h>
-#include "music.h"
+#elif __APPLE__
+#include <SDL2/SDL.h>
+#include <SDL2_mixer/SDL_mixer.h>
+
+#elif __linux
+#endif
+
 
 #include <stdbool.h>
+#include "spel_structs.h"
+#include "music.h"
 #include "spel_gameobject.h"
 
 Sound sound[100];

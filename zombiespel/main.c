@@ -1,7 +1,18 @@
-#include <SDL.h>//windows
-#include <SDL_net.h>//windows*/
-/*#include <SDL2/SDL.h>//mac
-#include <SDL2_net/SDL_net.h>//mac*/
+#ifdef _WIN32
+//define something for Windows (32-bit and 64-bit, this part is common)
+#include <SDL.h>
+#include <SDL_net.h>
+
+#elif __APPLE__
+#include <SDL2/SDL.h>
+#include <SDL2_net/SDL_net.h>
+
+#elif __linux
+
+#endif
+
+
+
 
 #include <math.h>
 #include <stdio.h>

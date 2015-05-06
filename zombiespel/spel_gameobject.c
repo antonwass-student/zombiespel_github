@@ -36,6 +36,7 @@ int SceneInit(Scene* scene)
     {
         scene->objects[i].objectType = OBJECT_EMPTY;
     }
+    return EXIT_SUCCESS;
 }
 
 /*int addObjectToScene2(Scene* level, GameObject newObject) //Lägger in ett GameObject i listan med GameObjects.
@@ -90,6 +91,7 @@ bool RemoveObjectFromScene(Scene *scene, int index)
 {
     scene->objects[index].objectType = OBJECT_EMPTY;
     //scene->objectCount--;
+    return EXIT_SUCCESS;
 }
 
 GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
@@ -146,10 +148,12 @@ GameObject* SetAnimation(GameObject* object, float animSpeed, int idleOffset, in
     object->anim.animationTimer = animSpeed;
 
     object->state = ANIM_MOVING;
+    return EXIT_SUCCESS;
 }
 
 GameObject* SetItemInfo(GameObject* object, ItemType_T type, int amount)
 {
     object->itemInfo.itemType = type;
     object->itemInfo.amount = amount;
+    return EXIT_SUCCESS;
 }

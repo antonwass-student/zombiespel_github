@@ -1,11 +1,20 @@
+#ifdef _WIN32
+//define something for Windows (32-bit and 64-bit, this part is common)
+#include <SDL.h>
+#include <SDL_mixer.h>
+
+#elif __APPLE__
+#include <SDL2/SDL.h>
+#include <SDL2_mixer/SDL_mixer.h>
+
+#elif __linux
+#endif
+
 #ifndef SPEL_STRUCTS_H_INCLUDED
 #define SPEL_STRUCTS_H_INCLUDED
 
-#include <SDL.h> //windows
-//#include <SDL2/SDL.h> // MAC
-
 #include <stdbool.h>
-#include <SDL_mixer.h>
+
 
 
 typedef enum{
