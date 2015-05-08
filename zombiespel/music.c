@@ -1,7 +1,7 @@
 #ifdef _WIN32
 //define something for Windows (32-bit and 64-bit, this part is common)
 #include <SDL.h>
-#include <SDL2_mixer.h>
+#include <SDL_mixer.h>
 
 #elif __APPLE__
 #include <SDL2/SDL.h>

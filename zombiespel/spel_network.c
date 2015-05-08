@@ -14,10 +14,6 @@
 #include <stdlib.h>
 #include "spel_structs.h"
 
-
-
-
-
 threadCom sendPool;
 threadCom recvPool;
 

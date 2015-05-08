@@ -22,7 +22,7 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
         zombie->ai.atkTimer--;
     }
 
-    if(zombie->ai.target == NULL)
+    if(zombie->ai.target == NULL || zombie->ai.targetIsAlive)
     {
         zombie->ai.target = FindPlayer(scene, zombie,zombie->ai.detectRange);
     }
@@ -36,11 +36,24 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
     dx = 0;
     dy = 0;
 
-    dy -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed;
-    dx -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed;
+    dy -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //Objektets y hastighet
+    dx -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //objektets x hastighet
 
-    if(GetDistance(*zombie->ai.target,zombie->rect) > 10)
+    if(GetDistance(*zombie->ai.target,zombie->rect) > zombie->ai.attackRange)
+    {
         MoveObject(zombie, scene, dx,dy);
+    }
+    if(zombie->ai.ai == AI_SPITTER && GetDistance(*zombie->ai.target,zombie->rect) < zombie->ai.attackRange)
+    {
+        Zombie_Shoot(zombie, scene);
+    }
+}
+
+int Zombie_Shoot(GameObject* zombie, Scene* scene)
+{
+    int newObject;
+    newObject = createObject(scene, OBJECT_ZBULLET, "Spit", zombie->rect.x + (zombie->rect.w/2),zombie->rect.y + (zombie->rect.h/2), 20, 20, TXT_ZBULLET, false);
+    SetBulletStats(&scene->objects[newObject], zombie->ai.bulletSpeed, zombie->rotation, zombie->ai.damage);
 
 }
 
@@ -50,13 +63,13 @@ SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range)
     {
         int distance = 10;
 
-        if(scene->objects[i].objectType == OBJECT_PLAYER)
+        if(scene->objects[i].objectType == OBJECT_PLAYER && scene->objects[i].p_stats.alive)
         {
             distance = (int)(sqrt(pow(zombie->rect.x - scene->objects[i].rect.x, 2) + pow(zombie->rect.y - scene->objects[i].rect.y, 2)));
 
             if(distance < range)
             {
-                printf("%d\n",distance);
+                zombie->ai.targetIsAlive = &scene->objects[i].p_stats.alive;
                 return &scene->objects[i].rect;
             }
         }
@@ -67,5 +80,5 @@ SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range)
 
 int GetDistance(SDL_Rect obj1, SDL_Rect obj2)
 {
-    return (int)(sqrt(pow(obj1.x - obj2.x, 2) + pow(obj1.y - obj2.y, 2)));
+    return (int)(sqrt(pow((obj1.x + (obj1.w/2)) - (obj2.x + (obj2.w/2)), 2) + pow((obj1.y + (obj1.h/2)) - (obj2.y + (obj2.h/2)), 2)));
 }

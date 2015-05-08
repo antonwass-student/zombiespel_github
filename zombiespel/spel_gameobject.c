@@ -1,6 +1,9 @@
 #include "spel_structs.h"
 #include <strings.h>
 
+#define EXIT_SUCCESS 1
+#define EXIT_FAILURE 0
+
 int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
     SDL_Color white = {255,255,255};
@@ -97,6 +100,7 @@ GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, 
     player->p_stats.health = health;
     player->p_stats.speed = speed;
     player->p_stats.pClass = pClass;
+    player->p_stats.alive = true;
 
     return player;
 }
@@ -119,7 +123,7 @@ GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool activ
     return button;
 }
 
-GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health, float attackCooldown)
+GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health, float attackCooldown, int attackRange, int bulletSpeed)
 {
     object->ai.speed = speed;
     object->ai.detectRange = range;
@@ -129,6 +133,9 @@ GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int da
     object->ai.target = NULL;
     object->ai.atkCd = attackCooldown;
     object->ai.atkTimer = 0;
+    object->ai.attackRange = attackRange;
+    object->ai.bulletSpeed = bulletSpeed;
+    object->ai.targetIsAlive = NULL;
 
     return object;
 }
