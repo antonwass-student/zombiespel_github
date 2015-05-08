@@ -14,10 +14,6 @@
 #include <stdlib.h>
 #include "spel_structs.h"
 
-
-
-
-
 threadCom sendPool;
 threadCom recvPool;
 
@@ -195,7 +191,7 @@ int ReadPool(threadCom* pool, char* msg)
         pool->Size--;
     }
 
-    SDL_UnlockMutex(&pool->mtx);
+    SDL_UnlockMutex(pool->mtx);
 
     return 1;
 }

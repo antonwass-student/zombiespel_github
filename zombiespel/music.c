@@ -1,3 +1,4 @@
+
 #ifdef _WIN32
 //define something for Windows (32-bit and 64-bit, this part is common)
 #include <SDL.h>
@@ -9,6 +10,9 @@
 
 #elif __linux
 #endif
+
+
+
 
 
 #include <stdbool.h>
@@ -60,7 +64,6 @@ void load_music(){
 
 }
 void play_sound(soundID_t id){
-    int i;
     //MAIN MUSIC START
     if(id == SOUND_ODE_TO_DUB_STEP){
             //If there is no music playing

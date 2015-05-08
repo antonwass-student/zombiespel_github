@@ -8,6 +8,7 @@
 #elif __linux
 #endif
 
+
 #include <math.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
