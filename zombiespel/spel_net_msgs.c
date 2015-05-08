@@ -62,6 +62,7 @@ int net_SetPlayerId(char data[])
 
     id = Converter_BytesToInt32(data, &index);
     printf("Your netID is: %d\n", id);
+    return EXIT_SUCCESS;
 }
 
 int net_PlayerShoot(double angle)
@@ -73,6 +74,7 @@ int net_PlayerShoot(double angle)
     Converter_Int32ToBytes(buffer, &index, (int)angle);
 
     AddToPool(sendPool,buffer);
+    return EXIT_SUCCESS;
 }
 
 int net_PlayerMove()
@@ -82,6 +84,7 @@ int net_PlayerMove()
     buffer[index++] = NET_PLAYER_MOVE;
     Converter_Int32ToBytes(buffer, &index, 0); //EJ KLAR BEHÖVER NÅGONSTANS ATT HA NET_ID
     buffer[index++] = 0;
+    return EXIT_SUCCESS;
 }
 
 

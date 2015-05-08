@@ -181,10 +181,7 @@ int ReadPool(threadCom* pool, char* msg)
         }
         pool->Size--;
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/update
     SDL_UnlockMutex(pool->mtx);
 
     return 1;
