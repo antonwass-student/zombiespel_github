@@ -4,6 +4,7 @@
 
 
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene);
+
 bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, int objectIndex)
 {
     bool colUp = false, colDown = false, colLeft = false, colRight = false;
@@ -99,6 +100,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         {
             RemoveObjectFromScene(scene, c2_index);
             newObject = createObject(scene, OBJECT_ITEM, "MedKit", collider2->rect.x, collider2->rect.y, 50, 50, TXT_MEDKIT, false);
+
             SetItemInfo(&scene->objects[newObject], ITEM_MEDKIT, 10);
         }
 
@@ -129,12 +131,32 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
             UI_HealthChanged(collider1->p_stats.health);
         }
     }
+
     else if(collider1->objectType == OBJECT_PLAYER && collider2->objectType == OBJECT_ITEM) //player med item
     {
-        printf("collided with medkit\n");
-        collider1->p_stats.health += collider2->itemInfo.amount;
-        RemoveObjectFromScene(scene, c2_index);
-        UI_HealthChanged(collider1->p_stats.health);
+        if (collider1->objectType == OBJECT_PLAYER && collider2->itemInfo.itemType == ITEM_MEDKIT) {
+            printf("collided with medkit\n");
+            collider1->p_stats.health += collider2->itemInfo.amount;
+            RemoveObjectFromScene(scene, c2_index);
+            UI_HealthChanged(collider1->p_stats.health);
+        }
+        else if (collider1->objectType == OBJECT_PLAYER && collider2->itemInfo.itemType == ITEM_GUN) {
+            printf("collided with gun\n");
+            collider1->p_stats.damage += collider2->itemInfo.amount;
+            RemoveObjectFromScene(scene, c2_index);
+           
+            
+
+
     }
+    }
+    
+    else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_WALL) //Bullet med Wall
+    {
+        printf("Bullet collided with Wall\n");
+        RemoveObjectFromScene(scene, c1_index);
+        
+    }
+
 
 }

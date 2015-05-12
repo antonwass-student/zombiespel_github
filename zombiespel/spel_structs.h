@@ -74,7 +74,8 @@ typedef enum {
 
 typedef enum{
     ITEM_MEDKIT,
-    ITEM_AMMO
+    ITEM_AMMO,
+    ITEM_GUN
 } ItemType_T;
 
 typedef struct{
@@ -144,7 +145,7 @@ typedef struct{
 } PlayerMovement;
 
 typedef struct{
-    int health, ammo, speed;
+    int health, ammo, speed, damage;
     playerClass_T pClass;
 }playerStats;
 

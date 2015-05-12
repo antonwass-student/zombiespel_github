@@ -28,6 +28,7 @@
 
 GameObject* gUI_Health = NULL;
 GameObject* gUI_Ammo = NULL;
+GameObject* gUI_damage = NULL;
 
 bool checkIfMoving(PlayerMovement mv)
 {
@@ -50,6 +51,7 @@ void UI_AmmoChanged(int ammo)
 
     ChangeTextInt(gUI_Ammo, "Ammo: ", ammo);
 }
+
 
 void CreateUI(Scene *scene, int player)
 {
@@ -144,15 +146,20 @@ int main(int argc, char *argv[])
 
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 400, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 110, 13, 40, CLASS_SOLDIER);
+    SetPlayerStats(&level.objects[player], 110, 13, 4, 20, CLASS_SOLDIER);
     SetAnimation(&level.objects[player],10,0,1,128,2);
-
     CreateUI(activeScene, player);
 
-    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2600, 100, 118, 65, TXT_ZOMBIE, false);
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2620, 500, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
     level.objects[newObject].objectID = 25;
     
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2600, 500, 118, 65, TXT_ZOMBIE, false);
+    SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
+    level.objects[newObject].objectID = 25;
+
+    newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 450, 40, 40, TXT_GUN, false);
+    SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
     
     //grans
     newObject=createObject(&level, OBJECT_WALL, "block", 2210, 350, 1000, 20, TXT_NONE, true);//1
@@ -180,8 +187,6 @@ int main(int argc, char *argv[])
 
     newObject = createObject(&options, OBJECT_BUTTON, "Go to menu", 650, 650, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[newObject], BUTTON_GOTO_MENU, true), "Back", true, black, 5);
-
-
 
     // Game loop
     while(!quit)

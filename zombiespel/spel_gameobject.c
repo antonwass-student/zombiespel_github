@@ -95,11 +95,12 @@ bool RemoveObjectFromScene(Scene *scene, int index)
 
 }
 
-GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage, playerClass_T pClass)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;
     player->p_stats.speed = speed;
+    player->p_stats.damage = damage;
     player->p_stats.pClass = pClass;
 
     return player;

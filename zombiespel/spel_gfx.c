@@ -111,8 +111,11 @@ void loadSprites()
 
     sprites[7].id = TXT_MEDKIT;
     sprites[7].texture = loadTexture("textures/medkit.png");
+    
+    sprites[8].id = TXT_GUN;
+    sprites[8].texture = loadTexture("textures/gun.png");
 
-    spritesCount = 8;
+    spritesCount = 9;
 }
 
 SDL_Texture* loadTexture(char* path)
