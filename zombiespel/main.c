@@ -11,7 +11,8 @@
 
 #endif
 
-
+#define EXIT_SUCCESS 1
+#define EXIT_FAILURE 0
 
 #include <math.h>
 #include <stdio.h>
@@ -145,11 +146,17 @@ int main(int argc, char *argv[])
 
 
     //LEVEL
+<<<<<<< HEAD
     player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 400, 128, 128, TXT_PLAYER, true);
     SetPlayerStats(&level.objects[player], 110, 13, 4, 20, CLASS_SOLDIER);
+=======
+    player = createObject(&level, OBJECT_PLAYER, "Player 1",400, 400, 128, 128, TXT_PLAYER, true);
+    SetPlayerStats(&level.objects[player], 10000, 13, 4, CLASS_SOLDIER);
+>>>>>>> origin/update
     SetAnimation(&level.objects[player],10,0,1,128,2);
     CreateUI(activeScene, player);
 
+<<<<<<< HEAD
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2620, 500, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
     level.objects[newObject].objectID = 25;
@@ -161,6 +168,17 @@ int main(int argc, char *argv[])
     newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 450, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
     
+=======
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 1000, 1000, 118, 65, TXT_ZOMBIE, false);
+    SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20);
+    level.objects[newObject].objectID = 25;
+
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE_SPIT", 1000, 1000, 128, 128, TXT_ZOMBIE_FAT, false);
+    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 1, 100, 1.0f, 500, 10);
+    level.objects[newObject].objectID = 26;
+
+
+>>>>>>> origin/update
     //grans
     newObject=createObject(&level, OBJECT_WALL, "block", 2210, 350, 1000, 20, TXT_NONE, true);//1
     newObject=createObject(&level, OBJECT_WALL, "block", 2210, 365, 30, 1300, TXT_NONE, true);//2
@@ -174,10 +192,10 @@ int main(int argc, char *argv[])
     newObject=createObject(&level, OBJECT_WALL, "block", 2640, 4505, 20, 1500, TXT_NONE, true);//10
     newObject=createObject(&level, OBJECT_WALL, "block", 3600, 3450, 30, 2250, TXT_NONE, true);//11
     newObject=createObject(&level, OBJECT_WALL, "block", 2650, 5620, 1000, 40, TXT_NONE, true);//12
-    
-    
-    
-    
+
+
+
+
     //Options
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
     SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black, 5);
@@ -313,7 +331,7 @@ int main(int argc, char *argv[])
                         }
                     }
 
-                    if(activeScene->sceneName == SCENE_LEVEL)
+                    if(activeScene->sceneName == SCENE_LEVEL) //Skjuter
                     {
                         printf("Trying to shoot\n");
                         GameObject bullet;
@@ -327,7 +345,7 @@ int main(int argc, char *argv[])
         }
         // ************ INPUTS END **********
 
-        if(activeScene->sceneName == SCENE_LEVEL)
+        if(activeScene->sceneName == SCENE_LEVEL) //Flyttar spelaren
         {
             int x = 0, y = 0;
             if(moving.up)
@@ -342,7 +360,7 @@ int main(int argc, char *argv[])
             MoveObject(&level.objects[player], activeScene, x, y, player);
         }
 
-        for(int i = 0; i < 100; i++)
+        for(int i = 0; i < 100; i++) //Går igenom alla objekt som ska uppdateras
         {
             if(activeScene->objects[i].objectType == OBJECT_EMPTY)
                 continue;
@@ -359,7 +377,7 @@ int main(int argc, char *argv[])
                 CalcAnimation(&activeScene->objects[i]);
             }
 
-            if(activeScene->objects[i].objectType == OBJECT_BULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
+            if(activeScene->objects[i].objectType == OBJECT_BULLET || activeScene->objects[i].objectType == OBJECT_ZBULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
             {
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
@@ -375,6 +393,11 @@ int main(int argc, char *argv[])
             else if(activeScene->objects[i].objectType == OBJECT_NPC)
             {
                 if(activeScene->objects[i].ai.ai == AI_ZOMBIE)
+                {
+                    Zombie_UseBrain(activeScene, &activeScene->objects[i]);
+                }
+
+                if(activeScene->objects[i].ai.ai == AI_SPITTER)
                 {
                     Zombie_UseBrain(activeScene, &activeScene->objects[i]);
                 }

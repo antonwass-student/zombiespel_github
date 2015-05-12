@@ -115,7 +115,17 @@ void loadSprites()
     sprites[8].id = TXT_GUN;
     sprites[8].texture = loadTexture("textures/gun.png");
 
+<<<<<<< HEAD
     spritesCount = 9;
+=======
+    sprites[8].id = TXT_ZBULLET;
+    sprites[8].texture = loadTexture("textures/bullet_zombie.png");
+
+    sprites[9].id = TXT_ZOMBIE_FAT;
+    sprites[9].texture = loadTexture("textures/zombie3.png");
+
+    spritesCount = 10;
+>>>>>>> origin/update
 }
 
 SDL_Texture* loadTexture(char* path)

@@ -4,6 +4,11 @@
 
 
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene);
+<<<<<<< HEAD
+=======
+void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene);
+
+>>>>>>> origin/update
 
 bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, int objectIndex)
 {
@@ -77,6 +82,8 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
             }
         }
 
+        ProximityCheck(movingObject, &scene->objects[i], objectIndex, i, scene);
+
 
         colLeft = false;
         colRight = false;
@@ -84,6 +91,21 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
         colDown = false;
     }
     return true;
+}
+
+void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene)
+{
+    int distance = GetDistance(obj1->rect, obj2->rect);
+
+    if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM)
+    {
+        if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64)
+        {
+            obj1->p_stats.health += obj2->itemInfo.amount;
+            RemoveObjectFromScene(scene, obj2_index);
+            UI_HealthChanged(obj1->p_stats.health);
+        }
+    }
 }
 
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene)
@@ -106,6 +128,21 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 
         RemoveObjectFromScene(scene, c1_index);
 
+    }
+
+    else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_PLAYER)
+    {
+        collider2->p_stats.health -= collider1->bulletInfo.damage;
+        UI_HealthChanged(collider2->p_stats.health);
+            if(collider2->p_stats.health <= 0)
+            {
+                printf("Player died!\n");
+                collider2->rect.x = 0;
+                collider2->rect.y = 0;
+                collider2->p_stats.health = 100;
+                collider2->ai.target = NULL;
+            }
+        RemoveObjectFromScene(scene, c1_index);
     }
 
     else if(collider1->objectType == OBJECT_PLAYER && collider2->objectType == OBJECT_NPC)
@@ -131,6 +168,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
             UI_HealthChanged(collider1->p_stats.health);
         }
     }
+<<<<<<< HEAD
 
     else if(collider1->objectType == OBJECT_PLAYER && collider2->objectType == OBJECT_ITEM) //player med item
     {
@@ -157,6 +195,8 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         RemoveObjectFromScene(scene, c1_index);
         
     }
+=======
+>>>>>>> origin/update
 
 
 }
