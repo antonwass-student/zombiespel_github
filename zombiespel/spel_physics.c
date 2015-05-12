@@ -93,14 +93,21 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
 void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene)
 {
     int distance = GetDistance(obj1->rect, obj2->rect);
-
-    if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM)
+    
+    
+    if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM) //player med item
     {
-        if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64)
-        {
+        if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64) {
+            printf("collided with medkit\n");
             obj1->p_stats.health += obj2->itemInfo.amount;
             RemoveObjectFromScene(scene, obj2_index);
             UI_HealthChanged(obj1->p_stats.health);
+        }
+        else if(obj2->itemInfo.itemType == ITEM_GUN && distance < 64) {
+            printf("collided with gun\n");
+            obj1->p_stats.damage += obj2->itemInfo.amount;
+            RemoveObjectFromScene(scene, obj2_index);
+            
         }
     }
 }
@@ -166,24 +173,6 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         }
     }
 
-    else if(collider1->objectType == OBJECT_PLAYER && collider2->objectType == OBJECT_ITEM) //player med item
-    {
-        if (collider1->objectType == OBJECT_PLAYER && collider2->itemInfo.itemType == ITEM_MEDKIT) {
-            printf("collided with medkit\n");
-            collider1->p_stats.health += collider2->itemInfo.amount;
-            RemoveObjectFromScene(scene, c2_index);
-            UI_HealthChanged(collider1->p_stats.health);
-        }
-        else if (collider1->objectType == OBJECT_PLAYER && collider2->itemInfo.itemType == ITEM_GUN) {
-            printf("collided with gun\n");
-            collider1->p_stats.damage += collider2->itemInfo.amount;
-            RemoveObjectFromScene(scene, c2_index);
-
-
-
-
-    }
-    }
 
     else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_WALL) //Bullet med Wall
     {
