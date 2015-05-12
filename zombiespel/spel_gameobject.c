@@ -1,5 +1,6 @@
 #include "spel_structs.h"
 #include <strings.h>
+#define EXIT_SUCCESS 1
 
 int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
@@ -29,7 +30,7 @@ int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y
     return addObjectToScene(scene, temp);
 }
 
-int SceneInit(Scene* scene)
+int SceneInit(Scene* scene, SceneName_T name)
 {
     scene->objectLimit = 100;
     for(int i = 0; i < 100; i++)
@@ -37,6 +38,7 @@ int SceneInit(Scene* scene)
         scene->objects[i].objectType = OBJECT_EMPTY;
     }
 
+    scene->sceneName = name;
     return EXIT_SUCCESS;
 
 }
