@@ -92,9 +92,9 @@ int main(int argc, char *argv[])
     int netMsgSize = 0;
     int netMsgIndex = 0;
 
-    SceneInit(&level);
-    SceneInit(&meny);
-    SceneInit(&options);
+    SceneInit(&level, SCENE_LEVEL);
+    SceneInit(&meny, SCENE_MENU);
+    SceneInit(&options, SCENE_OPTIONS);
 
     /*
     level.objectCount = 0;
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 400, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 110, 13, 40, CLASS_SOLDIER);
+    SetPlayerStats(&level.objects[player], 110, 13, 4, CLASS_SOLDIER);
     SetAnimation(&level.objects[player],10,0,1,128,2);
 
     CreateUI(activeScene, player);
@@ -152,8 +152,8 @@ int main(int argc, char *argv[])
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2600, 100, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 5, 500, 10, 100, 1.0f);
     level.objects[newObject].objectID = 25;
-    
-    
+
+
     //grans
     newObject=createObject(&level, OBJECT_WALL, "block", 2210, 350, 1000, 20, TXT_NONE, true);//1
     newObject=createObject(&level, OBJECT_WALL, "block", 2210, 365, 30, 1300, TXT_NONE, true);//2
@@ -167,10 +167,10 @@ int main(int argc, char *argv[])
     newObject=createObject(&level, OBJECT_WALL, "block", 2640, 4505, 20, 1500, TXT_NONE, true);//10
     newObject=createObject(&level, OBJECT_WALL, "block", 3600, 3450, 30, 2250, TXT_NONE, true);//11
     newObject=createObject(&level, OBJECT_WALL, "block", 2650, 5620, 1000, 40, TXT_NONE, true);//12
-    
-    
-    
-    
+
+
+
+
     //Options
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
     SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black, 5);
