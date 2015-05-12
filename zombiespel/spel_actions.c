@@ -22,5 +22,4 @@ bool reload(Scene* scene, int reloader)
     scene->objects[reloader].p_stats.ammo = 13;
     UI_AmmoChanged(scene->objects[reloader].p_stats.ammo);
     return true;
-
 }

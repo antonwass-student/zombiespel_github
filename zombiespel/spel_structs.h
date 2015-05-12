@@ -44,7 +44,8 @@ typedef struct{
 
 typedef enum {
     AI_ZOMBIE,
-    AI_SUPERZOMBIE
+    AI_SUPERZOMBIE,
+    AI_SPITTER
 } AI_T;
 
 typedef enum {
@@ -64,6 +65,7 @@ typedef enum {
     OBJECT_NPC,
     OBJECT_ITEM,
     OBJECT_BULLET,
+    OBJECT_ZBULLET,
     OBJECT_BUTTON,
     OBJECT_BACKGROUND,
     OBJECT_GAME_BACKGROUND,
@@ -105,7 +107,9 @@ typedef enum {
     TXT_BUTTON,
     TXT_PLAYGROUND,
     TXT_MENU_BACKGROUND,
-    TXT_MEDKIT
+    TXT_MEDKIT,
+    TXT_ZBULLET,
+    TXT_ZOMBIE_FAT
 } textureID_t;
 
 typedef struct
@@ -146,6 +150,7 @@ typedef struct{
 typedef struct{
     int health, ammo, speed;
     playerClass_T pClass;
+    bool alive;
 }playerStats;
 
 typedef struct{
@@ -167,8 +172,11 @@ typedef struct{
     int damage;
     int detectRange;
     float atkCd;
+    int attackRange;
     int atkTimer;
+    int bulletSpeed;
     SDL_Rect* target;
+    bool* targetIsAlive;
 }AI;
 
 typedef struct{
