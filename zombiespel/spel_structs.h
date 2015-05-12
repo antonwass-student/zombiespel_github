@@ -16,7 +16,6 @@
 #include <stdbool.h>
 
 
-
 typedef enum{
     NET_CHAT_MSG = 1,
     NET_OBJECT_POS,
@@ -71,7 +70,8 @@ typedef enum {
     OBJECT_BACKGROUND,
     OBJECT_GAME_BACKGROUND,
     OBJECT_UI,
-    OBJECT_EMPTY
+    OBJECT_EMPTY,
+    OBJECT_WALL
 } ObjectType_T;
 
 typedef enum{

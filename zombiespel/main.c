@@ -14,7 +14,6 @@
 #define EXIT_SUCCESS 1
 #define EXIT_FAILURE 0
 
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,7 +76,6 @@ void CreateUI(Scene *scene, int player)
 int main(int argc, char *argv[])
 {
     //char buffer[512];
-
     bool quit = false;
     SDL_Event e;
     Scene *activeScene, *nextScene;
@@ -121,7 +119,7 @@ int main(int argc, char *argv[])
     // ************
 
     printf("Starting connection to server..\n");
-    TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
+    //TCPsocket sd = net_start(&argc, argv);/* Socket descriptor */
 
     /*
      * Skapar objekt
@@ -158,7 +156,25 @@ int main(int argc, char *argv[])
 
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE_SPIT", 1000, 1000, 128, 128, TXT_ZOMBIE_FAT, false);
     SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 1, 100, 1.0f, 500, 10);
-    level.objects[newObject].objectID = 25;
+    level.objects[newObject].objectID = 26;
+
+
+    //grans
+    newObject=createObject(&level, OBJECT_WALL, "block", 2210, 350, 1000, 20, TXT_NONE, true);//1
+    newObject=createObject(&level, OBJECT_WALL, "block", 2210, 365, 30, 1300, TXT_NONE, true);//2
+    newObject=createObject(&level, OBJECT_WALL, "block", 3170, 360, 40, 2380, TXT_NONE, true);//3
+    newObject=createObject(&level, OBJECT_WALL, "block", 550, 1680, 1680, 30, TXT_NONE, true);//4
+    newObject=createObject(&level, OBJECT_WALL, "block", 1530, 2700, 1640, 40, TXT_NONE, true);//5
+    newObject=createObject(&level, OBJECT_WALL, "block", 550, 1700, 20, 2800, TXT_NONE, true);//6
+    newObject=createObject(&level, OBJECT_WALL, "block", 1500, 2705, 40, 750, TXT_NONE, true);//7
+    newObject=createObject(&level, OBJECT_WALL, "block", 1500, 3450, 2100, 50, TXT_NONE, true);//8
+    newObject=createObject(&level, OBJECT_WALL, "block", 550, 4500, 2100, 30, TXT_NONE, true);//9
+    newObject=createObject(&level, OBJECT_WALL, "block", 2640, 4505, 20, 1500, TXT_NONE, true);//10
+    newObject=createObject(&level, OBJECT_WALL, "block", 3600, 3450, 30, 2250, TXT_NONE, true);//11
+    newObject=createObject(&level, OBJECT_WALL, "block", 2650, 5620, 1000, 40, TXT_NONE, true);//12
+
+
+
 
     //Options
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
@@ -383,9 +399,9 @@ int main(int argc, char *argv[])
         frames++;
     }
 
-    SDLNet_TCP_Send(sd, "exit",10);
-    SDLNet_TCP_Close(sd);
-    SDLNet_Quit();
+    //SDLNet_TCP_Send(sd, "exit",10);
+    //SDLNet_TCP_Close(sd);
+    //SDLNet_Quit();
 
     graphics_stop();
     music_stop();

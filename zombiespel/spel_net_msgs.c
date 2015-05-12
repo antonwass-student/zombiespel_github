@@ -54,6 +54,7 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     }
 
     printf("Object with id: %d was not found.\n", objectId);
+
     return EXIT_SUCCESS;
 }
 
@@ -64,6 +65,7 @@ int net_SetPlayerId(char data[])
 
     id = Converter_BytesToInt32(data, &index);
     printf("Your netID is: %d\n", id);
+    return EXIT_SUCCESS;
 }
 
 int net_PlayerShoot(double angle)
@@ -75,6 +77,7 @@ int net_PlayerShoot(double angle)
     Converter_Int32ToBytes(buffer, &index, (int)angle);
 
     AddToPool(sendPool,buffer);
+    return EXIT_SUCCESS;
 }
 
 int net_PlayerMove()
@@ -84,6 +87,7 @@ int net_PlayerMove()
     buffer[index++] = NET_PLAYER_MOVE;
     Converter_Int32ToBytes(buffer, &index, 0); //EJ KLAR BEHÖVER NÅGONSTANS ATT HA NET_ID
     buffer[index++] = 0;
+    return EXIT_SUCCESS;
 }
 
 
@@ -93,6 +97,6 @@ int Create_Zombie_Normal(Scene* scene, int id, int x, int y)
     newObject = createObject(scene, OBJECT_NPC, "zombieNormal",x, y, 118, 65, TXT_ZOMBIE, false);
     SetAI(&scene->objects[newObject], AI_ZOMBIE, 5, 300, 10, 100, 1.0f, 20, 0);
     scene->objects[newObject].objectID = id;
-    return EXIT_SUCCESS;
 
+    return EXIT_SUCCESS;
 }

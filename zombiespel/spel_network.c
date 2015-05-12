@@ -103,8 +103,10 @@ int Converter_BytesToInt32(char data[], int* index){ // Gör om en byte-array til
 
     int value;
 
-    value = ((int)data[*index] << 24) + ((int)data[*index + 1] << 16)
-        + ((int)data[*index + 2] << 8) + ((int)data[*index + 3]);
+    value = ((int)data[*index] << 24) +
+    ((int)data[*index + 1] << 16) +
+    ((int)data[*index + 2] << 8) +
+    ((int)data[*index + 3]);
 
     *index += 4;
 
@@ -181,6 +183,7 @@ int ReadPool(threadCom* pool, char* msg)
         }
         pool->Size--;
     }
+
     SDL_UnlockMutex(pool->mtx);
 
     return 1;
