@@ -31,6 +31,25 @@ void net_NewObject(char data[], Scene* scene)
 
 }
 
+int net_SendPlayerName(char* name, int length)
+{
+    char buffer[512];
+    int size = 0;
+
+    buffer[size++] = NET_PLAYER_NAME;
+    Converter_Int32ToBytes(buffer, &size, length);
+
+    for(int i = size; i < size+length; i ++)
+    {
+        buffer[i] = name[i];
+    }
+    size+=length;
+
+    AddToPool(&sendPool, buffer);
+
+    return 0;
+}
+
 int net_ChangeObjectPos(char data[], Scene* scene)
 {
     int readingIndex = 1;

@@ -32,36 +32,17 @@ int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y
     return addObjectToScene(scene, temp);
 }
 
-int SceneInit(Scene* scene)
+int SceneInit(Scene* scene, SceneName_T name)
 {
     scene->objectLimit = 100;
+    scene->sceneName = name;
     for(int i = 0; i < 100; i++)
     {
         scene->objects[i].objectType = OBJECT_EMPTY;
     }
 
     return EXIT_SUCCESS;
-
 }
-
-/*int addObjectToScene2(Scene* level, GameObject newObject) //Lägger in ett GameObject i listan med GameObjects.
-{
-    printf("Adding object: %s to the scene.\n", newObject.name);
-    if(level->objectLimit < 100)
-    {
-        level->objects[level->objectCount] = newObject;
-        printf("%s was created.\n",level->objects[level->objectCount].name);
-        level->objectCount++;
-        printf("New object count is: %d\n", level->objectCount);
-
-        return level->objectCount - 1;
-    }
-    else
-    {
-        printf("Object limit reached\n");
-        return -1;
-    }
-}*/
 
 int addObjectToScene(Scene* level, GameObject newObject)
 {
@@ -77,17 +58,6 @@ int addObjectToScene(Scene* level, GameObject newObject)
     printf("GameObject limit reached!\n");
     return -1;
 }
-
-/*bool RemoveObjectFromScene2(Scene *scene, int index)
-{
-    printf("Removing object %s from scene\n", scene->objects[index].name);
-    for(int i = index; i < scene->objectCount - 1; i++)
-    {
-        scene->objects[i] = scene->objects[i + 1];
-    }
-    scene->objectCount--;
-    return NULL;
-}*/
 
 bool RemoveObjectFromScene(Scene *scene, int index)
 {

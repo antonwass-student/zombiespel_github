@@ -36,9 +36,9 @@ Sprite sprites[100];
 int spritesCount = 0;
 
 
-void SetFont()
+void SetFont(int size)
 {
-    gFont = TTF_OpenFont("fonts/Capture_it.ttf", 24);
+    gFont = TTF_OpenFont("fonts/bebas.ttf", size);
     if(gFont == NULL)
     {
         printf("could not load font\n");
@@ -118,7 +118,10 @@ void loadSprites()
     sprites[9].id = TXT_ZOMBIE_FAT;
     sprites[9].texture = loadTexture("textures/zombie3.png");
 
-    spritesCount = 10;
+    sprites[10].id = TXT_VOID;
+    sprites[10].texture = loadTexture("textures/void.png");
+
+    spritesCount = 11;
 }
 
 SDL_Texture* loadTexture(char* path)
@@ -148,7 +151,7 @@ void graphics_start() //
 {
 
     TTF_Init();
-    SetFont();
+    SetFont(24);
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         printf("Could not initialize SDL! SDL_Error: %s\n", SDL_GetError());
@@ -264,11 +267,11 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
                 if(level.objects[i].drawText) //Ritar ut text
                 {
                     //Textpadding
-                    newRect.x += level.objects[i].textPadding;
-                    newRect.y += level.objects[i].textPadding;
-                    newRect.h -= level.objects[i].textPadding * 2;
-                    newRect.w -= level.objects[i].textPadding * 2;
+                    TTF_SizeText(gFont, level.objects[i].text, &newRect.w, &newRect.h);
+                    newRect.x += level.objects[i].rect.w/2 -(newRect.w/2);
+                    newRect.y += level.objects[i].rect.h/2 -(newRect.h/2);
                     SDL_RenderCopy(gRenderer, level.objects[i].textTexture, NULL, &newRect);
+                    //TTF_Font
                 }
 
 

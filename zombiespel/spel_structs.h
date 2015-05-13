@@ -23,7 +23,8 @@ typedef enum{
     NET_PLAYER_SHOOT,
     NET_OBJECT_NEW,
     NET_OBJECT_REMOVE,
-    NET_PLAYER_ID
+    NET_PLAYER_ID,
+    NET_PLAYER_NAME
 } NetMessages_T;
 
 typedef enum{
@@ -52,7 +53,8 @@ typedef enum {
     SCENE_LEVEL,
     SCENE_MENU,
     SCENE_OPTIONS,
-    SCENE_LOBBY
+    SCENE_LOBBY,
+    SCENE_PREGAME
     }SceneName_T;
 
 typedef enum {
@@ -71,8 +73,17 @@ typedef enum {
     OBJECT_GAME_BACKGROUND,
     OBJECT_UI,
     OBJECT_EMPTY,
-    OBJECT_WALL
+    OBJECT_WALL,
+    OBJECT_TEXT,
+    OBJECT_NET_PLAYER
 } ObjectType_T;
+
+typedef enum{
+    INPUT_TEXT_IP,
+    INPUT_TEXT_PORT,
+    INPUT_TEXT_PNAME,
+    INPUT_TEXT_NONE
+} TextInput_T;
 
 typedef enum{
     ITEM_MEDKIT,
@@ -89,7 +100,14 @@ typedef enum{
     BUTTON_GOTO_MENU,
     BUTTON_GOTO_OPTIONS,
     BUTTON_GOTO_LOBBY,
-    BUTTON_TOGGLE_MUSIC
+    BUTTON_TOGGLE_MUSIC,
+    BUTTON_NEW_NAME,
+    BUTTON_SAVE_NAME,
+    BUTTON_VOID,
+    BUTTON_SET_IP,
+    BUTTON_SET_PORT,
+    BUTTON_PLAY,
+    BUTTON_CONNECT
 } ButtonAction_T;
 
 
@@ -109,7 +127,8 @@ typedef enum {
     TXT_MENU_BACKGROUND,
     TXT_MEDKIT,
     TXT_ZBULLET,
-    TXT_ZOMBIE_FAT
+    TXT_ZOMBIE_FAT,
+    TXT_VOID
 } textureID_t;
 
 typedef struct
