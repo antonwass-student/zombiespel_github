@@ -456,8 +456,8 @@ int main(int argc, char *argv[])
                                             printf("Connecting to: %s %s\n",ip,port);
                                             //TCPsocket sd = net_start(ip, port);/* Socket descriptor */
                                             //net_SendPlayerName(playerName, nameLength);
-                                            //nextScene = &pregame;
-                                            nextScene = &level;
+                                            nextScene = &pregame;
+                                            //nextScene = &level;
                                             break;
                                     }
                                 }
