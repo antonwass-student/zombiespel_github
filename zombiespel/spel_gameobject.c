@@ -1,5 +1,6 @@
 #include "spel_structs.h"
 #include <strings.h>
+#define EXIT_SUCCESS 1
 
 #define EXIT_SUCCESS 1
 #define EXIT_FAILURE 0
@@ -41,6 +42,7 @@ int SceneInit(Scene* scene, SceneName_T name)
         scene->objects[i].objectType = OBJECT_EMPTY;
     }
 
+    scene->sceneName = name;
     return EXIT_SUCCESS;
 }
 
@@ -68,14 +70,17 @@ bool RemoveObjectFromScene(Scene *scene, int index)
 
 }
 
-GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed, playerClass_T pClass)
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage, playerClass_T pClass, int reloadTime, int fireRate)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;
     player->p_stats.speed = speed;
+    player->p_stats.damage = damage;
     player->p_stats.pClass = pClass;
     player->p_stats.alive = true;
-
+    player->p_stats.reloadTime = reloadTime;
+    player->p_stats.fireRate = fireRate;
+    player->p_stats.fireCount = 0;
     return player;
 }
 
@@ -97,7 +102,7 @@ GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool activ
     return button;
 }
 
-GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health, float attackCooldown, int attackRange, int bulletSpeed)
+GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health, float attackCooldown, int attackRange, int bulletSpeed, int fireRate)
 {
     object->ai.speed = speed;
     object->ai.detectRange = range;
@@ -110,6 +115,8 @@ GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int da
     object->ai.attackRange = attackRange;
     object->ai.bulletSpeed = bulletSpeed;
     object->ai.targetIsAlive = NULL;
+    object->ai.fireCount = 0;
+    object->ai.fireRate = fireRate;
 
     return object;
 }

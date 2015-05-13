@@ -4,8 +4,8 @@
 
 
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene);
-void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene);
 
+void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene);
 
 bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, int objectIndex)
 {
@@ -94,15 +94,50 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
 {
     int distance = GetDistance(obj1->rect, obj2->rect);
 
-    if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM)
+
+    if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM) //player med item
     {
-        if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64)
-        {
+        if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64) {
+            printf("collided with medkit\n");
             obj1->p_stats.health += obj2->itemInfo.amount;
             RemoveObjectFromScene(scene, obj2_index);
             UI_HealthChanged(obj1->p_stats.health);
         }
+        else if(obj2->itemInfo.itemType == ITEM_GUN && distance < 64) {
+            printf("collided with gun\n");
+            obj1->p_stats.damage += obj2->itemInfo.amount;
+            RemoveObjectFromScene(scene, obj2_index);
+
+        }
     }
+    if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_NPC){
+        if(obj1->objectType == OBJECT_PLAYER && distance < 85){
+            if (obj2->ai.atkTimer == 0)
+            {
+                //Attack player
+                //
+                obj1->p_stats.health -= obj2->ai.damage;
+                //Set timer
+                //
+                obj2->ai.atkTimer = (int)(obj2->ai.atkCd * 60.0f);
+                printf("ai.atkTimer = %d\n", obj2->ai.atkTimer);
+                if(obj1->p_stats.health <= 0)
+                {
+                    printf("Player died!\n");
+                    obj1->rect.x = 2640;
+                    obj1->rect.y = 450;
+                    obj1->p_stats.health = 100;
+                    obj1->ai.target = NULL;
+                }
+                printf("Player health is now: %d\n", obj1->p_stats.health);
+                UI_HealthChanged(obj1->p_stats.health);
+            }
+        }
+    }
+
+
+
+
 }
 
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene)
@@ -119,6 +154,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         {
             RemoveObjectFromScene(scene, c2_index);
             newObject = createObject(scene, OBJECT_ITEM, "MedKit", collider2->rect.x, collider2->rect.y, 50, 50, TXT_MEDKIT, false);
+
             SetItemInfo(&scene->objects[newObject], ITEM_MEDKIT, 10);
         }
 
@@ -141,28 +177,11 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         RemoveObjectFromScene(scene, c1_index);
     }
 
-    else if(collider1->objectType == OBJECT_PLAYER && collider2->objectType == OBJECT_NPC)
+    else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_WALL) //Bullet med Wall
     {
-        if (collider2->ai.atkTimer == 0)
-        {
-            //Attack player
-            //
-            collider1->p_stats.health -= collider2->ai.damage;
-            //Set timer
-            //
-            collider2->ai.atkTimer = (int)(collider2->ai.atkCd * 60.0f);
-            printf("ai.atkTimer = %d\n", collider2->ai.atkTimer);
-            if(collider1->p_stats.health <= 0)
-            {
-                printf("Player died!\n");
-                collider1->rect.x = 2640;
-                collider1->rect.y = 450;
-                collider1->p_stats.health = 100;
-                collider2->ai.target = NULL;
-            }
-            printf("Player health is now: %d\n", collider1->p_stats.health);
-            UI_HealthChanged(collider1->p_stats.health);
-        }
+        printf("Bullet collided with Wall\n");
+        RemoveObjectFromScene(scene, c1_index);
     }
+
 
 }

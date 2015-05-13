@@ -31,6 +31,8 @@ GameObject* gUI_Health = NULL;
 GameObject* gUI_Ammo = NULL;
 extern TTF_Font* gFont;
 
+GameObject* gUI_damage = NULL;
+
 bool checkIfMoving(PlayerMovement mv)
 {
     if(mv.down || mv.up || mv.left ||mv.right)
@@ -53,6 +55,7 @@ void UI_AmmoChanged(int ammo)
     ChangeTextInt(gUI_Ammo, "Ammo: ", ammo);
 }
 
+
 void CreateUI(Scene *scene, int player)
 {
     int newObject;
@@ -61,13 +64,13 @@ void CreateUI(Scene *scene, int player)
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 720, 200, 80, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 620, 200, 80, TXT_BUTTON, false);
     gUI_Health = &scene->objects[newObject];
     sprintf(str, "Health:%d", scene->objects[player].p_stats.health);
     SetText(&scene->objects[newObject], str, true, black, 20);
     scene->objects[newObject].drawColor = red;
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 200,720,200,80, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 200,620,200,80, TXT_BUTTON, false);
     gUI_Ammo = &scene->objects[newObject];
     sprintf(str, "Ammo:%d", scene->objects[player].p_stats.ammo);
     SetText(&scene->objects[newObject], str, true, black, 20);
@@ -143,7 +146,7 @@ int main(int argc, char *argv[])
 
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 400, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 10000, 13, 4, CLASS_SOLDIER);
+    SetPlayerStats(&level.objects[player], 10000, 13, 4, 20,CLASS_SOLDIER, 0, 30);
     SetAnimation(&level.objects[player],10,0,1,128,2);
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
@@ -151,12 +154,15 @@ int main(int argc, char *argv[])
 
     CreateUI(&level, player);
 
+    newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 450, 40, 40, TXT_GUN, false);
+    SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
+
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 1000, 1000, 118, 65, TXT_ZOMBIE, false);
-    SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20);
+    SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20, 50);
     level.objects[newObject].objectID = 25;
 
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE_SPIT", 1000, 1000, 128, 128, TXT_ZOMBIE_FAT, false);
-    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 1, 100, 1.0f, 500, 10);
+    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 1, 100, 1.0f, 500, 10, 30);
     level.objects[newObject].objectID = 26;
 
 
@@ -178,6 +184,8 @@ int main(int argc, char *argv[])
 
 
     //Options
+    newObject = createObject(&options, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
+
     newObject = createObject(&options, OBJECT_BUTTON, "Toggle music", 100, 100, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[newObject], BUTTON_TOGGLE_MUSIC, true), "Toggle music", true, black, 10);
 
@@ -196,6 +204,7 @@ int main(int argc, char *argv[])
 
     //Lobby
 
+    newObject = createObject(&lobby, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
     newObject = createObject(&lobby, OBJECT_BUTTON, "Status",SCREEN_WIDTH * 0.5f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.05f, 0.3f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_VOID, false);
     SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_VOID, true), "Status: None", true, black, 10);
@@ -224,6 +233,8 @@ int main(int argc, char *argv[])
 
     //Pregame
 
+    newObject = createObject(&pregame, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
+
     newObject = createObject(&pregame, OBJECT_BUTTON, "Status:",SCREEN_WIDTH * 0.5f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.05f, 0.3f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_VOID, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Status: Waiting for other players", true, black, 10);
@@ -243,7 +254,6 @@ int main(int argc, char *argv[])
     newObject = createObject(&pregame, OBJECT_BUTTON, "Player2", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.7f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player4", true, black, 10);
-
 
     // Game loop
     while(!quit)
@@ -286,7 +296,6 @@ int main(int argc, char *argv[])
                             break;
                         case SDLK_r:
                             reload(activeScene, player);
-                            play_sound(SOUND_RELOAD);
                             break;
                         case SDLK_e:
                             //USE
@@ -536,7 +545,12 @@ int main(int argc, char *argv[])
                     Zombie_UseBrain(activeScene, &activeScene->objects[i]);
                 }
             }
-
+            else if(activeScene->objects[i].p_stats.reloadTime > 0){
+                activeScene->objects[i].p_stats.reloadTime--;
+            }
+            else if(activeScene->objects[i].p_stats.fireCount > 0){
+                activeScene->objects[i].p_stats.fireCount--;
+            }
         }
 
         activeScene = nextScene;
