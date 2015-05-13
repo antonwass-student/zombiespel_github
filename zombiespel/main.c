@@ -62,13 +62,13 @@ void CreateUI(Scene *scene, int player)
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 720, 200, 80, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 620, 200, 80, TXT_BUTTON, false);
     gUI_Health = &scene->objects[newObject];
     sprintf(str, "HP:%d", scene->objects[player].p_stats.health);
     SetText(&scene->objects[newObject], str, true, black, 20);
     scene->objects[newObject].drawColor = red;
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 200,720,200,80, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 200,620,200,80, TXT_BUTTON, false);
     gUI_Ammo = &scene->objects[newObject];
     sprintf(str, "Ammo:%d", scene->objects[player].p_stats.ammo);
     SetText(&scene->objects[newObject], str, true, black, 20);
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 
     printf("Starting graphics engine..\n");
 
-    graphics_start(); // kalla en gÃ¥ng
+    graphics_start(); // kalla en gång
     music_init();
 
     // ***Test***
@@ -146,8 +146,8 @@ int main(int argc, char *argv[])
 
 
     //LEVEL
-    player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 400, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 110, 13, 4, 20, CLASS_SOLDIER);
+    player = createObject(&level, OBJECT_PLAYER, "Player 1",1000, 1100, 128, 128, TXT_PLAYER, true);
+    SetPlayerStats(&level.objects[player], 110, 13, 4, 20, CLASS_SOLDIER, 0, 30);
 
     SetAnimation(&level.objects[player],10,0,1,128,2);
     CreateUI(activeScene, player);
@@ -157,13 +157,12 @@ int main(int argc, char *argv[])
     newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 450, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
 
-
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 1000, 1000, 118, 65, TXT_ZOMBIE, false);
-    SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20);
+    SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20, 50);
     level.objects[newObject].objectID = 25;
 
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE_SPIT", 1000, 1000, 128, 128, TXT_ZOMBIE_FAT, false);
-    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 1, 100, 1.0f, 500, 10);
+    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 1, 100, 1.0f, 500, 10, 30);
     level.objects[newObject].objectID = 26;
 
 
@@ -235,7 +234,6 @@ int main(int argc, char *argv[])
                             break;
                         case SDLK_r:
                             reload(activeScene, player);
-                            play_sound(SOUND_RELOAD);
                             break;
                         case SDLK_e:
                             //USE
@@ -285,11 +283,11 @@ int main(int argc, char *argv[])
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
-                    //VÃ¤nsterklick
+                    //Vänsterklick
 
                     for(int i = 0; i < activeScene->objectLimit; i++) //Kollar efter alla knappar i den aktiva scenen.
                     {
-                        //behÃ¶vs denna bool changedScene = false;
+                        //behövs denna bool changedScene = false;
                         if(activeScene->objects[i].objectType == OBJECT_BUTTON)
                         {
                             if(e.button.x > activeScene->objects[i].rect.x && e.button.x < activeScene->objects[i].rect.x + activeScene->objects[i].rect.w)
@@ -327,7 +325,7 @@ int main(int argc, char *argv[])
                     }
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
-                    //hÃ¶gerklick
+                    //högerklick
                 }
             }
         }
@@ -348,7 +346,7 @@ int main(int argc, char *argv[])
             MoveObject(&level.objects[player], activeScene, x, y, player);
         }
 
-        for(int i = 0; i < 100; i++) //GÃ¥r igenom alla objekt som ska uppdateras
+        for(int i = 0; i < 100; i++) //Går igenom alla objekt som ska uppdateras
         {
             if(activeScene->objects[i].objectType == OBJECT_EMPTY)
                 continue;
@@ -365,7 +363,7 @@ int main(int argc, char *argv[])
                 CalcAnimation(&activeScene->objects[i]);
             }
 
-            if(activeScene->objects[i].objectType == OBJECT_BULLET || activeScene->objects[i].objectType == OBJECT_ZBULLET) // Skapar en kula och rÃ¤knar ut x och y hastigheter, samt flyttar dem.
+            if(activeScene->objects[i].objectType == OBJECT_BULLET || activeScene->objects[i].objectType == OBJECT_ZBULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
             {
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
@@ -390,7 +388,12 @@ int main(int argc, char *argv[])
                     Zombie_UseBrain(activeScene, &activeScene->objects[i]);
                 }
             }
-
+            else if(activeScene->objects[i].p_stats.reloadTime > 0){
+                activeScene->objects[i].p_stats.reloadTime--;
+            }
+            else if(activeScene->objects[i].p_stats.fireCount > 0){
+                activeScene->objects[i].p_stats.fireCount--;
+            }
         }
 
         activeScene = nextScene;

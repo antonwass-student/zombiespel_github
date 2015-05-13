@@ -14,6 +14,9 @@
 #include "spel_gameobject.h"
 #include "spel_AI.h"
 
+#define EXIT_FAILURE 1
+#define EXIT_SUCCESS 0
+
 void Zombie_UseBrain(Scene* scene, GameObject* zombie)
 {
     int dx, dy;
@@ -52,9 +55,18 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
 
 int Zombie_Shoot(GameObject* zombie, Scene* scene)
 {
+    if(zombie->ai.fireCount > 0){
+        zombie->ai.fireCount--;
+    }
+
     int newObject;
-    newObject = createObject(scene, OBJECT_ZBULLET, "Spit", zombie->rect.x + (zombie->rect.w/2),zombie->rect.y + (zombie->rect.h/2), 20, 20, TXT_ZBULLET, false);
-    SetBulletStats(&scene->objects[newObject], zombie->ai.bulletSpeed, zombie->rotation, zombie->ai.damage);
+    if(zombie->ai.fireCount == 0){
+        printf("fatass is firing!\n");
+        newObject = createObject(scene, OBJECT_ZBULLET, "Spit", zombie->rect.x + (zombie->rect.w/2),zombie->rect.y + (zombie->rect.h/2), 20, 20, TXT_ZBULLET, false);
+        SetBulletStats(&scene->objects[newObject], zombie->ai.bulletSpeed, zombie->rotation, zombie->ai.damage);
+        zombie->ai.fireCount = zombie->ai.fireRate;
+    }
+
     return EXIT_SUCCESS;
 
 }
