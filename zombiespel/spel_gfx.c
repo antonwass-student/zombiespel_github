@@ -85,6 +85,7 @@ GameObject* ChangeTextInt(GameObject* object, char* text, int value)
 }
 
 
+
 void loadSprites()
 {
     sprites[0].id = TXT_PLAYER;
@@ -123,16 +124,40 @@ void loadSprites()
     sprites[11].id = TXT_ZOMBIE_FAT;
     sprites[11].texture = loadTexture("textures/zombie3.png");
 
-    sprites[12].id = TXT_BLOOD_SPLATTER;
-    sprites[12].texture = loadTexture("textures/blood_splatter.png");
+    sprites[12].id = TXT_CAR1;
+    sprites[12].texture = loadTexture("textures/bil1.png");
 
-    sprites[13].id = TXT_BOMB;
-    sprites[13].texture = loadTexture("textures/bomb.png");
+    sprites[13].id =TXT_CAR12;
+    sprites[13].texture = loadTexture("textures/bil12.png");
 
-    sprites[14].id = TXT_EXPLOSION;
-    sprites[14].texture = loadTexture("textures/explosion.png");
+    sprites[14].id =TXT_CAR2;
+    sprites[14].texture = loadTexture("textures/bil2.png");
 
-    spritesCount = 15;
+    sprites[15].id =TXT_CAR22;
+    sprites[15].texture = loadTexture("textures/bil22.png");
+
+    sprites[16].id =TXT_CAR3;
+    sprites[16].texture = loadTexture("textures/bil3.png");
+
+    sprites[17].id =TXT_CAR32;
+    sprites[17].texture = loadTexture("textures/bil32.png");
+
+    sprites[18].id =TXT_CAR4;
+    sprites[18].texture = loadTexture("textures/bil4.png");
+
+    sprites[19].id =TXT_CAR42;
+    sprites[19].texture = loadTexture("textures/bil42.png");
+
+    sprites[20].id = TXT_BLOOD_SPLATTER;
+    sprites[20].texture = loadTexture("textures/blood_splatter.png");
+
+    sprites[21].id = TXT_BOMB;
+    sprites[21].texture = loadTexture("textures/bomb.png");
+
+    sprites[22].id = TXT_EXPLOSION;
+    sprites[22].texture = loadTexture("textures/explosion.png");
+
+    spritesCount = 23;
 }
 
 SDL_Texture* loadTexture(char* path)

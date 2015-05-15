@@ -1,6 +1,6 @@
 #include "spel_structs.h"
 #include <strings.h>
-#define EXIT_SUCCESS 1
+
 
 #define EXIT_SUCCESS 1
 #define EXIT_FAILURE 0
@@ -72,12 +72,13 @@ bool RemoveObjectFromScene(Scene *scene, int index)
 
 }
 
-GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage, playerClass_T pClass, int reloadTime, int fireRate, int ammoTotal)
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, playerClass_T pClass, int reloadTime, int fireRate, int ammoTotal)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;
     player->p_stats.speed = speed;
     player->p_stats.damage = damage;
+    player->p_stats.armor = armor;
     player->p_stats.pClass = pClass;
     player->p_stats.alive = true;
     player->p_stats.reloadTime = reloadTime;
@@ -155,6 +156,7 @@ GameObject* SetItemInfo(GameObject* object, ItemType_T type, int amount)
 {
     object->itemInfo.itemType = type;
     object->itemInfo.amount = amount;
+
 
     return EXIT_SUCCESS;
 }

@@ -78,7 +78,8 @@ typedef enum {
     OBJECT_NET_PLAYER,
     OBJECT_EFFECT,
     OBJECT_BOMB,
-    OBJECT_EXPLOSION
+    OBJECT_EXPLOSION,
+    OBJECT_CAR
 } ObjectType_T;
 
 typedef enum{
@@ -91,7 +92,8 @@ typedef enum{
 typedef enum{
     ITEM_MEDKIT,
     ITEM_AMMO,
-    ITEM_GUN
+    ITEM_GUN,
+    ITEM_ARMOR
 } ItemType_T;
 
 typedef struct{
@@ -135,7 +137,15 @@ typedef enum {
     TXT_VOID,
     TXT_BLOOD_SPLATTER,
     TXT_EXPLOSION,
-    TXT_BOMB
+    TXT_BOMB,
+    TXT_CAR1,
+    TXT_CAR12,
+    TXT_CAR2,
+    TXT_CAR22,
+    TXT_CAR3,
+    TXT_CAR32,
+    TXT_CAR4,
+    TXT_CAR42
 } textureID_t;
 
 typedef struct
@@ -175,7 +185,8 @@ typedef struct{
 } PlayerMovement;
 
 typedef struct{
-    int health, ammo, ammoTotal, speed, damage, reloadTime, fireRate, fireCount;
+
+    int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal;
     playerClass_T pClass;
     bool alive;
 }playerStats;
