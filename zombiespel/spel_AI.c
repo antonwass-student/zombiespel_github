@@ -17,7 +17,7 @@
 #define EXIT_FAILURE 1
 #define EXIT_SUCCESS 0
 
-void Zombie_UseBrain(Scene* scene, GameObject* zombie)
+void Zombie_UseBrain(Scene* scene, GameObject* zombie, int index)
 {
     int dx, dy;
 
@@ -45,7 +45,7 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie)
 
     if(GetDistance(*zombie->ai.target,zombie->rect) > zombie->ai.attackRange)
     {
-        MoveObject(zombie, scene, dx,dy);
+        MoveObject(zombie, scene, dx,dy, index);
     }
     if(zombie->ai.ai == AI_SPITTER && GetDistance(*zombie->ai.target,zombie->rect) < zombie->ai.attackRange)
     {
@@ -61,7 +61,6 @@ int Zombie_Shoot(GameObject* zombie, Scene* scene)
 
     int newObject;
     if(zombie->ai.fireCount == 0){
-        printf("fatass is firing!\n");
         newObject = createObject(scene, OBJECT_ZBULLET, "Spit", zombie->rect.x + (zombie->rect.w/2),zombie->rect.y + (zombie->rect.h/2), 20, 20, TXT_ZBULLET, false);
         SetBulletStats(&scene->objects[newObject], zombie->ai.bulletSpeed, zombie->rotation, zombie->ai.damage);
         zombie->ai.fireCount = zombie->ai.fireRate;

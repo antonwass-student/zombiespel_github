@@ -99,12 +99,11 @@ void loadSprites()
     sprites[3].id = TXT_BULLET;
     sprites[3].texture = loadTexture("textures/bullet.png");
 
-
     sprites[4].id = TXT_BUTTON;
     sprites[4].texture = loadTexture("textures/button.png");
 
     sprites[5].id = TXT_MENU_BACKGROUND;
-    sprites[5].texture = loadTexture("textures/ugly_ass_background.png");
+    sprites[5].texture = loadTexture("textures/menu_background.png");
 
     sprites[6].id = TXT_PLAYGROUND;
     sprites[6].texture = loadTexture("textures/playground.png");
@@ -124,7 +123,16 @@ void loadSprites()
     sprites[11].id = TXT_ZOMBIE_FAT;
     sprites[11].texture = loadTexture("textures/zombie3.png");
 
-    spritesCount = 12;
+    sprites[12].id = TXT_BLOOD_SPLATTER;
+    sprites[12].texture = loadTexture("textures/blood_splatter.png");
+
+    sprites[13].id = TXT_BOMB;
+    sprites[13].texture = loadTexture("textures/bomb.png");
+
+    sprites[14].id = TXT_EXPLOSION;
+    sprites[14].texture = loadTexture("textures/explosion.png");
+
+    spritesCount = 15;
 }
 
 SDL_Texture* loadTexture(char* path)

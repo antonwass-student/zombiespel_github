@@ -63,14 +63,16 @@ int addObjectToScene(Scene* level, GameObject newObject)
 
 bool RemoveObjectFromScene(Scene *scene, int index)
 {
+    printf("Removing object %s from scene.\nINDEX: %d\n",scene->objects[index].name,index);
     scene->objects[index].objectType = OBJECT_EMPTY;
     //scene->objectCount--;
+
 
     return EXIT_SUCCESS;
 
 }
 
-GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage, playerClass_T pClass, int reloadTime, int fireRate)
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage, playerClass_T pClass, int reloadTime, int fireRate, int ammoTotal)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;
@@ -81,6 +83,7 @@ GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,
     player->p_stats.reloadTime = reloadTime;
     player->p_stats.fireRate = fireRate;
     player->p_stats.fireCount = 0;
+    player->p_stats.ammoTotal = ammoTotal;
     return player;
 }
 
@@ -92,6 +95,17 @@ GameObject* SetBulletStats(GameObject* bullet, int velocity, double angle, int d
     bullet->bulletInfo.timetolive = 120;
 
     return bullet;
+}
+GameObject* SetBombStats(GameObject* bomb, int timeToLive, int damage){
+    bomb->bombInfo.timeToLive = timeToLive;
+
+    return bomb;
+}
+GameObject* SetExplosionStats(GameObject* explosions, int timeToLive, int damage){
+    explosions->ExplosionInfo.timeToLive = timeToLive;
+    explosions->ExplosionInfo.damage = damage;
+
+    return explosions;
 }
 
 GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool active)
@@ -143,5 +157,4 @@ GameObject* SetItemInfo(GameObject* object, ItemType_T type, int amount)
     object->itemInfo.amount = amount;
 
     return EXIT_SUCCESS;
-
 }

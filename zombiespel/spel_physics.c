@@ -100,8 +100,10 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
         if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64) {
             printf("collided with medkit\n");
             obj1->p_stats.health += obj2->itemInfo.amount;
+            obj1->p_stats.ammoTotal += obj2->itemInfo.amount;
             RemoveObjectFromScene(scene, obj2_index);
             UI_HealthChanged(obj1->p_stats.health);
+            UI_TotalAmmo(obj1->p_stats.ammoTotal);
         }
         else if(obj2->itemInfo.itemType == ITEM_GUN && distance < 64) {
             printf("collided with gun\n");
@@ -124,8 +126,8 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
                 if(obj1->p_stats.health <= 0)
                 {
                     printf("Player died!\n");
-                    obj1->rect.x = 2640;
-                    obj1->rect.y = 450;
+                    obj1->rect.x = 3000;
+                    obj1->rect.y = 5200;
                     obj1->p_stats.health = 100;
                     obj1->ai.target = NULL;
                 }
@@ -134,7 +136,17 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
             }
         }
     }
+    if(obj1->objectType == OBJECT_NPC&& obj2->objectType == OBJECT_EXPLOSION){
+        if(obj1->objectType == OBJECT_NPC && distance < 100){
+            obj1->ai.health -= obj2->ExplosionInfo.damage;
+            if(obj1->ai.health <= 0){
+                printf("NPC died %s! from explosion\nIndex:%d\n",obj1->name,obj1_index);
+                RemoveObjectFromScene(scene, obj1_index);
+            }
+        }
 
+
+    }
 
 
 
@@ -149,12 +161,13 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         printf("Bullet collided with NPC\n");
         collider2->ai.health -= collider1->bulletInfo.damage;
         play_sound(SOUND_NPC_HIT);
+        newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", collider2->rect.x, collider2->rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
+        scene->objects[newObject].timeToLive = 10;
 
         if(collider2->ai.health <= 0)
         {
             RemoveObjectFromScene(scene, c2_index);
             newObject = createObject(scene, OBJECT_ITEM, "MedKit", collider2->rect.x, collider2->rect.y, 50, 50, TXT_MEDKIT, false);
-
             SetItemInfo(&scene->objects[newObject], ITEM_MEDKIT, 10);
         }
 

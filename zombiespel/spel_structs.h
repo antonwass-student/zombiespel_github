@@ -75,7 +75,10 @@ typedef enum {
     OBJECT_EMPTY,
     OBJECT_WALL,
     OBJECT_TEXT,
-    OBJECT_NET_PLAYER
+    OBJECT_NET_PLAYER,
+    OBJECT_EFFECT,
+    OBJECT_BOMB,
+    OBJECT_EXPLOSION
 } ObjectType_T;
 
 typedef enum{
@@ -129,7 +132,10 @@ typedef enum {
     TXT_MEDKIT,
     TXT_ZBULLET,
     TXT_ZOMBIE_FAT,
-    TXT_VOID
+    TXT_VOID,
+    TXT_BLOOD_SPLATTER,
+    TXT_EXPLOSION,
+    TXT_BOMB
 } textureID_t;
 
 typedef struct
@@ -142,7 +148,8 @@ typedef enum
     SOUND_ODE_TO_DUB_STEP,
     SOUND_GUN,
     SOUND_RELOAD,
-    SOUND_NPC_HIT
+    SOUND_NPC_HIT,
+    SOUND_BUTTON,
 } soundID_t;
 
 typedef struct
@@ -168,7 +175,7 @@ typedef struct{
 } PlayerMovement;
 
 typedef struct{
-    int health, ammo, speed, damage, reloadTime, fireRate, fireCount;
+    int health, ammo, ammoTotal, speed, damage, reloadTime, fireRate, fireCount;
     playerClass_T pClass;
     bool alive;
 }playerStats;
@@ -179,6 +186,16 @@ typedef struct{
     int damage;
     double angle;
 }bulletInfo;
+
+typedef struct{
+    int timeToLive;
+    int damage;
+}bombInfo;
+
+typedef struct{
+    int timeToLive;
+    int damage;
+}ExplosionInfo;
 
 typedef struct{
     bool active;
@@ -216,6 +233,7 @@ typedef struct{
     char* name;
     int objectID;
     bool solid;
+    int timeToLive;
 
     bool drawText;
     char text[100];
@@ -231,6 +249,10 @@ typedef struct{
     SDL_Point* center;
     SDL_RendererFlip flip;
     SDL_Color drawColor;
+
+    bombInfo bombInfo;
+
+    ExplosionInfo ExplosionInfo;
 
     AnimState_T state;
 

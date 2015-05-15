@@ -3,7 +3,7 @@
 
 
 
-void Zombie_UseBrain(Scene* scene, GameObject* zombie);
+void Zombie_UseBrain(Scene* scene, GameObject* zombie, int index);
 SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range);
 
 
