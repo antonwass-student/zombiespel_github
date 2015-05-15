@@ -33,6 +33,8 @@ extern TTF_Font* gFont;
 
 GameObject* gUI_damage = NULL;
 
+int playerNetId = -1;
+
 bool checkIfMoving(PlayerMovement mv)
 {
     if(mv.down || mv.up || mv.left ||mv.right)
@@ -79,7 +81,22 @@ void CreateUI(Scene *scene, int player)
 
 int main(int argc, char *argv[])
 {
-    //char buffer[512];
+
+
+    char buffer[512];
+    int test = 1000;
+    int result = 0;
+    int testCount = 0;
+
+    printf("Starting value: %d\n", test);
+
+    Converter_Int32ToBytes(buffer, &testCount, test);
+    testCount = 0;
+    result = Converter_BytesToInt32(buffer, &testCount);
+
+    printf("Final value: %d\n",result);
+
+
     bool quit = false;
     bool typing = false;
     char inputText[128] = {"\0"};
@@ -101,12 +118,17 @@ int main(int argc, char *argv[])
     int timeStamp = 0;
     long frames = 0;
     int deltaTime = 0;
+    bool netUpdateFrame = false;
+    int netUpdateTimer = 12;
+    int netUpdateRate = 12; // How many frames between each net update
+
 
     char netMsg[512];
     int netMsgSize = 0;
     int netMsgIndex = 0;
 
-    strcpy(ip,"130.229.161.34");
+    strcpy(ip,"192.168.56.101");
+    //strcpy(ip,"130.229.132.73");
     strcpy(port,"2000");
 
     SceneInit(&level, SCENE_LEVEL);
@@ -195,10 +217,7 @@ int main(int argc, char *argv[])
     button_newName = createObject(&options, OBJECT_BUTTON, "Change Name", 100, 170, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[button_newName], BUTTON_NEW_NAME, true), "Change name", true, black, 0);
 
-    button_saveName = createObject(&options, OBJECT_BUTTON, "Save name", 450, 170, 70, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&options.objects[button_saveName], BUTTON_SAVE_NAME, true), "Save", true, black, 10);
-
-    button_showName = createObject(&options, OBJECT_BUTTON, "PlayerName", 525, 170, 0, 70, TXT_VOID, false);
+    button_showName = createObject(&options, OBJECT_BUTTON, "PlayerName", 600, 170, 0, 70, TXT_VOID, false);
     SetText(SetButtonStats(&options.objects[button_showName], BUTTON_VOID, true), "NewPlayer", true, black, 10);
 
 
@@ -207,7 +226,7 @@ int main(int argc, char *argv[])
     newObject = createObject(&lobby, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
     newObject = createObject(&lobby, OBJECT_BUTTON, "Status",SCREEN_WIDTH * 0.5f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.05f, 0.3f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_VOID, false);
-    SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_VOID, true), "Status: None", true, black, 10);
+    SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_VOID, true), "Status: None", true, white, 10);
 
     newObject = createObject(&lobby, OBJECT_BUTTON, "IP",SCREEN_WIDTH * 0.2f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.3f, 0.1f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_VOID, false);
@@ -237,7 +256,7 @@ int main(int argc, char *argv[])
 
     newObject = createObject(&pregame, OBJECT_BUTTON, "Status:",SCREEN_WIDTH * 0.5f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.05f, 0.3f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_VOID, false);
-    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Status: Waiting for other players", true, black, 10);
+    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Status: Waiting for other players", true, white, 10);
 
     newObject = createObject(&pregame, OBJECT_BUTTON, "Player1", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.1f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
@@ -264,8 +283,10 @@ int main(int argc, char *argv[])
 
         while(recvPool.Size > 0)
         {
+            printf("reading net message...\n");
             ReadPool(&recvPool, netMsg);
             ProcessMessage(netMsg, activeScene);
+            printf("Message read.\n");
         }
 
 
@@ -440,13 +461,13 @@ int main(int argc, char *argv[])
                                             nameLength = 0;
                                             SDL_StartTextInput();
                                             inputText[0] = '\0';
-                                            options.objects[button_saveName].drawText = true;
-                                            options.objects[button_saveName].drawColor = green;
+                                            //options.objects[button_saveName].drawText = true;
+                                            //options.objects[button_saveName].drawColor = green;
                                             break;
                                         case BUTTON_SAVE_NAME:
                                             SDL_StopTextInput();
-                                            options.objects[button_saveName].drawText = false;
-                                            options.objects[button_saveName].drawColor = white;
+                                            //options.objects[button_saveName].drawText = false;
+                                            //options.objects[button_saveName].drawColor = white;
 
                                             strcpy(playerName, inputText);
                                             printf("Player name is now: %s\n", playerName);
@@ -463,10 +484,11 @@ int main(int argc, char *argv[])
                                             break;
                                         case BUTTON_CONNECT:
                                             printf("Connecting to: %s %s\n",ip,port);
-                                            //TCPsocket sd = net_start(ip, port);/* Socket descriptor */
-                                            //net_SendPlayerName(playerName, nameLength);
+                                            TCPsocket sd = net_start(ip, port);/* Socket descriptor */
+                                            printf("Sending playername %s\n",playerName);
+                                            net_SendPlayerName(playerName, nameLength);
                                             nextScene = &pregame;
-                                            //nextScene = &level;
+                                            nextScene = &level;
                                             break;
                                     }
                                 }
@@ -500,7 +522,15 @@ int main(int argc, char *argv[])
             else if(moving.right)
                 x += level.objects[player].p_stats.speed;
 
-            MoveObject(&level.objects[player], activeScene, x, y, player);
+            if(x != 0 || y != 0)
+            {
+                MoveObject(&level.objects[player], activeScene, x, y, player);
+
+                if(playerNetId != -1 && netUpdateFrame)
+                    net_PlayerMove(level.objects[player].rect.x, level.objects[player].rect.y, (int)level.objects[player].rotation);
+            }
+
+
         }
 
         for(int i = 0; i < 100; i++) //Går igenom alla objekt som ska uppdateras
@@ -561,6 +591,17 @@ int main(int argc, char *argv[])
         if( deltaTime < 17 )
         {
             SDL_Delay(17 - deltaTime);
+        }
+
+        if(netUpdateFrame)
+            netUpdateFrame = false;
+        else
+            netUpdateTimer--;
+
+        if(netUpdateTimer==0)
+        {
+            netUpdateFrame = true;
+            netUpdateTimer = netUpdateRate;
         }
         frames++;
     }

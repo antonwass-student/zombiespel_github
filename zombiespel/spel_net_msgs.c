@@ -5,6 +5,8 @@
 #define EXIT_SUCCESS 1
 #define EXIT_FAILURE 0
 
+extern int playerNetId;
+
 void net_NewObject(char data[], Scene* scene)
 {
     int index = 1;
@@ -17,6 +19,8 @@ void net_NewObject(char data[], Scene* scene)
     x = Converter_BytesToInt32(data, &index);
     y = Converter_BytesToInt32(data, &index);
     type = data[index++];
+
+    printf("x = %d, y = %d ",x,y);
 
     switch(type)
     {
@@ -37,14 +41,13 @@ int net_SendPlayerName(char* name, int length)
     int size = 0;
 
     buffer[size++] = NET_PLAYER_NAME;
+
     Converter_Int32ToBytes(buffer, &size, length);
 
-    for(int i = size; i < size+length; i ++)
+    for(int i = 0; i < length; i ++)
     {
-        buffer[i] = name[i];
+        buffer[i+size] = name[i];
     }
-    size+=length;
-
     AddToPool(&sendPool, buffer);
 
     return 0;
@@ -84,6 +87,7 @@ int net_SetPlayerId(char data[])
 
     id = Converter_BytesToInt32(data, &index);
     printf("Your netID is: %d\n", id);
+    playerNetId = id;
     return EXIT_SUCCESS;
 }
 
@@ -99,13 +103,17 @@ int net_PlayerShoot(double angle)
     return EXIT_SUCCESS;
 }
 
-int net_PlayerMove()
+int net_PlayerMove(int x, int y, int angle)
 {
     char buffer[512];
     int index = 0;
     buffer[index++] = NET_PLAYER_MOVE;
-    Converter_Int32ToBytes(buffer, &index, 0); //EJ KLAR BEHÖVER NÅGONSTANS ATT HA NET_ID
-    buffer[index++] = 0;
+    Converter_Int32ToBytes(buffer, &index, playerNetId);
+    Converter_Int32ToBytes(buffer, &index, x);
+    Converter_Int32ToBytes(buffer, &index, y);
+    Converter_Int32ToBytes(buffer, &index, angle);
+
+    AddToPool(&sendPool, buffer);
     return EXIT_SUCCESS;
 }
 
@@ -116,6 +124,8 @@ int Create_Zombie_Normal(Scene* scene, int id, int x, int y)
     newObject = createObject(scene, OBJECT_NPC, "zombieNormal",x, y, 118, 65, TXT_ZOMBIE, false);
     SetAI(&scene->objects[newObject], AI_ZOMBIE, 5, 300, 10, 100, 1.0f, 20, 0, 30);
     scene->objects[newObject].objectID = id;
+
+    printf("zombie was created at x=%d and y=%d\n", x, y);
 
     return EXIT_SUCCESS;
 }

@@ -28,8 +28,6 @@ TCPsocket net_start(char* ip_p, char*port_p){
     int bufferSize = 0;
     int readIndex = 0;
 
-    printf("hej\n");
-
     if (SDLNet_Init() < 0)
     {
         fprintf(stderr, "SDLNet_Init: %s\n", SDLNet_GetError());
@@ -83,6 +81,7 @@ int ProcessMessage(char data[], Scene* scene)
             break;
         case NET_PLAYER_ID:
             net_SetPlayerId(data);
+            break;
         default:
             printf("Could not identify header.\n");
             break;
@@ -90,26 +89,27 @@ int ProcessMessage(char data[], Scene* scene)
     return 0;
 }
 
-int Converter_BytesToInt32(char data[], int* index){ // Gör om en byte-array till en int.
+int Converter_BytesToInt32(unsigned char data[], int* index){ // Gör om en byte-array till en int.
 
-    int value;
-
-    value = ((int)data[*index] << 24) +
-    ((int)data[*index + 1] << 16) +
-    ((int)data[*index + 2] << 8) +
-    ((int)data[*index + 3]);
+    int value = 0;
+    value += (((int)data[*index]) << 24);
+    value += (((int)data[*index + 1]) << 16);
+    value += (((int)data[*index + 2]) << 8);
+    value += (((int)data[*index + 3]));
 
     *index += 4;
 
     return value;
 }
 
-int Converter_Int32ToBytes(char data[], int* size, int value) //Gör om en int till en byte array.
+int Converter_Int32ToBytes(unsigned char data[], int* size, int value) //Gör om en int till en byte array.
 {
-    data[*size] = value >> 24;
-    data[*size + 1] = value >> 16;
-    data[*size + 2] = value >> 8;
-    data[*size + 3] = value;
+    int temp = value;
+    data[(*size + 3)] = (unsigned char)(value);
+    data[*size + 2] = (unsigned char)((value) >> 8);
+    data[*size + 1] = (unsigned char)((value) >> 16);
+    data[*size] = (unsigned char)((value) >> 24);
+
     *size += 4;
 
     return 0;
@@ -125,7 +125,7 @@ int SendThread(void* ptr)
     while(1)
     {
         while(sendPool.Size <= 0){
-            SDL_Delay(10);
+            SDL_Delay(20);
         }
         while(sendPool.Size > 0)
         {
@@ -146,9 +146,8 @@ int RecvThread(void* ptr) //Lyssnar efter meddelanden från servern och lägger de
     char msg[512];
     while(SDLNet_TCP_Recv(sd, msg, 512))
     {
-        printf("Message was received.\n");
+        printf("message received\n");
         AddToPool(&recvPool, msg);
-        printf("Added message to pool\n");
     }
     return 1;
 }
@@ -170,7 +169,7 @@ int ReadPool(threadCom* pool, char* msg)
         memcpy(msg, pool->pool[0], 512);
         for(int i = 0; i < pool->Size - 1; i++)
         {
-            memcpy(pool->pool[i+1], pool->pool[i], 512);
+            memcpy(pool->pool[i], pool->pool[i+1], 512);
         }
         pool->Size--;
     }
