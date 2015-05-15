@@ -152,6 +152,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
                     obj1->rect.y = 5200;
                     obj1->p_stats.health = 100;
                     obj1->ai.target = NULL;
+                    UI_HealthChanged(obj1->p_stats.health);
                 }
                 printf("Player health is now: %d\n", obj1->p_stats.health);
                 UI_HealthChanged(obj1->p_stats.health);
