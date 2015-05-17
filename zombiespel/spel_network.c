@@ -64,7 +64,7 @@ TCPsocket net_start(char* ip_p, char*port_p){
     return sd;
 }
 
-int ProcessMessage(char data[], Scene* scene)
+int ProcessMessage(char data[], Scene* scene, Scene* nextScene, Scene *level)
 {
     switch(data[0])
     {
@@ -81,6 +81,10 @@ int ProcessMessage(char data[], Scene* scene)
             break;
         case NET_PLAYER_ID:
             net_SetPlayerId(data);
+            break;
+        case NET_GAME_START:
+            printf("Game started\n");
+            *scene = *level;
             break;
         default:
             printf("Could not identify header.\n");
