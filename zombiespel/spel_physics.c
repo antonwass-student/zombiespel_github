@@ -2,10 +2,23 @@
 #include "spel_physics.h"
 
 
-
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene);
 
 void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene);
+
+int NewDamage(GameObject* NPC, GameObject* Player){
+    int NewDamage=0;
+    if(NPC->objectType == OBJECT_NPC){
+        printf("hej\n");
+        NewDamage= ((100 - Player->p_stats.armor)/100.0f) * NPC->ai.damage;
+        return NewDamage;
+    }
+    else if(NPC->objectType == OBJECT_ZBULLET){
+        NewDamage= ((100 - Player->p_stats.armor)/100.0f) * NPC->bulletInfo.damage;
+        return NewDamage;
+    }
+    return NewDamage;
+}
 
 bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, int objectIndex)
 {
@@ -100,41 +113,63 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
         if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64) {
             printf("collided with medkit\n");
             obj1->p_stats.health += obj2->itemInfo.amount;
+            obj1->p_stats.ammoTotal += obj2->itemInfo.amount;
             RemoveObjectFromScene(scene, obj2_index);
             UI_HealthChanged(obj1->p_stats.health);
+            UI_TotalAmmo(obj1->p_stats.ammoTotal);
         }
         else if(obj2->itemInfo.itemType == ITEM_GUN && distance < 64) {
             printf("collided with gun\n");
             obj1->p_stats.damage += obj2->itemInfo.amount;
             RemoveObjectFromScene(scene, obj2_index);
-
+            UI_DamageChanged(obj1->p_stats.damage);
         }
+        else if(obj2->itemInfo.itemType == ITEM_ARMOR && distance < 64) {
+            printf("collided with armor\n");
+            if(obj1->p_stats.armor>=50){
+                printf("you have max armor");
+            }
+            else{
+            obj1->p_stats.armor += obj2->itemInfo.amount;
+            RemoveObjectFromScene(scene, obj2_index);
+            UI_ArmorChanged(obj1->p_stats.armor);
+            }
+        }
+
     }
     if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_NPC){
         if(obj1->objectType == OBJECT_PLAYER && distance < 85){
             if (obj2->ai.atkTimer == 0)
             {
                 //Attack player
-                //
-                obj1->p_stats.health -= obj2->ai.damage;
-                //Set timer
-                //
+                obj1->p_stats.health -= NewDamage(obj2,obj1);
                 obj2->ai.atkTimer = (int)(obj2->ai.atkCd * 60.0f);
                 printf("ai.atkTimer = %d\n", obj2->ai.atkTimer);
                 if(obj1->p_stats.health <= 0)
                 {
                     printf("Player died!\n");
-                    obj1->rect.x = 2640;
-                    obj1->rect.y = 450;
+                    obj1->rect.x = 3000;
+                    obj1->rect.y = 5200;
                     obj1->p_stats.health = 100;
                     obj1->ai.target = NULL;
+                    UI_HealthChanged(obj1->p_stats.health);
                 }
                 printf("Player health is now: %d\n", obj1->p_stats.health);
                 UI_HealthChanged(obj1->p_stats.health);
             }
         }
     }
+    if(obj1->objectType == OBJECT_NPC&& obj2->objectType == OBJECT_EXPLOSION){
+        if(obj1->objectType == OBJECT_NPC && distance < 100){
+            obj1->ai.health -= obj2->ExplosionInfo.damage;
+            if(obj1->ai.health <= 0){
+                printf("NPC died %s! from explosion\nIndex:%d\n",obj1->name,obj1_index);
+                RemoveObjectFromScene(scene, obj1_index);
+            }
+        }
 
+
+    }
 
 
 
@@ -149,12 +184,13 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         printf("Bullet collided with NPC\n");
         collider2->ai.health -= collider1->bulletInfo.damage;
         play_sound(SOUND_NPC_HIT);
+        newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", collider2->rect.x, collider2->rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
+        scene->objects[newObject].timeToLive = 10;
 
         if(collider2->ai.health <= 0)
         {
             RemoveObjectFromScene(scene, c2_index);
             newObject = createObject(scene, OBJECT_ITEM, "MedKit", collider2->rect.x, collider2->rect.y, 50, 50, TXT_MEDKIT, false);
-
             SetItemInfo(&scene->objects[newObject], ITEM_MEDKIT, 10);
         }
 
@@ -164,15 +200,16 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 
     else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_PLAYER)
     {
-        collider2->p_stats.health -= collider1->bulletInfo.damage;
+        collider2->p_stats.health -= NewDamage(collider1,collider2);
         UI_HealthChanged(collider2->p_stats.health);
             if(collider2->p_stats.health <= 0)
             {
                 printf("Player died!\n");
-                collider2->rect.x = 0;
-                collider2->rect.y = 0;
+                collider2->rect.x = 3000;
+                collider2->rect.y = 5200;
                 collider2->p_stats.health = 100;
                 collider2->ai.target = NULL;
+                UI_HealthChanged(collider2->p_stats.health);
             }
         RemoveObjectFromScene(scene, c1_index);
     }
@@ -180,6 +217,11 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
     else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_WALL) //Bullet med Wall
     {
         printf("Bullet collided with Wall\n");
+        RemoveObjectFromScene(scene, c1_index);
+    }
+    else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_CAR) //Bullet med car
+    {
+        printf("Bullet collided with Car\n");
         RemoveObjectFromScene(scene, c1_index);
     }
 

@@ -73,11 +73,11 @@ int ProcessMessage(char data[], Scene* scene)
             break;
         case 2:
             printf("Object position was received\n");
-            net_ChangeObjectPos(data, scene);
+//            net_ChangeObjectPos(data, scene);
             break;
         case 5:
             printf("New object was received\n");
-            net_NewObject(data, scene);
+//            net_NewObject(data, scene);
             break;
         case NET_PLAYER_ID:
             net_SetPlayerId(data);

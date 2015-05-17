@@ -11,8 +11,8 @@
 
 #endif
 
-#define EXIT_SUCCESS 1
-#define EXIT_FAILURE 0
+//#define EXIT_SUCCESS 1
+//#define EXIT_FAILURE 0
 
 #include <math.h>
 #include <stdio.h>
@@ -29,9 +29,13 @@
 
 GameObject* gUI_Health = NULL;
 GameObject* gUI_Ammo = NULL;
+GameObject* gUI_AmmoTotal = NULL;
 extern TTF_Font* gFont;
 
-GameObject* gUI_damage = NULL;
+GameObject* gUI_Damage = NULL;
+GameObject* gUI_Armor = NULL;
+
+
 
 int playerNetId = -1;
 
@@ -51,11 +55,27 @@ void UI_HealthChanged(int health)
     ChangeTextInt(gUI_Health, "Health: ", health);
 }
 
+void UI_DamageChanged(int damage)
+{
+    printf("Changing damage\n");
+    ChangeTextInt(gUI_Damage, "Damage: ", damage);
+}
+
+void UI_TotalAmmo(int totalAmmo)
+{
+    ChangeTextInt(gUI_AmmoTotal, "Clip: ", totalAmmo);
+}
 void UI_AmmoChanged(int ammo)
 {
-
+    printf("Changing ammo\n");
     ChangeTextInt(gUI_Ammo, "Ammo: ", ammo);
 }
+void UI_ArmorChanged(int armor)
+{
+    printf("Changing armor\n");
+    ChangeTextInt(gUI_Armor, "Armor: ", armor);
+}
+
 
 
 void CreateUI(Scene *scene, int player)
@@ -66,17 +86,37 @@ void CreateUI(Scene *scene, int player)
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 620, 200, 80, TXT_BUTTON, false);
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 638, 200, 40, TXT_BUTTON, false);
     gUI_Health = &scene->objects[newObject];
     sprintf(str, "Health:%d", scene->objects[player].p_stats.health);
-    SetText(&scene->objects[newObject], str, true, black, 20);
+    SetText(&scene->objects[newObject], str, true, black, 10);
     scene->objects[newObject].drawColor = red;
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 200,620,200,80, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 0,677,200,40, TXT_BUTTON, false);
     gUI_Ammo = &scene->objects[newObject];
-    sprintf(str, "Ammo:%d", scene->objects[player].p_stats.ammo);
+    sprintf(str, "Clip:%d", scene->objects[player].p_stats.ammo);
     SetText(&scene->objects[newObject], str, true, black, 20);
     scene->objects[newObject].drawColor = white;
+
+    newObject = createObject(scene, OBJECT_UI, "clips", 400,620,200,80,TXT_BUTTON, false);
+    gUI_AmmoTotal = &scene->objects[newObject];
+    sprintf(str, "Ammo:%d", scene->objects[player].p_stats.ammoTotal);
+    SetText(&scene->objects[newObject], str, true, black, 20);
+    scene->objects[newObject].drawColor = white;
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerDamage", 0,716,200,40, TXT_BUTTON, false);
+    gUI_Damage = &scene->objects[newObject];
+    sprintf(str, "Damage: %d", scene->objects[player].p_stats.damage);
+    SetText(&scene->objects[newObject], str, true, black, 10);
+    //scene->objects[newObject].drawColor = none;
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerArmer", 0,755,200,40, TXT_BUTTON, false);
+    gUI_Armor = &scene->objects[newObject];
+    sprintf(str, "Armor: %d", scene->objects[player].p_stats.armor);
+    SetText(&scene->objects[newObject], str, true, black, 10);
+    //scene->objects[newObject].drawColor = none;
+
 }
 
 int main(int argc, char *argv[])
@@ -167,8 +207,8 @@ int main(int argc, char *argv[])
 
 
     //LEVEL
-    player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 400, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 10000, 13, 4, 20,CLASS_SOLDIER, 0, 30);
+    player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 5200, 128, 128, TXT_PLAYER, true);
+    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, CLASS_SOLDIER, 0, 30, 26);
     SetAnimation(&level.objects[player],10,0,1,128,2);
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
@@ -176,20 +216,31 @@ int main(int argc, char *argv[])
 
     CreateUI(&level, player);
 
-    newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 450, 40, 40, TXT_GUN, false);
+    newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 4400, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
 
-    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 1000, 1000, 118, 65, TXT_ZOMBIE, false);
+    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2800, 900, 118, 65, TXT_ZOMBIE, false);
     SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20, 50);
     level.objects[newObject].objectID = 25;
 
     newObject = createObject(&level, OBJECT_NPC, "ZOMBIE_SPIT", 1000, 1000, 128, 128, TXT_ZOMBIE_FAT, false);
-    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 1, 100, 1.0f, 500, 10, 30);
+    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 100, 100, 1.0f, 500, 10, 30);
     level.objects[newObject].objectID = 26;
 
 
+
+    //item
+    newObject=createObject(&level, OBJECT_ITEM, "Gun", 2600, 730, 40, 40, TXT_GUN, false);
+    SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
+
+    newObject=createObject(&level,OBJECT_ITEM, "Armor", 2600, 650, 40, 40, TXT_GUN, false);
+    SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 10);
+
+
+
+
     //grans
-    newObject=createObject(&level, OBJECT_WALL, "block", 2210, 350, 1000, 20, TXT_NONE, true);//1
+    newObject=createObject(&level, OBJECT_WALL, "block", 2210, 510, 1000, 20, TXT_NONE, true);//1
     newObject=createObject(&level, OBJECT_WALL, "block", 2210, 365, 30, 1300, TXT_NONE, true);//2
     newObject=createObject(&level, OBJECT_WALL, "block", 3170, 360, 40, 2380, TXT_NONE, true);//3
     newObject=createObject(&level, OBJECT_WALL, "block", 550, 1680, 1680, 30, TXT_NONE, true);//4
@@ -202,8 +253,17 @@ int main(int argc, char *argv[])
     newObject=createObject(&level, OBJECT_WALL, "block", 3600, 3450, 30, 2250, TXT_NONE, true);//11
     newObject=createObject(&level, OBJECT_WALL, "block", 2650, 5620, 1000, 40, TXT_NONE, true);//12
 
+    //car
+    newObject=createObject(&level, OBJECT_CAR, "block", 2520, 3975, 150, 300, TXT_CAR4, true);//1
+    newObject=createObject(&level, OBJECT_CAR, "block", 1632, 3720, 150, 300, TXT_CAR2, true);//2
+    newObject=createObject(&level, OBJECT_CAR, "block", 999, 4090, 300, 150, TXT_CAR22, true);//3
+    newObject=createObject(&level, OBJECT_CAR, "block", 1116, 3130, 150, 300, TXT_CAR1, true);//4
+    newObject=createObject(&level, OBJECT_CAR, "block", 1256, 2143, 150, 300, TXT_CAR3, true);//5
+    newObject=createObject(&level, OBJECT_CAR, "block", 1520, 1993, 300, 150, TXT_CAR42, true);//6
+    newObject=createObject(&level, OBJECT_CAR, "block", 2290, 560, 150, 300, TXT_CAR3, true);//7
+    newObject=createObject(&level, OBJECT_CAR, "block", 2980, 550, 150, 300, TXT_CAR4, true);//8
 
-
+    CreateUI(&level, player);
 
     //Options
     newObject = createObject(&options, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
@@ -441,21 +501,27 @@ int main(int argc, char *argv[])
                                         case BUTTON_PLAY:
                                             break;
                                         case BUTTON_GOTO_LOBBY:
+                                            play_sound(SOUND_BUTTON);
                                             nextScene = &lobby;
                                             break;
                                         case BUTTON_GOTO_MENU:
+                                            play_sound(SOUND_BUTTON);
                                             nextScene = &meny;
                                             break;
                                         case BUTTON_GOTO_OPTIONS:
+                                            play_sound(SOUND_BUTTON);
                                             nextScene = &options;
                                             break;
                                         case BUTTON_QUIT:
+                                            play_sound(SOUND_BUTTON);
                                             quit = true;
                                             break;
                                         case BUTTON_TOGGLE_MUSIC:
+                                            play_sound(SOUND_BUTTON);
                                             play_sound(SOUND_ODE_TO_DUB_STEP);
                                             break;
                                         case BUTTON_NEW_NAME:
+                                            play_sound(SOUND_BUTTON);
                                             printf("Starting textinput\n");
                                             currentInput = INPUT_TEXT_PNAME;
                                             nameLength = 0;
@@ -471,24 +537,27 @@ int main(int argc, char *argv[])
 
                                             strcpy(playerName, inputText);
                                             printf("Player name is now: %s\n", playerName);
+                                            play_sound(SOUND_BUTTON);
                                             break;
                                         case BUTTON_SET_IP:
                                             currentInput = INPUT_TEXT_IP;
                                             lobby.objects[button_lobbyIp].textColor = green;
                                             SDL_StartTextInput();
+                                            play_sound(SOUND_BUTTON);
                                             break;
                                         case BUTTON_SET_PORT:
                                             currentInput = INPUT_TEXT_PORT;
                                             lobby.objects[button_lobbyPort].textColor = green;
                                             SDL_StartTextInput();
+                                            play_sound(SOUND_BUTTON);
                                             break;
                                         case BUTTON_CONNECT:
                                             printf("Connecting to: %s %s\n",ip,port);
                                             TCPsocket sd = net_start(ip, port);/* Socket descriptor */
                                             printf("Sending playername %s\n",playerName);
                                             net_SendPlayerName(playerName, nameLength);
-                                            nextScene = &pregame;
                                             nextScene = &level;
+                                            play_sound(SOUND_BUTTON);
                                             break;
                                     }
                                 }
@@ -505,6 +574,8 @@ int main(int argc, char *argv[])
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
                     //högerklick
+                    bomb(activeScene, player);
+
                 }
             }
         }
@@ -567,12 +638,33 @@ int main(int argc, char *argv[])
             {
                 if(activeScene->objects[i].ai.ai == AI_ZOMBIE)
                 {
-                    Zombie_UseBrain(activeScene, &activeScene->objects[i]);
+                    Zombie_UseBrain(activeScene, &activeScene->objects[i], i);
                 }
 
                 if(activeScene->objects[i].ai.ai == AI_SPITTER)
                 {
-                    Zombie_UseBrain(activeScene, &activeScene->objects[i]);
+                    Zombie_UseBrain(activeScene, &activeScene->objects[i], i);
+                }
+            }
+            else if(activeScene->objects[i].objectType == OBJECT_BOMB){
+                //HÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR GURRIS!
+                activeScene->objects[i].bombInfo.timeToLive--;
+                if(activeScene->objects[i].bombInfo.timeToLive == 0){
+
+                    explosion(activeScene, i);
+                    RemoveObjectFromScene(activeScene, i);
+                }
+            }
+            else if(activeScene->objects[i].objectType == OBJECT_EXPLOSION){
+                activeScene->objects[i].ExplosionInfo.timeToLive--;
+                if(activeScene->objects[i].ExplosionInfo.timeToLive == 0){
+                    RemoveObjectFromScene(activeScene, i);
+                }
+            }
+            else if(activeScene->objects[i].objectType == OBJECT_EFFECT){
+                activeScene->objects[i].timeToLive--;
+                if(activeScene->objects[i].timeToLive == 0){
+                    RemoveObjectFromScene(activeScene, i);
                 }
             }
             else if(activeScene->objects[i].p_stats.reloadTime > 0){

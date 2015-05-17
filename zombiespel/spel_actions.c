@@ -24,9 +24,22 @@ bool shoot(Scene* scene, int shooter, GameObject* bullet){
 
 bool reload(Scene* scene, int reloader)
 {
-    if(scene->objects[reloader].p_stats.reloadTime == 0){
-        scene->objects[reloader].p_stats.ammo = 13;
+    int difference;
+    if(scene->objects[reloader].p_stats.reloadTime == 0 && scene->objects[reloader].p_stats.ammoTotal > 0){
+
+        difference = 13 - scene->objects[reloader].p_stats.ammo;
+
+        if(scene->objects[reloader].p_stats.ammoTotal >= difference){
+            scene->objects[reloader].p_stats.ammo += difference;
+            scene->objects[reloader].p_stats.ammoTotal -= difference;
+        }
+        else if(scene->objects[reloader].p_stats.ammoTotal > 0 && scene->objects[reloader].p_stats.ammoTotal < difference){
+            scene->objects[reloader].p_stats.ammo += scene->objects[reloader].p_stats.ammoTotal;
+            scene->objects[reloader].p_stats.ammoTotal -= scene->objects[reloader].p_stats.ammoTotal;
+        }
+
         UI_AmmoChanged(scene->objects[reloader].p_stats.ammo);
+        UI_TotalAmmo(scene->objects[reloader].p_stats.ammoTotal);
         scene->objects[reloader].p_stats.reloadTime = 60;
         play_sound(SOUND_RELOAD);
         return true;
@@ -36,4 +49,14 @@ bool reload(Scene* scene, int reloader)
         return false;
     }
 }
-
+bool bomb(Scene* scene, int player){
+    printf("Placing Bomb\n");
+    int bombIndex;
+    bombIndex = createObject(scene, OBJECT_BOMB, "BOMB", scene->objects[player].rect.x, scene->objects[player].rect.y, 40, 40, TXT_BOMB, false);
+    SetBombStats(&scene->objects[bombIndex], 120, 100);
+}
+void explosion(Scene* scene, int placer){
+    int explosionIndex;
+    explosionIndex = createObject(scene, OBJECT_EXPLOSION, "EXPLOSION", scene->objects[placer].rect.x, scene->objects[placer].rect.y, 100, 100, TXT_EXPLOSION, false);
+    SetExplosionStats(&scene->objects[explosionIndex], 60, 90);
+}

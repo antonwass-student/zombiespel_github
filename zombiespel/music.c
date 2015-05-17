@@ -62,6 +62,8 @@ void load_music(){
     sound[3].name = SOUND_NPC_HIT;
     sound[3].soundEffect = Mix_LoadWAV("music/zombie_hit.wav");
 
+    sound[4].name = SOUND_BUTTON;
+    sound[4].soundEffect = Mix_LoadWAV("music/menu-selection-click.wav");
 }
 void play_sound(soundID_t id){
     //MAIN MUSIC START
@@ -95,6 +97,9 @@ void play_sound(soundID_t id){
     }
     if(id == SOUND_NPC_HIT){
         Mix_PlayChannel(-1, sound[3].soundEffect, 0);
+    }
+    if(id == SOUND_BUTTON){
+        Mix_PlayChannel(-1, sound[4].soundEffect, 0);
     }
 
 
