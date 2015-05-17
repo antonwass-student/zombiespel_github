@@ -6,7 +6,6 @@
 #define EXIT_FAILURE 0
 
 extern int playerNetId;
-extern LobbyRoom lobbyRoom;
 
 void net_NewObject(char data[], Scene* scene)
 {
@@ -36,12 +35,10 @@ void net_NewObject(char data[], Scene* scene)
 
 }
 
-int net_SendPlayerName(char* name, int length, playerClass_T pClass)
+int net_SendPlayerName(char* name, int length)
 {
     char buffer[512];
     int size = 0;
-
-    printf("name length according to strlen = '%d'\n",strlen(name));
 
     buffer[size++] = NET_PLAYER_NAME;
 
@@ -51,41 +48,7 @@ int net_SendPlayerName(char* name, int length, playerClass_T pClass)
     {
         buffer[i+size] = name[i];
     }
-
-    size += length;
-
-    buffer[size++] = 2; //pClass;
-    printf("Class %d was sent at position %d\n",buffer[size - 1], size - 1);
-
     AddToPool(&sendPool, buffer);
-
-    return 0;
-}
-int net_SendPlayerReady()
-{
-    char data[512];
-    int index = 1;
-
-    data[0] = NET_PLAYER_READY;
-
-    Converter_Int32ToBytes(data, &index, playerNetId);
-
-    AddToPool(&sendPool, data);
-
-    return 0;
-}
-
-int net_recvLobbyPlayer(char data[])
-{
-    int index = 1;
-    int length = Converter_BytesToInt32(data, &index);
-    playerClass_T class = data[index++];
-
-    for(int i = 0; i < length; i++)
-    {
-        lobbyRoom.players[lobbyRoom.pCount].name[i] = data[index++];
-    }
-    printf("Lobby player with name %s was received.\n", lobbyRoom.players[lobbyRoom.pCount].name);
 
     return 0;
 }
