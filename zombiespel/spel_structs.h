@@ -24,7 +24,11 @@ typedef enum{
     NET_OBJECT_NEW,
     NET_OBJECT_REMOVE,
     NET_PLAYER_ID,
-    NET_PLAYER_NAME
+    NET_PLAYER_NAME,
+    NET_PLAYER_STATS,
+    NET_LOBBY_PLAYER,
+    NET_PLAYER_READY,
+    NET_GAME_START
 } NetMessages_T;
 
 typedef enum{
@@ -42,12 +46,12 @@ typedef struct{
     int width;
     int height;
 }Size;
-
 typedef enum {
     AI_ZOMBIE,
     AI_SUPERZOMBIE,
     AI_SPITTER
 } AI_T;
+
 
 typedef enum {
     SCENE_LEVEL,
@@ -113,12 +117,15 @@ typedef enum{
     BUTTON_SET_IP,
     BUTTON_SET_PORT,
     BUTTON_PLAY,
-    BUTTON_CONNECT
+    BUTTON_CONNECT,
+    BUTTON_READY
 } ButtonAction_T;
 
 
 typedef enum {
-    CLASS_SOLDIER
+    CLASS_SOLDIER = 0,
+    CLASS_SCOUT = 1,
+    CLASS_TANK = 2
 } playerClass_T;
 
 typedef enum {
@@ -148,11 +155,22 @@ typedef enum {
     TXT_CAR42
 } textureID_t;
 
+typedef struct{
+    char* name;
+    playerClass_T class;
+} LobbyPlayer;
+
+typedef struct{
+    LobbyPlayer players[4];
+    int pCount;
+} LobbyRoom;
+
 typedef struct
 {
     SDL_Texture* texture;
     textureID_t id;
 } Sprite;
+
 typedef enum
 {
     SOUND_ODE_TO_DUB_STEP,

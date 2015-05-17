@@ -35,9 +35,9 @@ extern TTF_Font* gFont;
 GameObject* gUI_Damage = NULL;
 GameObject* gUI_Armor = NULL;
 
-
-
 int playerNetId = -1;
+
+LobbyRoom lobbyRoom;
 
 bool checkIfMoving(PlayerMovement mv)
 {
@@ -121,22 +121,6 @@ void CreateUI(Scene *scene, int player)
 
 int main(int argc, char *argv[])
 {
-
-
-    char buffer[512];
-    int test = 1000;
-    int result = 0;
-    int testCount = 0;
-
-    printf("Starting value: %d\n", test);
-
-    Converter_Int32ToBytes(buffer, &testCount, test);
-    testCount = 0;
-    result = Converter_BytesToInt32(buffer, &testCount);
-
-    printf("Final value: %d\n",result);
-
-
     bool quit = false;
     bool typing = false;
     char inputText[128] = {"\0"};
@@ -162,6 +146,9 @@ int main(int argc, char *argv[])
     int netUpdateTimer = 12;
     int netUpdateRate = 12; // How many frames between each net update
 
+    //Lobby
+    playerClass_T pClass = CLASS_SCOUT;
+    lobbyRoom.pCount = 0;
 
     char netMsg[512];
     int netMsgSize = 0;
@@ -326,13 +313,17 @@ int main(int argc, char *argv[])
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player2", true, black, 10);
 
-    newObject = createObject(&pregame, OBJECT_BUTTON, "Player2", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.5f, 0.2f * SCREEN_WIDTH,
+    newObject = createObject(&pregame, OBJECT_BUTTON, "Player3", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.5f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player3", true, black, 10);
 
-    newObject = createObject(&pregame, OBJECT_BUTTON, "Player2", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.7f, 0.2f * SCREEN_WIDTH,
+    newObject = createObject(&pregame, OBJECT_BUTTON, "Player4", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.7f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player4", true, black, 10);
+
+    newObject = createObject(&pregame, OBJECT_BUTTON, "Player1", SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.4f * SCREEN_WIDTH,
+                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
+    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_READY, true), "Ready", true, black, 10);
 
     // Game loop
     while(!quit)
@@ -345,7 +336,7 @@ int main(int argc, char *argv[])
         {
             printf("reading net message...\n");
             ReadPool(&recvPool, netMsg);
-            ProcessMessage(netMsg, activeScene);
+            ProcessMessage(netMsg, activeScene, nextScene, &level);
             printf("Message read.\n");
         }
 
@@ -418,7 +409,7 @@ int main(int argc, char *argv[])
             }
             else if( e.type == SDL_KEYUP )
             {
-                if(activeScene->sceneName == SCENE_LEVEL)
+                if(activeScene->sceneName == SCENE_LEVEL || activeScene->sceneName == SCENE_PREGAME)
                 {
                     switch( e.key.keysym.sym )
                     {
@@ -437,6 +428,7 @@ int main(int argc, char *argv[])
                         case SDLK_r:
                             break;
                         case SDLK_e:
+                            nextScene = &level;
                             //USE
                             break;
                         case SDLK_f:
@@ -522,7 +514,7 @@ int main(int argc, char *argv[])
                                             break;
                                         case BUTTON_NEW_NAME:
                                             play_sound(SOUND_BUTTON);
-                                            printf("Starting textinput\n");
+                                            printf("Starting text input\n");
                                             currentInput = INPUT_TEXT_PNAME;
                                             nameLength = 0;
                                             SDL_StartTextInput();
@@ -555,9 +547,14 @@ int main(int argc, char *argv[])
                                             printf("Connecting to: %s %s\n",ip,port);
                                             TCPsocket sd = net_start(ip, port);/* Socket descriptor */
                                             printf("Sending playername %s\n",playerName);
-                                            net_SendPlayerName(playerName, nameLength);
-                                            nextScene = &level;
+                                            net_SendPlayerName(playerName, nameLength, pClass);
+                                            nextScene = &pregame;
+                                            //nextScene = &level;
                                             play_sound(SOUND_BUTTON);
+                                            break;
+                                        case BUTTON_READY:
+                                            net_SendPlayerReady();
+                                            printf("Sent ready notification to server\n");
                                             break;
                                     }
                                 }
