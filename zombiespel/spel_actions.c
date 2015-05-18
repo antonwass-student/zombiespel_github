@@ -1,4 +1,5 @@
 #include "spel_gameobject.h"
+#include <unistd.h>
 
 
 bool shoot(Scene* scene, int shooter, GameObject* bullet){
@@ -54,6 +55,7 @@ bool bomb(Scene* scene, int player){
     int bombIndex;
     bombIndex = createObject(scene, OBJECT_BOMB, "BOMB", scene->objects[player].rect.x, scene->objects[player].rect.y, 40, 40, TXT_BOMB, false);
     SetBombStats(&scene->objects[bombIndex], 120, 100);
+    return EXIT_SUCCESS;
 }
 void explosion(Scene* scene, int placer){
     int explosionIndex;
