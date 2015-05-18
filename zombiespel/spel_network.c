@@ -64,7 +64,7 @@ TCPsocket net_start(char* ip_p, char*port_p){
     return sd;
 }
 
-int ProcessMessage(char data[], Scene* scene, Scene* nextScene, Scene *level)
+NetEvent_T ProcessMessage(char data[], Scene* scene)
 {
     switch(data[0])
     {
@@ -84,13 +84,13 @@ int ProcessMessage(char data[], Scene* scene, Scene* nextScene, Scene *level)
             break;
         case NET_GAME_START:
             printf("Game started\n");
-            *scene = *level;
+            return NET_EVENT_START_GAME;
             break;
         default:
             printf("Could not identify header.\n");
             break;
     }
-    return 0;
+    return -1;
 }
 
 int Converter_BytesToInt32(unsigned char data[], int* index){ // Gör om en byte-array till en int.

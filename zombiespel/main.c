@@ -119,7 +119,7 @@ void CreateUI(Scene *scene, int player)
 
 }
 
-int main(int argc, char *argv[])
+int WinMain(int argc, char *argv[])
 {
     bool quit = false;
     bool typing = false;
@@ -153,6 +153,7 @@ int main(int argc, char *argv[])
     char netMsg[512];
     int netMsgSize = 0;
     int netMsgIndex = 0;
+    NetEvent_T netEvent = -1;
 
     strcpy(ip,"192.168.56.101");
     //strcpy(ip,"130.229.132.73");
@@ -336,7 +337,16 @@ int main(int argc, char *argv[])
         {
             printf("reading net message...\n");
             ReadPool(&recvPool, netMsg);
-            ProcessMessage(netMsg, activeScene, nextScene, &level);
+            netEvent = ProcessMessage(netMsg, activeScene);
+
+            switch(netEvent) //Hackig lösning
+            {
+                case NET_EVENT_START_GAME:
+                    nextScene = &level;
+                    printf("Set next scene to level\n");
+                    break;
+            }
+
             printf("Message read.\n");
         }
 

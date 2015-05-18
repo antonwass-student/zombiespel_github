@@ -32,6 +32,10 @@ typedef enum{
 } NetMessages_T;
 
 typedef enum{
+    NET_EVENT_START_GAME = 0
+}NetEvent_T;
+
+typedef enum{
     SERVEROBJ_ZOMBIE_NORMAL,
     SERVEROBJ_WALL,
     SERVEROBJ_MEDKIT
