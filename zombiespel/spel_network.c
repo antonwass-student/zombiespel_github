@@ -73,11 +73,11 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
             break;
         case 2:
             printf("Object position was received\n");
-//            net_ChangeObjectPos(data, scene);
+            net_ChangeObjectPos(data, scene);
             break;
         case 5:
             printf("New object was received\n");
-//            net_NewObject(data, scene);
+            net_NewObject(data, scene);
             break;
         case NET_PLAYER_ID:
             net_SetPlayerId(data);
@@ -85,6 +85,14 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
         case NET_GAME_START:
             printf("Game started\n");
             return NET_EVENT_START_GAME;
+            break;
+        case NET_PLAYER_STATS:
+            printf("Stats received\n");
+            net_recvPlayerStats(data, scene);
+            break;
+        case NET_OBJECT_BULLET:
+            printf("Received a bullet\n");
+            net_recvBullet(data, scene);
             break;
         default:
             printf("Could not identify header.\n");

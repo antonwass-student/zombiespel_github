@@ -28,7 +28,8 @@ typedef enum{
     NET_PLAYER_STATS,
     NET_LOBBY_PLAYER,
     NET_PLAYER_READY,
-    NET_GAME_START
+    NET_GAME_START,
+    NET_OBJECT_BULLET
 } NetMessages_T;
 
 typedef enum{
@@ -36,9 +37,17 @@ typedef enum{
 }NetEvent_T;
 
 typedef enum{
+    BULLET_ZOMBIE,
+    BULLET_PLAYER
+}bulletType_T;
+
+typedef enum{
     SERVEROBJ_ZOMBIE_NORMAL,
     SERVEROBJ_WALL,
-    SERVEROBJ_MEDKIT
+    SERVEROBJ_CAR,
+    SERVEROBJ_MEDKIT,
+    SERVEROBJ_PLAYER,
+    SERVEROBJ_BULLET
 }ServerObject_T;
 
 typedef struct{
@@ -87,7 +96,8 @@ typedef enum {
     OBJECT_EFFECT,
     OBJECT_BOMB,
     OBJECT_EXPLOSION,
-    OBJECT_CAR
+    OBJECT_CAR,
+    OBJECT_PLAYER_OTHER
 } ObjectType_T;
 
 typedef enum{
@@ -156,7 +166,8 @@ typedef enum {
     TXT_CAR3,
     TXT_CAR32,
     TXT_CAR4,
-    TXT_CAR42
+    TXT_CAR42,
+    TXT_PLAYER_SOLDIER
 } textureID_t;
 
 typedef struct{

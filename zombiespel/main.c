@@ -119,7 +119,7 @@ void CreateUI(Scene *scene, int player)
 
 }
 
-int WinMain(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     bool quit = false;
     bool typing = false;
@@ -143,8 +143,8 @@ int WinMain(int argc, char *argv[])
     long frames = 0;
     int deltaTime = 0;
     bool netUpdateFrame = false;
-    int netUpdateTimer = 12;
-    int netUpdateRate = 12; // How many frames between each net update
+    int netUpdateTimer = 1;
+    int netUpdateRate = 1; // How many frames between each net update
 
     //Lobby
     playerClass_T pClass = CLASS_SCOUT;
@@ -154,6 +154,7 @@ int WinMain(int argc, char *argv[])
     int netMsgSize = 0;
     int netMsgIndex = 0;
     NetEvent_T netEvent = -1;
+    bool netDone = false;
 
     strcpy(ip,"192.168.56.101");
     //strcpy(ip,"130.229.132.73");
@@ -330,6 +331,7 @@ int WinMain(int argc, char *argv[])
     while(!quit)
     {
         timeStamp = SDL_GetTicks();
+        netDone = false;
 
         // ***** NETWORK MESSAGES *****
 
@@ -344,10 +346,13 @@ int WinMain(int argc, char *argv[])
                 case NET_EVENT_START_GAME:
                     nextScene = &level;
                     printf("Set next scene to level\n");
+                    netDone = true;
                     break;
             }
 
             printf("Message read.\n");
+            if(netDone) //If forced to go to next update because of special net messages (GAME_START)
+                break;
         }
 
 
@@ -481,9 +486,17 @@ int WinMain(int argc, char *argv[])
             {
                 if(activeScene->sceneName == SCENE_LEVEL)
                 {
+                    double oldRot = level.objects[player].rotation;
                     mouseX = e.motion.x - (SCREEN_WIDTH/2);
                     mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
                     level.objects[player].rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
+
+                    if(oldRot != level.objects[player].rotation)
+                    {
+                        if(playerNetId != -1 && netUpdateFrame)
+                            net_PlayerMove(level.objects[player].rect.x, level.objects[player].rect.y, (int)level.objects[player].rotation);
+                    }
+
                 }
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
@@ -574,9 +587,9 @@ int WinMain(int argc, char *argv[])
 
                     if(activeScene->sceneName == SCENE_LEVEL) //Skjuter
                     {
-                        printf("Trying to shoot\n");
                         GameObject bullet;
                         shoot(activeScene, player, &bullet);
+                        printf("Shooting\n");
                     }
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
@@ -633,19 +646,20 @@ int WinMain(int argc, char *argv[])
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 MoveObject(&activeScene->objects[i],activeScene, x,y, i);
+                /*
                 activeScene->objects[i].bulletInfo.timetolive--;
                 if(activeScene->objects[i].bulletInfo.timetolive <= 0)
                 {
                     printf("Removing bullet...\n");
                     RemoveObjectFromScene(activeScene, i);
-                }
+                }*/
             }
 
             else if(activeScene->objects[i].objectType == OBJECT_NPC)
             {
                 if(activeScene->objects[i].ai.ai == AI_ZOMBIE)
                 {
-                    Zombie_UseBrain(activeScene, &activeScene->objects[i], i);
+                    //Zombie_UseBrain(activeScene, &activeScene->objects[i], i);
                 }
 
                 if(activeScene->objects[i].ai.ai == AI_SPITTER)

@@ -157,7 +157,10 @@ void loadSprites()
     sprites[22].id = TXT_EXPLOSION;
     sprites[22].texture = loadTexture("textures/explosion.png");
 
-    spritesCount = 23;
+    sprites[23].id = TXT_PLAYER_SOLDIER;
+    sprites[23].texture = loadTexture("textures/man3wep.png");
+
+    spritesCount = 24;
 }
 
 SDL_Texture* loadTexture(char* path)

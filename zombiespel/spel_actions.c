@@ -1,6 +1,8 @@
 #include "spel_gameobject.h"
 #include <unistd.h>
+#define EXIT_SUCCESS 1
 
+extern int playerNetId;
 
 bool shoot(Scene* scene, int shooter, GameObject* bullet){
     int bulletIndex;
@@ -10,10 +12,14 @@ bool shoot(Scene* scene, int shooter, GameObject* bullet){
         scene->objects[shooter].p_stats.fireCount = scene->objects[shooter].p_stats.fireRate;
         //fireRate kommer ange hur många frames ska passera innan karaktären kan avfyra sitt vapen igen.
 
+        if(playerNetId != -1)
+            net_PlayerShoot(scene->objects[shooter]);
+
+        /*
         bulletIndex = createObject(scene, OBJECT_BULLET, "bullet", scene->objects[shooter].rect.x + scene->objects[shooter].rect.w/2,
                                     scene->objects[shooter].rect.y + scene->objects[shooter].rect.h/2, 20,20, TXT_BULLET, false);
         SetBulletStats(&scene->objects[bulletIndex], 25, scene->objects[shooter].rotation,scene->objects[shooter].p_stats.damage );
-        scene->objects[bulletIndex].rotation = scene->objects[shooter].rotation;
+        scene->objects[bulletIndex].rotation = scene->objects[shooter].rotation;*/
         scene->objects[shooter].p_stats.ammo -= 1;
         UI_AmmoChanged(scene->objects[shooter].p_stats.ammo);
         play_sound(SOUND_GUN);
