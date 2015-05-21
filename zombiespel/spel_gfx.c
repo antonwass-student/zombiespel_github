@@ -161,7 +161,7 @@ void loadSprites()
     sprites[23].texture = loadTexture("textures/man3wep.png");
     
     sprites[24].id = TXT_MAXARMOR;
-    sprites[24].texture = loadTexture("textures/armor.png");
+    sprites[24].texture = loadTexture("textures/maxarmor.png");
 
     spritesCount = 25;
 }

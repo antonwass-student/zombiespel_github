@@ -130,9 +130,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
             printf("collided with armor\n");
             if(obj1->p_stats.armor+obj2->itemInfo.amount>50){
                 printf("you have max armor");
-                
-                
-                newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", obj1->rect.x, obj1->rect.y, 100,100, TXT_MAXARMOR, false);
+                newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", obj1->rect.x-50, obj1->rect.y, 200,200, TXT_MAXARMOR, false);
                 scene->objects[newObject].timeToLive = 2;
             
             }
