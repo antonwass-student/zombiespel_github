@@ -222,7 +222,13 @@ int main(int argc, char *argv[])
     newObject=createObject(&level, OBJECT_ITEM, "Gun", 2600, 730, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
 
-    newObject=createObject(&level,OBJECT_ITEM, "Armor", 2600, 650, 40, 40, TXT_GUN, false);
+    newObject=createObject(&level,OBJECT_ITEM, "Armor", 2800, 5000, 40, 40, TXT_GUN, false);
+    SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 30);
+    
+    newObject=createObject(&level,OBJECT_ITEM, "Armor", 3000, 5000, 40, 40, TXT_GUN, false);
+    SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 20);
+    
+    newObject=createObject(&level,OBJECT_ITEM, "Armor", 3300, 5000, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 10);
 
 

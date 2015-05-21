@@ -14,8 +14,8 @@
 #include "spel_gameobject.h"
 #include "spel_AI.h"
 
-#define EXIT_FAILURE 1
-#define EXIT_SUCCESS 0
+//#define EXIT_FAILURE 1
+//#define EXIT_SUCCESS 0
 
 void Zombie_UseBrain(Scene* scene, GameObject* zombie, int index)
 {

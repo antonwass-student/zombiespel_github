@@ -159,8 +159,11 @@ void loadSprites()
 
     sprites[23].id = TXT_PLAYER_SOLDIER;
     sprites[23].texture = loadTexture("textures/man3wep.png");
+    
+    sprites[24].id = TXT_MAXARMOR;
+    sprites[24].texture = loadTexture("textures/armor.png");
 
-    spritesCount = 24;
+    spritesCount = 25;
 }
 
 SDL_Texture* loadTexture(char* path)

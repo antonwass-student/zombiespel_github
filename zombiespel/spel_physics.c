@@ -108,7 +108,7 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
 void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene)
 {
     int distance = GetDistance(obj1->rect, obj2->rect);
-
+    int newObject =-1;
 
     if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM) //player med item
     {
@@ -128,8 +128,13 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
         }
         else if(obj2->itemInfo.itemType == ITEM_ARMOR && distance < 64) {
             printf("collided with armor\n");
-            if(obj1->p_stats.armor>=50){
+            if(obj1->p_stats.armor+obj2->itemInfo.amount>50){
                 printf("you have max armor");
+                
+                
+                newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", obj1->rect.x, obj1->rect.y, 100,100, TXT_MAXARMOR, false);
+                scene->objects[newObject].timeToLive = 2;
+            
             }
             else{
             obj1->p_stats.armor += obj2->itemInfo.amount;

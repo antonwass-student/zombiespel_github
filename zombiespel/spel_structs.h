@@ -167,7 +167,8 @@ typedef enum {
     TXT_CAR32,
     TXT_CAR4,
     TXT_CAR42,
-    TXT_PLAYER_SOLDIER
+    TXT_PLAYER_SOLDIER,
+    TXT_MAXARMOR
 } textureID_t;
 
 typedef struct{
