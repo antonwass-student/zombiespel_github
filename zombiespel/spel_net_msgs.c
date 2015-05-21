@@ -2,8 +2,8 @@
 #include "spel_gameobject.h"
 #include "spel_network.h"
 
-#define EXIT_SUCCESS 1
-#define EXIT_FAILURE 0
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
 
 extern int playerNetId;
 extern LobbyRoom lobbyRoom;
@@ -119,8 +119,7 @@ int net_recvPlayerStats(char data[], Scene* scene)
             break;
         }
     }
-
-
+    return EXIT_SUCCESS;
 }
 
 int net_ChangeObjectPos(char data[], Scene* scene)
@@ -229,6 +228,7 @@ int net_recvBullet(char data[], Scene* scene)
     else if(type == BULLET_ZOMBIE)
         newObject = createObject(scene, OBJECT_BULLET, "bullet", x, y, 20, 20, TXT_ZBULLET, false);
     SetBulletStats(&scene->objects[newObject],speed, (double)angle, 0);
+    return EXIT_SUCCESS;
 }
 
 

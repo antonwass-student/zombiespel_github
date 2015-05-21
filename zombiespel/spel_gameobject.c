@@ -2,8 +2,8 @@
 #include <strings.h>
 
 
-#define EXIT_SUCCESS 1
-#define EXIT_FAILURE 0
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
 
 int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
