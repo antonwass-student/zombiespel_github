@@ -194,6 +194,7 @@ typedef enum
     SOUND_RELOAD,
     SOUND_NPC_HIT,
     SOUND_BUTTON,
+    SOUND_EXPLOSION
 } soundID_t;
 
 typedef struct
@@ -220,7 +221,7 @@ typedef struct{
 
 typedef struct{
 
-    int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal;
+    int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal, bombs;
     playerClass_T pClass;
     bool alive;
 }playerStats;

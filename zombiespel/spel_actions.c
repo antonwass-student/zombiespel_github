@@ -58,11 +58,19 @@ bool reload(Scene* scene, int reloader)
     }
 }
 bool bomb(Scene* scene, int player){
-    printf("Placing Bomb\n");
-    int bombIndex;
-    bombIndex = createObject(scene, OBJECT_BOMB, "BOMB", scene->objects[player].rect.x, scene->objects[player].rect.y, 40, 40, TXT_BOMB, false);
-    SetBombStats(&scene->objects[bombIndex], 120, 100);
-    return EXIT_SUCCESS;
+
+
+    if(scene->objects[player].p_stats.bombs > 0){
+        printf("Placing Bomb\n");
+        int bombIndex;
+        bombIndex = createObject(scene, OBJECT_BOMB, "BOMB", scene->objects[player].rect.x, scene->objects[player].rect.y, 40, 40, TXT_BOMB, false);
+        SetBombStats(&scene->objects[bombIndex], 120, 100);
+        scene->objects[player].p_stats.bombs -= 1;
+        UI_BombChanged(scene->objects[player].p_stats.bombs);
+        play_sound(SOUND_BUTTON);
+        return true;
+    }
+    return false;
 }
 void explosion(Scene* scene, int placer){
     int explosionIndex;

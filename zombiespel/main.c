@@ -30,6 +30,7 @@
 GameObject* gUI_Health = NULL;
 GameObject* gUI_Ammo = NULL;
 GameObject* gUI_AmmoTotal = NULL;
+GameObject* gUI_Bomb = NULL;
 extern TTF_Font* gFont;
 
 GameObject* gUI_Damage = NULL;
@@ -75,6 +76,10 @@ void UI_ArmorChanged(int armor)
     printf("Changing armor\n");
     ChangeTextInt(gUI_Armor, "Armor: ", armor);
 }
+void UI_BombChanged(int bombs){
+    printf("Changing Bomb\n");
+    ChangeTextInt(gUI_Bomb, "Bomb: ", bombs);
+}
 
 
 
@@ -116,6 +121,11 @@ void CreateUI(Scene *scene, int player)
     sprintf(str, "Armor: %d", scene->objects[player].p_stats.armor);
     SetText(&scene->objects[newObject], str, true, black, 10);
     //scene->objects[newObject].drawColor = none;
+
+    newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 100,100,200,40, TXT_BUTTON, false);
+    gUI_Bomb = &scene->objects[newObject];
+    sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
+    SetText(&scene->objects[newObject], str, true, black, 10);
 
 }
 
@@ -197,7 +207,7 @@ int main(int argc, char *argv[])
 
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 5200, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, CLASS_SOLDIER, 0, 30, 26);
+    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, CLASS_SOLDIER, 0, 30, 26, 3);
     SetAnimation(&level.objects[player],10,0,1,128,2);
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
@@ -224,10 +234,10 @@ int main(int argc, char *argv[])
 
     newObject=createObject(&level,OBJECT_ITEM, "Armor", 2800, 5000, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 30);
-    
+
     newObject=createObject(&level,OBJECT_ITEM, "Armor", 3000, 5000, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 20);
-    
+
     newObject=createObject(&level,OBJECT_ITEM, "Armor", 3300, 5000, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 10);
 
@@ -680,6 +690,7 @@ int main(int argc, char *argv[])
 
                     explosion(activeScene, i);
                     RemoveObjectFromScene(activeScene, i);
+                    play_sound(SOUND_EXPLOSION);
                 }
             }
             else if(activeScene->objects[i].objectType == OBJECT_EXPLOSION){
