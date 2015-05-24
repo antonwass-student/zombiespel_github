@@ -41,6 +41,8 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
             continue;
         if(scene->objects[i].objectType == OBJECT_BACKGROUND)
             continue;
+        if(scene->objects[i].objectType == OBJECT_EMPTY)
+            continue;
 
 
         if(movingObject->rect.x <= scene->objects[i].rect.x + scene->objects[i].rect.w &&
@@ -109,7 +111,7 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
 void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene)
 {
     int distance = GetDistance(obj1->rect, obj2->rect);
-
+    int newObject =-1;
 
     if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM) //player med item
     {
@@ -129,8 +131,11 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
         }
         else if(obj2->itemInfo.itemType == ITEM_ARMOR && distance < 64) {
             printf("collided with armor\n");
-            if(obj1->p_stats.armor>=50){
+            if(obj1->p_stats.armor+obj2->itemInfo.amount>50){
                 printf("you have max armor");
+                newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", obj1->rect.x-50, obj1->rect.y, 200,200, TXT_MAXARMOR, false);
+                scene->objects[newObject].timeToLive = 2;
+            
             }
             else{
             obj1->p_stats.armor += obj2->itemInfo.amount;
@@ -222,6 +227,11 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
     else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_CAR) //Bullet med car
     {
         printf("Bullet collided with Car\n");
+        RemoveObjectFromScene(scene, c1_index);
+    }
+    else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_CAR)
+    {
+        printf("Z Bullet collidated with car\n");
         RemoveObjectFromScene(scene, c1_index);
     }
 

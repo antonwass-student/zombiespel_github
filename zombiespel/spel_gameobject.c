@@ -2,8 +2,8 @@
 #include <strings.h>
 
 
-#define EXIT_SUCCESS 1
-#define EXIT_FAILURE 0
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
 
 int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
 {
@@ -84,7 +84,7 @@ bool RemoveObjectFromSceneId(Scene *scene, int id)
     return EXIT_SUCCESS;
 }
 
-GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, playerClass_T pClass, int reloadTime, int fireRate, int ammoTotal)
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, playerClass_T pClass, int reloadTime, int fireRate, int ammoTotal, int bombs)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;
@@ -97,6 +97,7 @@ GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,
     player->p_stats.fireRate = fireRate;
     player->p_stats.fireCount = 0;
     player->p_stats.ammoTotal = ammoTotal;
+    player->p_stats.bombs = bombs;
     return player;
 }
 

@@ -168,7 +168,8 @@ typedef enum {
     TXT_CAR32,
     TXT_CAR4,
     TXT_CAR42,
-    TXT_PLAYER_SOLDIER
+    TXT_PLAYER_SOLDIER,
+    TXT_MAXARMOR
 } textureID_t;
 
 typedef struct{
@@ -196,6 +197,7 @@ typedef enum
     SOUND_RELOAD,
     SOUND_NPC_HIT,
     SOUND_BUTTON,
+    SOUND_EXPLOSION
 } soundID_t;
 
 typedef struct
@@ -222,7 +224,7 @@ typedef struct{
 
 typedef struct{
 
-    int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal;
+    int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal, bombs;
     playerClass_T pClass;
     bool alive;
 }playerStats;

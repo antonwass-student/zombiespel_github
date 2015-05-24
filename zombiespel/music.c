@@ -64,6 +64,9 @@ void load_music(){
 
     sound[4].name = SOUND_BUTTON;
     sound[4].soundEffect = Mix_LoadWAV("music/menu-selection-click.wav");
+
+    sound[5].name = SOUND_EXPLOSION;
+    sound[5].soundEffect = Mix_LoadWAV("music/explosion.wav");
 }
 void play_sound(soundID_t id){
     //MAIN MUSIC START
@@ -100,6 +103,9 @@ void play_sound(soundID_t id){
     }
     if(id == SOUND_BUTTON){
         Mix_PlayChannel(-1, sound[4].soundEffect, 0);
+    }
+    if(id == SOUND_EXPLOSION){
+        Mix_PlayChannel(-1, sound[5].soundEffect, 0);
     }
 
 

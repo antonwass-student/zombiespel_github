@@ -3,8 +3,8 @@
 #include "spel_network.h"
 #include "music.h"
 
-#define EXIT_SUCCESS 1
-#define EXIT_FAILURE 0
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
 
 extern int playerNetId;
 extern LobbyRoom lobbyRoom;
@@ -181,8 +181,7 @@ int net_recvPlayerStats(char data[], Scene* scene)
             break;
         }
     }
-
-
+    return EXIT_SUCCESS;
 }
 
 int net_ChangeObjectPos(char data[], Scene* scene)
@@ -298,6 +297,7 @@ int net_recvBullet(char data[], Scene* scene)
     printf("--x = '%d'\n", x);
     printf("--y = '%d'\n", y);
     printf("--speed = '%d'\n", speed);
+
 }
 
 
