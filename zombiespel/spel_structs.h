@@ -47,7 +47,8 @@ typedef enum{
     SERVEROBJ_CAR,
     SERVEROBJ_MEDKIT,
     SERVEROBJ_PLAYER,
-    SERVEROBJ_BULLET
+    SERVEROBJ_BULLET,
+    SERVEROBJ_ZOMBIE_SPITTER
 }ServerObject_T;
 
 typedef struct{
@@ -171,13 +172,15 @@ typedef enum {
 } textureID_t;
 
 typedef struct{
-    char* name;
+    char name[24];
     playerClass_T class;
+    int uiIndex;
 } LobbyPlayer;
 
 typedef struct{
     LobbyPlayer players[4];
     int pCount;
+
 } LobbyRoom;
 
 typedef struct

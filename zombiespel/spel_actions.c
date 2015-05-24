@@ -22,7 +22,7 @@ bool shoot(Scene* scene, int shooter, GameObject* bullet){
         scene->objects[bulletIndex].rotation = scene->objects[shooter].rotation;*/
         scene->objects[shooter].p_stats.ammo -= 1;
         UI_AmmoChanged(scene->objects[shooter].p_stats.ammo);
-        play_sound(SOUND_GUN);
+        //play_sound(SOUND_GUN);
         return true;
     }
     else

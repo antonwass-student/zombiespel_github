@@ -72,15 +72,23 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
             printf("Chat message was received\n");
             break;
         case 2:
-            printf("Object position was received\n");
+            //printf("Object position was received\n");
             net_ChangeObjectPos(data, scene);
             break;
-        case 5:
+        case NET_OBJECT_REMOVE:
+            printf("Object remove was received\n");
+            net_recvObjectRemove(data, scene);
+            break;
+        case NET_OBJECT_NEW:
             printf("New object was received\n");
             net_NewObject(data, scene);
             break;
         case NET_PLAYER_ID:
             net_SetPlayerId(data);
+            break;
+        case NET_LOBBY_PLAYER:
+            printf("Received lobby player\n");
+            net_recvLobbyPlayer(data, scene);
             break;
         case NET_GAME_START:
             printf("Game started\n");
@@ -158,7 +166,7 @@ int RecvThread(void* ptr) //Lyssnar efter meddelanden från servern och lägger de
     char msg[512];
     while(SDLNet_TCP_Recv(sd, msg, 512))
     {
-        printf("message received\n");
+        printf("Message received\n");
         AddToPool(&recvPool, msg);
     }
     return 1;

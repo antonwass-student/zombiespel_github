@@ -36,9 +36,11 @@ Sprite sprites[100];
 int spritesCount = 0;
 
 
+
+
 void SetFont(int size)
 {
-    gFont = TTF_OpenFont("fonts/bebas.ttf", size);
+    gFont = TTF_OpenFont("fonts/verdana.ttf", size);
     if(gFont == NULL)
     {
         printf("could not load font\n");

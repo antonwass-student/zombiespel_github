@@ -29,6 +29,8 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
 
     for(int i = 0; i < scene->objectLimit; i++) // Kollar kollision mellan alla objekt i scene
     {
+        if(scene->objects[i].objectType == OBJECT_EMPTY)
+            continue;
         if(scene->objects[i].objectType == OBJECT_BUTTON)
             continue;
         if(scene->objects[i].objectType == OBJECT_PLAYER && movingObject->objectType == OBJECT_PLAYER)
@@ -39,6 +41,7 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
             continue;
         if(scene->objects[i].objectType == OBJECT_BACKGROUND)
             continue;
+
 
         if(movingObject->rect.x <= scene->objects[i].rect.x + scene->objects[i].rect.w &&
            movingObject->rect.x >= scene->objects[i].rect.x) // kollision vänster av objekt
