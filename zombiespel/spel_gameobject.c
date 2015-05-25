@@ -84,7 +84,7 @@ bool RemoveObjectFromSceneId(Scene *scene, int id)
     return EXIT_SUCCESS;
 }
 
-GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, playerClass_T pClass, int reloadTime, int fireRate, int ammoTotal, int bombs)
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, int reloadTime, int fireRate, int ammoTotal, int bombs,playerClass_T pClass)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;

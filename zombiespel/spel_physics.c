@@ -121,7 +121,8 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
             obj1->p_stats.ammoTotal += obj2->itemInfo.amount;
             RemoveObjectFromScene(scene, obj2_index);
             UI_HealthChanged(obj1->p_stats.health);
-            UI_TotalAmmo(obj1->p_stats.ammoTotal);
+            UI_AmmoChanged(obj1->p_stats.ammo);
+
         }
         else if(obj2->itemInfo.itemType == ITEM_GUN && distance < 64) {
             printf("collided with gun\n");

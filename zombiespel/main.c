@@ -27,14 +27,13 @@
 #include "spel_AI.h"
 #include "spel_network.h"
 
-GameObject* gUI_Health = NULL;
-GameObject* gUI_Ammo = NULL;
-GameObject* gUI_AmmoTotal = NULL;
-GameObject* gUI_Bomb = NULL;
 extern TTF_Font* gFont;
 
+GameObject* gUI_Health = NULL;
+GameObject* gUI_Ammo = NULL;
 GameObject* gUI_Damage = NULL;
 GameObject* gUI_Armor = NULL;
+GameObject* gUI_Bomb = NULL;
 
 int playerNetId = -1;
 
@@ -62,15 +61,13 @@ void UI_DamageChanged(int damage)
     ChangeTextInt(gUI_Damage, "Damage: ", damage);
 }
 
-void UI_TotalAmmo(int totalAmmo)
+void UI_AmmoChanged(int ammo, int totalAmmo)
 {
-    ChangeTextInt(gUI_AmmoTotal, "Clip: ", totalAmmo);
-}
-void UI_AmmoChanged(int ammo)
-{
+
     printf("Changing ammo\n");
-    ChangeTextInt(gUI_Ammo, "Ammo: ", ammo);
+    ChangeTextInt2(gUI_Ammo, "Ammo: ", ammo, totalAmmo);
 }
+
 void UI_ArmorChanged(int armor)
 {
     printf("Changing armor\n");
@@ -80,8 +77,6 @@ void UI_BombChanged(int bombs){
     printf("Changing Bomb\n");
     ChangeTextInt(gUI_Bomb, "Bomb: ", bombs);
 }
-
-
 
 void CreateUI(Scene *scene, int player)
 {
@@ -101,27 +96,22 @@ void CreateUI(Scene *scene, int player)
 
     newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 0,677,200,40, TXT_BUTTON, false);
     gUI_Ammo = &scene->objects[newObject];
-    sprintf(str, "Clip:%d", scene->objects[player].p_stats.ammo);
+    sprintf(str, "AMMO:%d || %d", scene->objects[player].p_stats.ammo,scene->objects[player].p_stats.ammoTotal);
     SetText(&scene->objects[newObject], str, true, black, 20);
     scene->objects[newObject].drawColor = white;
 
-    newObject = createObject(scene, OBJECT_UI, "clips", 400,620,200,80,TXT_BUTTON, false);
-    gUI_AmmoTotal = &scene->objects[newObject];
-    sprintf(str, "Ammo:%d", scene->objects[player].p_stats.ammoTotal);
-    SetText(&scene->objects[newObject], str, true, black, 20);
-    scene->objects[newObject].drawColor = white;
 
     newObject = createObject(scene, OBJECT_UI, "PlayerDamage", 0,716,200,40, TXT_BUTTON, false);
     gUI_Damage = &scene->objects[newObject];
     sprintf(str, "Damage: %d", scene->objects[player].p_stats.damage);
     SetText(&scene->objects[newObject], str, true, black, 10);
-    //scene->objects[newObject].drawColor = none;
+    scene->objects[newObject].drawColor = red;
 
     newObject = createObject(scene, OBJECT_UI, "PlayerArmer", 0,755,200,40, TXT_BUTTON, false);
     gUI_Armor = &scene->objects[newObject];
     sprintf(str, "Armor: %d", scene->objects[player].p_stats.armor);
     SetText(&scene->objects[newObject], str, true, black, 10);
-    //scene->objects[newObject].drawColor = none;
+    scene->objects[newObject].drawColor = white;
 
     newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 100,100,200,40, TXT_BUTTON, false);
     gUI_Bomb = &scene->objects[newObject];
@@ -216,7 +206,8 @@ int WinMain(int argc, char *argv[])
 
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, playerName,3000, 5200, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, CLASS_SOLDIER, 0, 10, 26, 3);
+    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, 0, 10, 26, 3, CLASS_SOLDIER);
+
     SetAnimation(&level.objects[player], 10, 0, 1, 128, 2);
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);

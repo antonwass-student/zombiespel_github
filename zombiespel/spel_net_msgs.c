@@ -192,7 +192,7 @@ int net_recvLobbyReady(char data[], Scene *scene)
             scene->objects[lobbyRoom.players[i].uiIndex].drawColor = lime;
 
     }
-
+    return EXIT_SUCCESS;
 }
 
 int net_recvPlayerStats(char data[], Scene* scene)
@@ -330,6 +330,7 @@ int net_recvBullet(char data[], Scene* scene)
     printf("--x = '%d'\n", x);
     printf("--y = '%d'\n", y);
     printf("--speed = '%d'\n", speed);
+    return EXIT_SUCCESS;
 
 }
 
