@@ -215,10 +215,9 @@ int WinMain(int argc, char *argv[])
 
 
     //LEVEL
-    player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 5200, 128, 128, TXT_PLAYER, true);
+    player = createObject(&level, OBJECT_PLAYER, playerName,3000, 5200, 128, 128, TXT_PLAYER, true);
     SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, CLASS_SOLDIER, 0, 10, 26, 3);
     SetAnimation(&level.objects[player], 10, 0, 1, 128, 2);
-
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
     SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black, 5);
@@ -241,15 +240,19 @@ int WinMain(int argc, char *argv[])
     //item
     newObject=createObject(&level, OBJECT_ITEM, "Gun", 2600, 730, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
+    SetText(&level.objects[newObject], level.objects[newObject].name, true, white, 10);
 
-    newObject=createObject(&level,OBJECT_ITEM, "Armor", 2800, 5000, 40, 40, TXT_GUN, false);
+    newObject=createObject(&level,OBJECT_ITEM, "Armor", 2800, 5000, 40, 40, TXT_BUTTON, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 30);
+    SetText(&level.objects[newObject], level.objects[newObject].name, true, white, 10);
 
-    newObject=createObject(&level,OBJECT_ITEM, "Armor", 3000, 5000, 40, 40, TXT_GUN, false);
+    newObject=createObject(&level,OBJECT_ITEM, "Armor", 3000, 5000, 40, 40, TXT_BUTTON, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 20);
+    SetText(&level.objects[newObject], level.objects[newObject].name, true, white, 10);
 
-    newObject=createObject(&level,OBJECT_ITEM, "Armor", 3300, 5000, 40, 40, TXT_GUN, false);
+    newObject=createObject(&level,OBJECT_ITEM, "Armor", 3300, 5000, 40, 40, TXT_BUTTON, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 10);
+    SetText(&level.objects[newObject], level.objects[newObject].name, true, white, 10);
 
 
 

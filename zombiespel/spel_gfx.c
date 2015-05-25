@@ -115,7 +115,7 @@ void loadSprites()
     sprites[7].texture = loadTexture("textures/medkit.png");
 
     sprites[8].id = TXT_GUN;
-    sprites[8].texture = loadTexture("textures/gun.png");
+    sprites[8].texture = loadTexture("textures/vapen1.png");
 
     sprites[9].id = TXT_ZBULLET;
     sprites[9].texture = loadTexture("textures/bullet_zombie.png");
@@ -161,7 +161,7 @@ void loadSprites()
 
     sprites[23].id = TXT_PLAYER_SOLDIER;
     sprites[23].texture = loadTexture("textures/man3wep.png");
-    
+
     sprites[24].id = TXT_MAXARMOR;
     sprites[24].texture = loadTexture("textures/maxarmor.png");
 
@@ -311,9 +311,13 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
                 if(level.objects[i].drawText) //Ritar ut text
                 {
                     //Textpadding
+
+
                     TTF_SizeText(gFont, level.objects[i].text, &newRect.w, &newRect.h);
                     newRect.x += level.objects[i].rect.w/2 -(newRect.w/2);
                     newRect.y += level.objects[i].rect.h/2 -(newRect.h/2);
+                    if(level.objects[i].objectType == OBJECT_NPC || level.objects[i].objectType == OBJECT_ITEM)
+                        newRect.y -= 40;
                     SDL_RenderCopy(gRenderer, level.objects[i].textTexture, NULL, &newRect);
                     //TTF_Font
                 }

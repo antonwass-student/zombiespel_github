@@ -135,7 +135,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
                 printf("you have max armor");
                 newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", obj1->rect.x-50, obj1->rect.y, 200,200, TXT_MAXARMOR, false);
                 scene->objects[newObject].timeToLive = 2;
-            
+
             }
             else{
             obj1->p_stats.armor += obj2->itemInfo.amount;
@@ -146,6 +146,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
 
     }
     if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_NPC){
+            /*
         if(obj1->objectType == OBJECT_PLAYER && distance < 85){
             if (obj2->ai.atkTimer == 0)
             {
@@ -165,7 +166,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
                 printf("Player health is now: %d\n", obj1->p_stats.health);
                 UI_HealthChanged(obj1->p_stats.health);
             }
-        }
+        }*/
     }
     if(obj1->objectType == OBJECT_NPC&& obj2->objectType == OBJECT_EXPLOSION){
         if(obj1->objectType == OBJECT_NPC && distance < 100){

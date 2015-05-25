@@ -12,7 +12,8 @@ extern LobbyRoom lobbyRoom;
 void net_NewObject(char data[], Scene* scene)
 {
     int index = 1;
-    int id, x, y;
+    int id, x, y, nameLength;
+    char name[30];
     ServerObject_T type;
 
     printf("Creating new object\n");
@@ -21,19 +22,39 @@ void net_NewObject(char data[], Scene* scene)
     x = Converter_BytesToInt32(data, &index);
     y = Converter_BytesToInt32(data, &index);
     type = data[index++];
+    nameLength = Converter_BytesToInt32(data, &index);
+    printf("NameLength = %d\n", nameLength);
 
-    printf("x = %d, y = %d ",x,y);
+    for(int i = 0; i < nameLength; i++)
+    {
+        name[i] = data[index++];
+    }
+    name[nameLength] = '\0';
+
+    printf("ObjectName = %s\n",name);
 
     switch(type)
     {
         case SERVEROBJ_ZOMBIE_NORMAL:
-            Create_Zombie_Normal(scene, id, x, y);
+            Create_Zombie_Normal(scene, id, x, y, name);
             break;
         case SERVEROBJ_PLAYER:
-            Create_Other_Player(scene, id, x, y);
+            Create_Other_Player(scene, id, x, y, name);
             break;
         case SERVEROBJ_ZOMBIE_SPITTER:
-            Create_Zombie_Spitter(scene, id, x, y);
+            Create_Zombie_Spitter(scene, id, x, y, name);
+        case SERVEROBJ_MEDKIT:
+            Create_Medkit(scene, id, x, y, name);
+            printf("Received a medkit!\n");
+            break;
+        case SERVEROBJ_AMMO:
+            break;
+        case SERVEROBJ_GUN_1:
+            break;
+        case SERVEROBJ_GUN_2:
+            break;
+        case SERVEROBJ_ARMOR:
+            break;
         default:
             break;
     }
@@ -92,6 +113,24 @@ int net_SendPlayerReady()
     return 0;
 }
 
+int net_recvPlayerHealth(char data[], Scene *scene)
+{
+    int index = 1;
+    int health = Converter_BytesToInt32(data, &index);
+    int newObject = -1;
+
+    for(int i = 0; i < scene->objectLimit; i++)
+    {
+        if(scene->objects[i].objectType == OBJECT_PLAYER)
+        {
+            scene->objects[i].p_stats.health = health;
+            UI_HealthChanged(health);
+            newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", scene->objects[i].rect.x, scene->objects[i].rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
+            scene->objects[newObject].timeToLive = 10;
+        }
+    }
+}
+
 int net_recvLobbyPlayer(char data[], Scene *scene)
 {
     int index = 1;
@@ -137,17 +176,20 @@ int net_recvLobbyReady(char data[], Scene *scene)
     int length = Converter_BytesToInt32(data, &index);
     char name[24];
 
+    printf("Received player ready\n");
+
     for(int i = 0; i < length; i++)
     {
         printf("char at index %d\n", index);
         name[i] = data[index++];
     }
     name[length] = '\0';
+    printf("Name = %s\n", name);
 
     for(int i = 0; i < 4; i++)
     {
         if(!strcmp(name, lobbyRoom.players[i].name))
-            scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex].drawColor = lime;
+            scene->objects[lobbyRoom.players[i].uiIndex].drawColor = lime;
 
     }
 
@@ -238,7 +280,7 @@ int net_PlayerShoot(GameObject player)
     Converter_Int32ToBytes(buffer, &index, player.p_stats.damage);
     Converter_Int32ToBytes(buffer, &index, 20);
 
-    printf("Requesting to shoot with angle = '%d'\n", (int)player.rotation);
+    printf("Requesting to shoot with x = '%d' y = '%d'\n", player.rect.x + player.rect.w/2, player.rect.y + player.rect.h/2);
 
     AddToPool(&sendPool,buffer);
     return EXIT_SUCCESS;
@@ -258,16 +300,7 @@ int net_PlayerMove(int x, int y, int angle)
     return EXIT_SUCCESS;
 }
 
-int Create_Other_Player(Scene* scene, int id, int x, int y)
-{
-    int newObject;
-    newObject = createObject(scene, OBJECT_PLAYER_OTHER, "OtherPlayer",x, y, 128, 128, TXT_PLAYER_SOLDIER, false);
-    scene->objects[newObject].objectID = id;
 
-    printf("Player was created at x=%d and y=%d\n", x, y);
-
-    return EXIT_SUCCESS;
-}
 
 int net_recvBullet(char data[], Scene* scene)
 {
@@ -300,25 +333,54 @@ int net_recvBullet(char data[], Scene* scene)
 
 }
 
+int Create_Medkit(Scene* scene, int id, int x, int y, char* name)
+{
+    SDL_Color white = {255,255,255};
+    int newObject;
+    newObject = createObject(scene, OBJECT_ITEM, "Medkit", x, y, 20, 20, TXT_MEDKIT, false);
+    scene->objects[newObject].objectID = id; //Remember to set ID!
+    SetText(&scene->objects[newObject],"Medkit", true, white, 10);
+    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+}
 
-int Create_Zombie_Normal(Scene* scene, int id, int x, int y)
+int Create_Other_Player(Scene* scene, int id, int x, int y, char* name)
+{
+    SDL_Color white = {255,255,255};
+    int newObject;
+    newObject = createObject(scene, OBJECT_PLAYER_OTHER, name,x, y, 128, 128, TXT_PLAYER_SOLDIER, false);
+    scene->objects[newObject].objectID = id;
+    SetText(&scene->objects[newObject],name, true, white, 10);
+
+    printf("Player was created at x=%d and y=%d\n", x, y);
+
+    return EXIT_SUCCESS;
+}
+
+
+int Create_Zombie_Normal(Scene* scene, int id, int x, int y, char* name)
 {
     int newObject;
-    newObject = createObject(scene, OBJECT_NPC, "zombieNormal",x, y, 118, 65, TXT_ZOMBIE, false);
+    SDL_Color red = {201, 81, 81};
+    SDL_Color white = {255,255,255};
+    newObject = createObject(scene, OBJECT_NPC, name,x, y, 118, 65, TXT_ZOMBIE, false);
     SetAI(&scene->objects[newObject], AI_ZOMBIE, 5, 300, 10, 100, 1.0f, 20, 0, 30);
     scene->objects[newObject].objectID = id;
+    SetText(&scene->objects[newObject],name, true, white, 10);
 
     printf("zombie was created at x=%d and y=%d\n", x, y);
 
     return EXIT_SUCCESS;
 }
 
-int Create_Zombie_Spitter(Scene* scene, int id, int x, int y)
+int Create_Zombie_Spitter(Scene* scene, int id, int x, int y, char* name)
 {
     int newObject;
+    SDL_Color red = {201, 81, 81};
+    SDL_Color white = {255,255,255};
     newObject = createObject(scene, OBJECT_NPC, "ZombieSpitter",x, y, 118, 65, TXT_ZOMBIE_FAT, false);
     SetAI(&scene->objects[newObject], AI_SPITTER, 5, 300, 10, 100, 1.0f, 20, 0, 30);
     scene->objects[newObject].objectID = id;
+    SetText(&scene->objects[newObject],name, true, white, 10);
 
     printf("zombie was created at x=%d and y=%d\n", x, y);
 
