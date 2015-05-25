@@ -285,13 +285,7 @@ int WinMain(int argc, char *argv[])
     SetText(SetButtonStats(&options.objects[newObject], BUTTON_GOTO_MENU, true), "Back", true, black, 10);
     options.objects[newObject].drawColor = lblue;
 
-    button_newName = createObject(&options, OBJECT_BUTTON, "Change Name", 100, 170, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&options.objects[button_newName], BUTTON_NEW_NAME, true), "Change name", true, black, 0);
-    options.objects[button_newName].drawColor = lblue;
 
-    button_showName = createObject(&options, OBJECT_BUTTON, "PlayerName", 455, 170, 250, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&options.objects[button_showName], BUTTON_VOID, true), "Player1", true, black, 10);
-    options.objects[button_showName].drawColor = lblue;
 
 
     //Lobby
@@ -313,20 +307,30 @@ int WinMain(int argc, char *argv[])
     lobby.objects[newObject].drawColor = lblue;
 
 
-    button_lobbyIp = createObject(&lobby, OBJECT_BUTTON, "IP",SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.3f, 0.15f * SCREEN_WIDTH,
+    button_lobbyIp = createObject(&lobby, OBJECT_BUTTON, "IP", SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.3f, 0.15f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
     SetText(SetButtonStats(&lobby.objects[button_lobbyIp], BUTTON_SET_IP, true), "127.0.0.1", true, black, 10);
     //lobby.objects[button_lobbyIp].drawColor = lblue;
 
     button_lobbyPort = createObject(&lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.4f, 0.1f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
-    SetText(SetButtonStats(&lobby.objects[button_lobbyPort], BUTTON_SET_IP, true), "2000", true, black, 10);
+    SetText(SetButtonStats(&lobby.objects[button_lobbyPort], BUTTON_SET_PORT, true), "2000", true, black, 10);
     //lobby.objects[button_lobbyPort].drawColor = lblue;
 
-    button_connect = createObject(&lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.55f, 0.2f * SCREEN_WIDTH,
+    button_connect = createObject(&lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.2f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.55f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
     SetText(SetButtonStats(&lobby.objects[button_connect], BUTTON_CONNECT, true), "Connect", true, black, 10);
     lobby.objects[button_connect].drawColor = lblue;
+
+
+    button_newName = createObject(&lobby, OBJECT_BUTTON, "Change Name", SCREEN_WIDTH * 0.2f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.2f, 0.1f * SCREEN_WIDTH, SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
+    SetText(SetButtonStats(&lobby.objects[button_newName], BUTTON_NEW_NAME, true), "Name:", true, black, 0);
+    lobby.objects[button_newName].drawColor = lblue;
+
+    button_showName = createObject(&lobby, OBJECT_BUTTON, "PlayerName", SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.2f, 0.15f * SCREEN_WIDTH,
+                             SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
+    SetText(SetButtonStats(&lobby.objects[button_showName], BUTTON_NEW_NAME, true), "\"Player1\"", true, black, 10);
+    lobby.objects[button_showName].drawColor = white;
 
     //Pregame
 
@@ -436,7 +440,7 @@ int WinMain(int argc, char *argv[])
                             printf("IP was set.\n");
                             break;
                         case INPUT_TEXT_PNAME:
-                            options.objects[button_showName].drawColor = lblue;
+                            lobby.objects[button_showName].drawColor = white;
                             ChangeTextStr(&options.objects[button_showName],inputText);
                             printf("Name was set.\n");
                             break;
@@ -511,7 +515,7 @@ int WinMain(int argc, char *argv[])
                 if(currentInput == INPUT_TEXT_PNAME)
                 {
                     strcpy(playerName, inputText);
-                    ChangeTextStr(&options.objects[button_showName],inputText);
+                    ChangeTextStr(&lobby.objects[button_showName],inputText);
                     nameLength++;
                     //options.objects[button_showName].rect.w += 16;
                     //TTF_SizeUTF8(gFont, inputText, &options.objects[button_showName].rect.w, &options.objects[button_showName].rect.h);
@@ -595,7 +599,7 @@ int WinMain(int argc, char *argv[])
                                             SDL_StartTextInput();
                                             inputText[0] = '\0';
                                             //options.objects[button_saveName].drawText = true;
-                                            options.objects[button_showName].drawColor = lime;
+                                            lobby.objects[button_showName].drawColor = lime;
                                             break;
                                         case BUTTON_SAVE_NAME:
                                             SDL_StopTextInput();

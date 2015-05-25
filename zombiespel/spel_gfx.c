@@ -119,7 +119,7 @@ void loadSprites()
     sprites[4].texture = loadTexture("textures/button.png");
 
     sprites[5].id = TXT_MENU_BACKGROUND;
-    sprites[5].texture = loadTexture("textures/menu_background.png");
+    sprites[5].texture = loadTexture("textures/Bloody_wall1.png");
 
     sprites[6].id = TXT_PLAYGROUND;
     sprites[6].texture = loadTexture("textures/playground.png");
