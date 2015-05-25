@@ -47,7 +47,8 @@ typedef enum{
     SERVEROBJ_CAR,
     SERVEROBJ_MEDKIT,
     SERVEROBJ_PLAYER,
-    SERVEROBJ_BULLET
+    SERVEROBJ_BULLET,
+    SERVEROBJ_ZOMBIE_SPITTER
 }ServerObject_T;
 
 typedef struct{
@@ -172,13 +173,15 @@ typedef enum {
 } textureID_t;
 
 typedef struct{
-    char* name;
+    char name[24];
     playerClass_T class;
+    int uiIndex;
 } LobbyPlayer;
 
 typedef struct{
     LobbyPlayer players[4];
     int pCount;
+
 } LobbyRoom;
 
 typedef struct
@@ -194,6 +197,7 @@ typedef enum
     SOUND_RELOAD,
     SOUND_NPC_HIT,
     SOUND_BUTTON,
+    SOUND_EXPLOSION
 } soundID_t;
 
 typedef struct
@@ -220,7 +224,7 @@ typedef struct{
 
 typedef struct{
 
-    int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal;
+    int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal, bombs;
     playerClass_T pClass;
     bool alive;
 }playerStats;

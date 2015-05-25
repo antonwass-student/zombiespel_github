@@ -1,6 +1,7 @@
 #include "spel_structs.h"
 #include "spel_gameobject.h"
 #include "spel_network.h"
+#include "music.h"
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
@@ -31,11 +32,26 @@ void net_NewObject(char data[], Scene* scene)
         case SERVEROBJ_PLAYER:
             Create_Other_Player(scene, id, x, y);
             break;
+        case SERVEROBJ_ZOMBIE_SPITTER:
+            Create_Zombie_Spitter(scene, id, x, y);
         default:
             break;
     }
 
 }
+
+void net_recvObjectRemove(char data[], Scene* scene)
+{
+    int index = 1, id;
+    data[0] = NET_OBJECT_REMOVE;
+
+    id = Converter_BytesToInt32(data,&index);
+
+    printf("Removing object with id: %d \n", id);
+
+    RemoveObjectFromSceneId(scene, id);
+}
+
 
 int net_SendPlayerName(char* name, int length, playerClass_T pClass)
 {
@@ -76,19 +92,65 @@ int net_SendPlayerReady()
     return 0;
 }
 
-int net_recvLobbyPlayer(char data[])
+int net_recvLobbyPlayer(char data[], Scene *scene)
 {
     int index = 1;
     int length = Converter_BytesToInt32(data, &index);
-    playerClass_T class = data[index++];
+    SDL_Color black = {0,0,0};
+    SDL_Color white = {255,255,255};
+    SDL_Color green = {0,255,0};
+    SDL_Color lime = {149, 240, 137};
+    SDL_Color lblue = {95,157,237};
+
+    char name[24];
+
+    printf("Name length = %d\n", length);
 
     for(int i = 0; i < length; i++)
     {
-        lobbyRoom.players[lobbyRoom.pCount].name[i] = data[index++];
+        printf("char at index %d\n", index);
+        name[i] = data[index++];
+        //lobbyRoom.players[lobbyRoom.pCount].name[i] = data[index++];
     }
-    printf("Lobby player with name %s was received.\n", lobbyRoom.players[lobbyRoom.pCount].name);
+    name[length] = '\0';
+
+    playerClass_T pClass = data[index++];
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(!strcmp(name, lobbyRoom.players[i].name))
+            return 0;
+    }
+
+    strcpy(lobbyRoom.players[lobbyRoom.pCount].name, name);
+    ChangeTextStr(&scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex], name);
+    scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex].drawColor = lblue;
+    lobbyRoom.pCount++;
 
     return 0;
+}
+
+int net_recvLobbyReady(char data[], Scene *scene)
+{
+    SDL_Color lime = {149, 240, 137};
+    int index = 1;
+    int length = Converter_BytesToInt32(data, &index);
+    char name[24];
+
+    for(int i = 0; i < length; i++)
+    {
+        printf("char at index %d\n", index);
+        name[i] = data[index++];
+    }
+    name[length] = '\0';
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(!strcmp(name, lobbyRoom.players[i].name))
+            scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex].drawColor = lime;
+
+    }
+    return EXIT_SUCCESS;
 }
 
 int net_recvPlayerStats(char data[], Scene* scene)
@@ -132,7 +194,7 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     y = Converter_BytesToInt32(data, &readingIndex);
     angle = Converter_BytesToInt32(data, &readingIndex);
 
-    printf("Changing object (id=%d)'s position to x='%d' and y ='%d'\n",objectId, x, y);
+    //printf("Changing object (id=%d)'s position to x='%d' and y ='%d'\n",objectId, x, y);
 
     for(int i = 0; i < scene->objectLimit; i++)
     {
@@ -141,7 +203,7 @@ int net_ChangeObjectPos(char data[], Scene* scene)
             scene->objects[i].rect.x = x;
             scene->objects[i].rect.y = y;
             scene->objects[i].rotation = (double)angle;
-            printf("Object %s's position changed.\n",scene->objects[i].name);
+            //printf("Object %s's position changed.\n",scene->objects[i].name);
             return 1;
         }
     }
@@ -174,9 +236,9 @@ int net_PlayerShoot(GameObject player)
     Converter_Int32ToBytes(buffer, &index, player.rect.y + player.rect.h/2);
     Converter_Int32ToBytes(buffer, &index, (int)player.rotation);
     Converter_Int32ToBytes(buffer, &index, player.p_stats.damage);
-    Converter_Int32ToBytes(buffer, &index, player.p_stats.speed);
+    Converter_Int32ToBytes(buffer, &index, 20);
 
-     printf("Requesting to shoot with angle = '%d'\n", (int)player.rotation);
+    printf("Requesting to shoot with angle = '%d'\n", (int)player.rotation);
 
     AddToPool(&sendPool,buffer);
     return EXIT_SUCCESS;
@@ -219,16 +281,24 @@ int net_recvBullet(char data[], Scene* scene)
     angle = Converter_BytesToInt32(data, &index);
     speed = Converter_BytesToInt32(data, &index);
 
-    printf("This bullet's angle is = '%d'\n",angle);
-
     type = data[index++];
 
     if(type == BULLET_PLAYER)
         newObject = createObject(scene, OBJECT_BULLET, "bullet", x, y, 20, 20, TXT_BULLET, false);
     else if(type == BULLET_ZOMBIE)
         newObject = createObject(scene, OBJECT_BULLET, "bullet", x, y, 20, 20, TXT_ZBULLET, false);
-    SetBulletStats(&scene->objects[newObject],speed, (double)angle, 0);
+
+    SetBulletStats(&scene->objects[newObject], speed, (double)angle, 0);
+    scene->objects[newObject].rotation = (double)angle;
+    scene->objects[newObject].objectID = id;
+    play_sound(SOUND_GUN);
+
+    printf("Received bullet from server.\n --angle = '%d'\n",angle);
+    printf("--x = '%d'\n", x);
+    printf("--y = '%d'\n", y);
+    printf("--speed = '%d'\n", speed);
     return EXIT_SUCCESS;
+
 }
 
 
@@ -237,6 +307,18 @@ int Create_Zombie_Normal(Scene* scene, int id, int x, int y)
     int newObject;
     newObject = createObject(scene, OBJECT_NPC, "zombieNormal",x, y, 118, 65, TXT_ZOMBIE, false);
     SetAI(&scene->objects[newObject], AI_ZOMBIE, 5, 300, 10, 100, 1.0f, 20, 0, 30);
+    scene->objects[newObject].objectID = id;
+
+    printf("zombie was created at x=%d and y=%d\n", x, y);
+
+    return EXIT_SUCCESS;
+}
+
+int Create_Zombie_Spitter(Scene* scene, int id, int x, int y)
+{
+    int newObject;
+    newObject = createObject(scene, OBJECT_NPC, "ZombieSpitter",x, y, 118, 65, TXT_ZOMBIE_FAT, false);
+    SetAI(&scene->objects[newObject], AI_SPITTER, 5, 300, 10, 100, 1.0f, 20, 0, 30);
     scene->objects[newObject].objectID = id;
 
     printf("zombie was created at x=%d and y=%d\n", x, y);

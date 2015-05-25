@@ -33,6 +33,7 @@ GameObject* gUI_Health = NULL;
 GameObject* gUI_Ammo = NULL;
 GameObject* gUI_Damage = NULL;
 GameObject* gUI_Armor = NULL;
+GameObject* gUI_Bomb = NULL;
 
 int playerNetId = -1;
 
@@ -72,6 +73,10 @@ void UI_ArmorChanged(int armor)
     printf("Changing armor\n");
     ChangeTextInt(gUI_Armor, "Armor: ", armor);
 }
+void UI_BombChanged(int bombs){
+    printf("Changing Bomb\n");
+    ChangeTextInt(gUI_Bomb, "Bomb: ", bombs);
+}
 
 void CreateUI(Scene *scene, int player)
 {
@@ -80,6 +85,7 @@ void CreateUI(Scene *scene, int player)
     SDL_Color red = {255,0,0};
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
+
 
 
     newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 638, 200, 40, TXT_BUTTON, false);
@@ -107,6 +113,11 @@ void CreateUI(Scene *scene, int player)
     SetText(&scene->objects[newObject], str, true, black, 10);
     scene->objects[newObject].drawColor = white;
 
+    newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 100,100,200,40, TXT_BUTTON, false);
+    gUI_Bomb = &scene->objects[newObject];
+    sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
+    SetText(&scene->objects[newObject], str, true, black, 10);
+
 }
 
 int main(int argc, char *argv[])
@@ -123,12 +134,15 @@ int main(int argc, char *argv[])
     Scene *activeScene, *nextScene;
     Scene level, meny, options, pause, lobby, pregame;
     int player, newObject, button_newName, button_saveName, button_showName, button_connect;
+    int pg_player1, pg_player2, pg_player3, pg_player4;
     int button_lobbyIp, button_lobbyPort;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
     SDL_Color green = {0,255,0};
+    SDL_Color lblue = {95,157,237};
+    SDL_Color lime = {149, 240, 137};
     int timeStamp = 0;
     long frames = 0;
     int deltaTime = 0;
@@ -139,6 +153,7 @@ int main(int argc, char *argv[])
     //Lobby
     playerClass_T pClass = CLASS_SCOUT;
     lobbyRoom.pCount = 0;
+
 
     char netMsg[512];
     int netMsgSize = 0;
@@ -172,23 +187,28 @@ int main(int argc, char *argv[])
     newObject = createObject(&meny, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
     newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 4000, 6000, TXT_PLAYGROUND, false);
 
-    newObject = createObject(&meny, OBJECT_BUTTON, "go to game", 0,0,100, 40, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_PLAY, true), "Spela", true, black);
+    //newObject = createObject(&meny, OBJECT_BUTTON, "go to game", 0,0,100, 40, TXT_BUTTON, false);
+    //SetText(SetButtonStats(&meny.objects[newObject], BUTTON_PLAY, true), "Spela", true, black);
+    //meny.objects[newObject].drawColor = lblue;
 
-    newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 130, 350, 70, TXT_BUTTON, false);
+    newObject = createObject(&meny, OBJECT_BUTTON, "Go to options", 100, 230, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_OPTIONS, true), "Options", true, black, 10);
+    meny.objects[newObject].drawColor = lblue;
 
-    newObject = createObject(&meny, OBJECT_BUTTON, "Go to level", 100, 230, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Join     lobby", true, black, 10);
+    newObject = createObject(&meny, OBJECT_BUTTON, "Join game", 100, 130, 350, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_GOTO_LOBBY, true), "Play", true, black, 10);
+    meny.objects[newObject].drawColor = lblue;
 
     newObject = createObject(&meny, OBJECT_BUTTON, "Quit game", 100, 330, 350, 70, TXT_BUTTON, false);
-    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_QUIT, true), "QUIT", true, black, 10);
+    SetText(SetButtonStats(&meny.objects[newObject], BUTTON_QUIT, true), "Quit", true, black, 10);
+    meny.objects[newObject].drawColor = lblue;
 
 
     //LEVEL
     player = createObject(&level, OBJECT_PLAYER, "Player 1",3000, 5200, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, CLASS_SOLDIER, 0, 30, 26);
-    SetAnimation(&level.objects[player],10,0,1,128,2);
+    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, 0, 10, 26, 3,CLASS_SOLDIER);
+    SetAnimation(&level.objects[player], 10, 0, 1, 128, 2);
+
 
     newObject = createObject(&level, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
     SetText(SetButtonStats(&level.objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black, 5);
@@ -214,10 +234,10 @@ int main(int argc, char *argv[])
 
     newObject=createObject(&level,OBJECT_ITEM, "Armor", 2800, 5000, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 30);
-    
+
     newObject=createObject(&level,OBJECT_ITEM, "Armor", 3000, 5000, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 20);
-    
+
     newObject=createObject(&level,OBJECT_ITEM, "Armor", 3300, 5000, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 10);
 
@@ -255,15 +275,19 @@ int main(int argc, char *argv[])
 
     newObject = createObject(&options, OBJECT_BUTTON, "Toggle music", 100, 100, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[newObject], BUTTON_TOGGLE_MUSIC, true), "Toggle music", true, black, 10);
+    options.objects[newObject].drawColor = lblue;
 
     newObject = createObject(&options, OBJECT_BUTTON, "Go to menu", 650, 650, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[newObject], BUTTON_GOTO_MENU, true), "Back", true, black, 10);
+    options.objects[newObject].drawColor = lblue;
 
     button_newName = createObject(&options, OBJECT_BUTTON, "Change Name", 100, 170, 350, 70, TXT_BUTTON, false);
     SetText(SetButtonStats(&options.objects[button_newName], BUTTON_NEW_NAME, true), "Change name", true, black, 0);
+    options.objects[button_newName].drawColor = lblue;
 
-    button_showName = createObject(&options, OBJECT_BUTTON, "PlayerName", 600, 170, 0, 70, TXT_VOID, false);
-    SetText(SetButtonStats(&options.objects[button_showName], BUTTON_VOID, true), "NewPlayer", true, black, 10);
+    button_showName = createObject(&options, OBJECT_BUTTON, "PlayerName", 455, 170, 250, 70, TXT_BUTTON, false);
+    SetText(SetButtonStats(&options.objects[button_showName], BUTTON_VOID, true), "Player1", true, black, 10);
+    options.objects[button_showName].drawColor = lblue;
 
 
     //Lobby
@@ -272,28 +296,33 @@ int main(int argc, char *argv[])
     newObject = createObject(&lobby, OBJECT_BUTTON, "Status",SCREEN_WIDTH * 0.5f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.05f, 0.3f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_VOID, false);
     SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_VOID, true), "Status: None", true, white, 10);
+    lobby.objects[newObject].drawColor = lblue;
 
     newObject = createObject(&lobby, OBJECT_BUTTON, "IP",SCREEN_WIDTH * 0.2f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.3f, 0.1f * SCREEN_WIDTH,
-                             SCREEN_HEIGHT * 0.1, TXT_VOID, false);
-    SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_VOID, true), "IP:", true, black, 10);
+                             SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
+    SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_SET_IP, true), "IP:", true, black, 10);
+    lobby.objects[newObject].drawColor = lblue;
 
     newObject = createObject(&lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.2f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.4f, 0.1f * SCREEN_WIDTH,
-                             SCREEN_HEIGHT * 0.1, TXT_VOID, false);
-    SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_VOID, true), "PORT:", true, black, 10);
+                             SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
+    SetText(SetButtonStats(&lobby.objects[newObject], BUTTON_SET_PORT, true), "PORT:", true, black, 10);
+    lobby.objects[newObject].drawColor = lblue;
+
 
     button_lobbyIp = createObject(&lobby, OBJECT_BUTTON, "IP",SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.3f, 0.15f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
     SetText(SetButtonStats(&lobby.objects[button_lobbyIp], BUTTON_SET_IP, true), "127.0.0.1", true, black, 10);
+    //lobby.objects[button_lobbyIp].drawColor = lblue;
 
     button_lobbyPort = createObject(&lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.4f, 0.1f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
-
-    SetText(SetButtonStats(&lobby.objects[button_lobbyPort], BUTTON_SET_PORT, true), "1234", true, black, 10);
+    SetText(SetButtonStats(&lobby.objects[button_lobbyPort], BUTTON_SET_IP, true), "2000", true, black, 10);
+    //lobby.objects[button_lobbyPort].drawColor = lblue;
 
     button_connect = createObject(&lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.55f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
-
     SetText(SetButtonStats(&lobby.objects[button_connect], BUTTON_CONNECT, true), "Connect", true, black, 10);
+    lobby.objects[button_connect].drawColor = lblue;
 
     //Pregame
 
@@ -303,23 +332,23 @@ int main(int argc, char *argv[])
                              SCREEN_HEIGHT * 0.1, TXT_VOID, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Status: Waiting for other players", true, white, 10);
 
-    newObject = createObject(&pregame, OBJECT_BUTTON, "Player1", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.1f, 0.2f * SCREEN_WIDTH,
+    lobbyRoom.players[0].uiIndex = createObject(&pregame, OBJECT_BUTTON, "Player1", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.1f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player1", true, black, 10);
+    SetText(SetButtonStats(&pregame.objects[lobbyRoom.players[0].uiIndex], BUTTON_VOID, true), "Empty", true, black, 10);
 
-    newObject = createObject(&pregame, OBJECT_BUTTON, "Player2", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.3f, 0.2f * SCREEN_WIDTH,
+    lobbyRoom.players[1].uiIndex = createObject(&pregame, OBJECT_BUTTON, "Player2", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.3f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player2", true, black, 10);
+    SetText(SetButtonStats(&pregame.objects[lobbyRoom.players[1].uiIndex], BUTTON_VOID, true), "Empty", true, black, 10);
 
-    newObject = createObject(&pregame, OBJECT_BUTTON, "Player3", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.5f, 0.2f * SCREEN_WIDTH,
+    lobbyRoom.players[2].uiIndex = createObject(&pregame, OBJECT_BUTTON, "Player3", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.5f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player3", true, black, 10);
+    SetText(SetButtonStats(&pregame.objects[lobbyRoom.players[2].uiIndex], BUTTON_VOID, true), "Empty", true, black, 10);
 
-    newObject = createObject(&pregame, OBJECT_BUTTON, "Player4", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.7f, 0.2f * SCREEN_WIDTH,
+    lobbyRoom.players[3].uiIndex = createObject(&pregame, OBJECT_BUTTON, "Player4", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.7f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_VOID, true), "Player4", true, black, 10);
+    SetText(SetButtonStats(&pregame.objects[lobbyRoom.players[3].uiIndex], BUTTON_VOID, true), "Empty", true, black, 10);
 
-    newObject = createObject(&pregame, OBJECT_BUTTON, "Player1", SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.4f * SCREEN_WIDTH,
+    newObject = createObject(&pregame, OBJECT_BUTTON, "Ready", SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.4f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_READY, true), "Ready", true, black, 10);
 
@@ -333,7 +362,7 @@ int main(int argc, char *argv[])
 
         while(recvPool.Size > 0)
         {
-            printf("reading net message...\n");
+            //printf("reading net message...\n");
             ReadPool(&recvPool, netMsg);
             netEvent = ProcessMessage(netMsg, activeScene);
 
@@ -346,7 +375,7 @@ int main(int argc, char *argv[])
                     break;
             }
 
-            printf("Message read.\n");
+            //printf("Message read.\n");
             if(netDone) //If forced to go to next update because of special net messages (GAME_START)
                 break;
         }
@@ -395,26 +424,49 @@ int main(int argc, char *argv[])
 
                 if(e.key.keysym.sym == SDLK_RETURN)
                 {
-                    printf("input done\n");
                     switch(currentInput)
                     {
                         case INPUT_TEXT_IP:
-                            lobby.objects[button_lobbyIp].textColor = black;
+                            lobby.objects[button_lobbyIp].drawColor = white;
                             ChangeTextStr(&lobby.objects[button_lobbyIp],inputText);
+                            printf("IP was set.\n");
                             break;
                         case INPUT_TEXT_PNAME:
-                            options.objects[button_newName].textColor = black;
+                            options.objects[button_showName].drawColor = lblue;
                             ChangeTextStr(&options.objects[button_showName],inputText);
+                            printf("Name was set.\n");
                             break;
                         case INPUT_TEXT_PORT:
-                            lobby.objects[button_lobbyPort].textColor = black;
+                            lobby.objects[button_lobbyPort].drawColor = white;
                             ChangeTextStr(&lobby.objects[button_lobbyPort],inputText);
+                            printf("Port was set.\n");
                             break;
                     }
                     currentInput == INPUT_TEXT_NONE;
                     inputText[0] = '\0';
                     SDL_StopTextInput();
                     break;
+                }
+                else if(e.key.keysym.sym == SDLK_BACKSPACE)
+                {
+                    int length;
+
+                    length = strlen(inputText);
+                    inputText[length-1] = '\0';
+
+                    switch(currentInput)
+                    {
+                        case INPUT_TEXT_IP:
+                            ChangeTextStr(&lobby.objects[button_lobbyIp],inputText);
+                            break;
+                        case INPUT_TEXT_PNAME:
+                            ChangeTextStr(&options.objects[button_showName],inputText);
+                            nameLength--;
+                            break;
+                        case INPUT_TEXT_PORT:
+                            ChangeTextStr(&lobby.objects[button_lobbyPort],inputText);
+                            break;
+                    }
                 }
 
             }
@@ -539,7 +591,7 @@ int main(int argc, char *argv[])
                                             SDL_StartTextInput();
                                             inputText[0] = '\0';
                                             //options.objects[button_saveName].drawText = true;
-                                            //options.objects[button_saveName].drawColor = green;
+                                            options.objects[button_showName].drawColor = lime;
                                             break;
                                         case BUTTON_SAVE_NAME:
                                             SDL_StopTextInput();
@@ -552,13 +604,14 @@ int main(int argc, char *argv[])
                                             break;
                                         case BUTTON_SET_IP:
                                             currentInput = INPUT_TEXT_IP;
-                                            lobby.objects[button_lobbyIp].textColor = green;
+                                            //lobby.objects[button_lobbyIp].textColor = lime;
+                                            lobby.objects[button_lobbyIp].drawColor = lime;
                                             SDL_StartTextInput();
                                             play_sound(SOUND_BUTTON);
                                             break;
                                         case BUTTON_SET_PORT:
                                             currentInput = INPUT_TEXT_PORT;
-                                            lobby.objects[button_lobbyPort].textColor = green;
+                                            lobby.objects[button_lobbyPort].drawColor = lime;
                                             SDL_StartTextInput();
                                             play_sound(SOUND_BUTTON);
                                             break;
@@ -670,6 +723,7 @@ int main(int argc, char *argv[])
 
                     explosion(activeScene, i);
                     RemoveObjectFromScene(activeScene, i);
+                    play_sound(SOUND_EXPLOSION);
                 }
             }
             else if(activeScene->objects[i].objectType == OBJECT_EXPLOSION){

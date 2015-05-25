@@ -69,10 +69,22 @@ bool RemoveObjectFromScene(Scene *scene, int index)
 
 
     return EXIT_SUCCESS;
-
 }
 
-GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, playerClass_T pClass, int reloadTime, int fireRate, int ammoTotal)
+bool RemoveObjectFromSceneId(Scene *scene, int id)
+{
+    for(int i = 0; i < scene->objectLimit; i++)
+    {
+        if(scene->objects[i].objectID == id)
+        {
+            scene->objects[i].objectType = OBJECT_EMPTY;
+            printf("Removing object %s from scene.\nID = %d\n",scene->objects[i].name,id);
+        }
+    }
+    return EXIT_SUCCESS;
+}
+
+GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, int reloadTime, int fireRate, int ammoTotal, int bombs,playerClass_T pClass)
 {
     player->p_stats.ammo = ammo;
     player->p_stats.health = health;
@@ -85,6 +97,7 @@ GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,
     player->p_stats.fireRate = fireRate;
     player->p_stats.fireCount = 0;
     player->p_stats.ammoTotal = ammoTotal;
+    player->p_stats.bombs = bombs;
     return player;
 }
 
