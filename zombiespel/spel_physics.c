@@ -136,12 +136,12 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
                 printf("you have max armor");
                 newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", obj1->rect.x-50, obj1->rect.y, 200,200, TXT_MAXARMOR, false);
                 scene->objects[newObject].timeToLive = 2;
-
             }
             else{
             obj1->p_stats.armor += obj2->itemInfo.amount;
             RemoveObjectFromScene(scene, obj2_index);
             UI_ArmorChanged(obj1->p_stats.armor);
+            play_sound(SOUND_PICKUP);
             }
         }
 
@@ -206,6 +206,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 
     else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_PLAYER)
     {
+        play_sound(SOUND_CHARACTER_HIT);
         collider2->p_stats.health -= NewDamage(collider1,collider2);
         UI_HealthChanged(collider2->p_stats.health);
             if(collider2->p_stats.health <= 0)
