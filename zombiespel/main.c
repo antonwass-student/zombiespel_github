@@ -130,7 +130,7 @@ void CreateUI(Scene *scene, int player)
 
 }
 
-int WinMain(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     bool quit = false;
     bool typing = false;

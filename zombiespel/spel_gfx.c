@@ -106,7 +106,7 @@ void loadSprites()
     sprites[4].texture = loadTexture("textures/button.png");
 
     sprites[5].id = TXT_MENU_BACKGROUND;
-    sprites[5].texture = loadTexture("textures/menu_background.png");
+    sprites[5].texture = loadTexture("textures/Bloody_wall1.png");
 
     sprites[6].id = TXT_PLAYGROUND;
     sprites[6].texture = loadTexture("textures/playground.png");
@@ -161,9 +161,9 @@ void loadSprites()
 
     sprites[23].id = TXT_PLAYER_SOLDIER;
     sprites[23].texture = loadTexture("textures/man3wep.png");
-    
+
     sprites[24].id = TXT_MAXARMOR;
-    sprites[24].texture = loadTexture("textures/maxarmor.png");
+    sprites[24].texture = loadTexture("textures/chat2.png");
 
     spritesCount = 25;
 }
@@ -202,7 +202,7 @@ void graphics_start() //
     }
     else
     {
-        window = SDL_CreateWindow("UNNAMED", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        window = SDL_CreateWindow("Outbreak Zombol City v0.8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
         if(window == NULL)
         {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
