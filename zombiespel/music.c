@@ -67,6 +67,16 @@ void load_music(){
 
     sound[5].name = SOUND_EXPLOSION;
     sound[5].soundEffect = Mix_LoadWAV("music/explosion.wav");
+
+    sound[6].name = SOUND_BULLET_HIT;
+    sound[6].soundEffect = Mix_LoadWAV("music/bullet_hit.wav");
+
+    sound[7].name = SOUND_PICKUP;
+    sound[7].soundEffect = Mix_LoadWAV("music/pickup.wav");
+
+    sound[8].name = SOUND_CHARACTER_HIT;
+    sound[8].soundEffect = Mix_LoadWAV("music/player_hit.wav");
+
 }
 void play_sound(soundID_t id){
     //MAIN MUSIC START
@@ -92,40 +102,55 @@ void play_sound(soundID_t id){
 
     }//MAIN MUSIC END__
 
-    if(id == SOUND_GUN){
+    else if(id == SOUND_GUN){
         Mix_PlayChannel( -1, sound[1].soundEffect, 0 );
     }
-    if(id == SOUND_RELOAD){
+    else if(id == SOUND_RELOAD){
         Mix_PlayChannel( -1, sound[2].soundEffect, 0 );
     }
-    if(id == SOUND_NPC_HIT){
+    else if(id == SOUND_NPC_HIT){
         Mix_PlayChannel(-1, sound[3].soundEffect, 0);
     }
-    if(id == SOUND_BUTTON){
+    else if(id == SOUND_BUTTON){
         Mix_PlayChannel(-1, sound[4].soundEffect, 0);
     }
-    if(id == SOUND_EXPLOSION){
+    else if(id == SOUND_EXPLOSION){
         Mix_PlayChannel(-1, sound[5].soundEffect, 0);
     }
-
+    else if(id == SOUND_BULLET_HIT){
+        Mix_PlayChannel(-1, sound[6].soundEffect, 0);
+    }
+    else if(id == SOUND_PICKUP){
+        Mix_PlayChannel(-1, sound[7].soundEffect, 0);
+    }
+    else if(id == SOUND_CHARACTER_HIT){
+        Mix_PlayChannel(-1, sound[8].soundEffect, 0);
+    }
 
 }
 void music_stop(){
     printf("Releasing music\n");
     //Free the sound effects
-    Mix_FreeChunk( sound[1].Music );
-    //Mix_FreeChunk( gHigh );
-    //Mix_FreeChunk( gMedium );
-    //Mix_FreeChunk( gLow );
+    Mix_FreeChunk(sound[1].Music);
+    Mix_FreeChunk(sound[2].Music);
+    Mix_FreeChunk(sound[3].Music);
+    Mix_FreeChunk(sound[4].Music);
+    Mix_FreeChunk(sound[5].Music);
+    Mix_FreeChunk(sound[6].Music);
+    Mix_FreeChunk(sound[7].Music);
+    Mix_FreeChunk(sound[8].Music);
 
     sound[1].Music = NULL;
-    //gHigh = NULL;
-    //gMedium = NULL;
-    //gLow = NULL;
-
+    sound[2].Music = NULL;
+    sound[3].Music = NULL;
+    sound[4].Music = NULL;
+    sound[5].Music = NULL;
+    sound[6].Music = NULL;
+    sound[7].Music = NULL;
+    sound[8].Music = NULL;
 
     //Free the music
-    Mix_FreeMusic( sound[0].Music );
+    Mix_FreeMusic(sound[0].Music);
     sound[0].Music = NULL;
 
 }

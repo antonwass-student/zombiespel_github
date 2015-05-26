@@ -203,7 +203,10 @@ typedef enum
     SOUND_RELOAD,
     SOUND_NPC_HIT,
     SOUND_BUTTON,
-    SOUND_EXPLOSION
+    SOUND_EXPLOSION,
+    SOUND_PICKUP,
+    SOUND_CHARACTER_HIT,
+    SOUND_BULLET_HIT
 } soundID_t;
 
 typedef struct
