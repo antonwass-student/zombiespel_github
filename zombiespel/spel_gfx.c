@@ -174,7 +174,7 @@ void loadSprites()
 
     sprites[23].id = TXT_MAXARMOR;
     sprites[23].texture = loadTexture("textures/maxarmor.png");
-
+    
     sprites[24].id = TXT_ZBULLET;
     sprites[24].texture = loadTexture("textures/bullet_zombie.png");
 

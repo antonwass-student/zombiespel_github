@@ -120,7 +120,7 @@ void CreateUI(Scene *scene, int player)
 
 }
 
-int WinMain(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     bool quit = false;
     bool typing = false;
@@ -150,6 +150,7 @@ int WinMain(int argc, char *argv[])
     int netUpdateTimer = 5;
     int netUpdateRate = 5; // How many frames between each net update
 
+
     //Lobby
     playerClass_T pClass = CLASS_SCOUT;
     lobbyRoom.pCount = 0;
@@ -160,8 +161,9 @@ int WinMain(int argc, char *argv[])
     int netMsgIndex = 0;
     NetEvent_T netEvent = -1;
     bool netDone = false;
-
-    strcpy(ip,"192.168.56.101");
+    //strcpy(ip,"10.0.2.15");
+    //strcpy(ip,"130.229.151.143");
+    strcpy(ip,"192.168.1.17");
     //strcpy(ip,"130.229.132.73");
     strcpy(port,"2000");
 
@@ -360,6 +362,8 @@ int WinMain(int argc, char *argv[])
                              SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_READY, true), "Ready", true, black, 10);
 
+    newObject = createObject(&pregame, OBJECT_PLAYER, "player", SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.2f * SCREEN_WIDTH,
+                             SCREEN_HEIGHT * 0.2f, TXT_PLAYER_SOLDIER, false);
     // Game loop
     while(!quit)
     {
