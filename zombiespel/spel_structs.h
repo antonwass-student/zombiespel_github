@@ -149,6 +149,7 @@ typedef enum {
     CLASS_TANK = 2
 } playerClass_T;
 
+
 typedef enum {
     TXT_NONE,
     TXT_PLAYER,
@@ -196,6 +197,13 @@ typedef struct
     textureID_t id;
 } Sprite;
 
+typedef struct{
+    int xSpeed;
+    int ySpeed;
+    int oldX, oldY;
+    int frameCount;
+} Interpolation;
+
 typedef enum
 {
     SOUND_ODE_TO_DUB_STEP,
@@ -240,6 +248,7 @@ typedef struct{
     int timetolive;
     int damage;
     double angle;
+    bulletType_T type;
 }bulletInfo;
 
 typedef struct{
@@ -305,6 +314,8 @@ typedef struct{
     SDL_RendererFlip flip;
     SDL_Color drawColor;
 
+    Interpolation interpolation;
+
     bombInfo bombInfo;
 
     ExplosionInfo ExplosionInfo;
@@ -333,7 +344,7 @@ typedef struct{
 
 typedef struct{
     SDL_mutex* mtx;
-    char pool [128][512];
+    char pool [128][128];
     int Size;
 } threadCom;
 

@@ -16,14 +16,12 @@ void net_NewObject(char data[], Scene* scene)
     char name[30];
     ServerObject_T type;
 
-    printf("Creating new object\n");
-
     id = Converter_BytesToInt32(data, &index);
     x = Converter_BytesToInt32(data, &index);
     y = Converter_BytesToInt32(data, &index);
     type = data[index++];
     nameLength = Converter_BytesToInt32(data, &index);
-    printf("NameLength = %d\n", nameLength);
+    //printf("NameLength = %d\n", nameLength);
 
     for(int i = 0; i < nameLength; i++)
     {
@@ -31,7 +29,7 @@ void net_NewObject(char data[], Scene* scene)
     }
     name[nameLength] = '\0';
 
-    printf("ObjectName = %s\n",name);
+    printf("Received object %s from server\n",name);
 
     switch(type)
     {
@@ -43,6 +41,7 @@ void net_NewObject(char data[], Scene* scene)
             break;
         case SERVEROBJ_ZOMBIE_SPITTER:
             Create_Zombie_Spitter(scene, id, x, y, name);
+            break;
         case SERVEROBJ_MEDKIT:
             Create_Medkit(scene, id, x, y, name);
             printf("Received a medkit!\n");
@@ -76,10 +75,10 @@ void net_recvObjectRemove(char data[], Scene* scene)
 
 int net_SendPlayerName(char* name, int length, playerClass_T pClass)
 {
-    char buffer[512];
+    char buffer[128];
     int size = 0;
 
-    printf("name length according to strlen = '%d'\n",strlen(name));
+    //printf("name length according to strlen = '%d'\n",strlen(name));
 
     buffer[size++] = NET_PLAYER_NAME;
 
@@ -93,7 +92,7 @@ int net_SendPlayerName(char* name, int length, playerClass_T pClass)
     size += length;
 
     buffer[size++] = 2; //pClass;
-    printf("Class %d was sent at position %d\n",buffer[size - 1], size - 1);
+    printf("Class %d was sent to server.\n",buffer[size - 1], size - 1);
 
     AddToPool(&sendPool, buffer);
 
@@ -101,7 +100,7 @@ int net_SendPlayerName(char* name, int length, playerClass_T pClass)
 }
 int net_SendPlayerReady()
 {
-    char data[512];
+    char data[128];
     int index = 1;
 
     data[0] = NET_PLAYER_READY;
@@ -123,9 +122,16 @@ int net_recvPlayerHealth(char data[], Scene *scene)
     {
         if(scene->objects[i].objectType == OBJECT_PLAYER)
         {
+            if(scene->objects[i].p_stats.health > health)
+            {
+                newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", scene->objects[i].rect.x, scene->objects[i].rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
+            }
+            else{
+                //newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", scene->objects[i].rect.x, scene->objects[i].rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
+            }
             scene->objects[i].p_stats.health = health;
             UI_HealthChanged(health);
-            newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", scene->objects[i].rect.x, scene->objects[i].rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
+
             scene->objects[newObject].timeToLive = 10;
         }
     }
@@ -143,11 +149,11 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
 
     char name[24];
 
-    printf("Name length = %d\n", length);
+    //printf("Name length = %d\n", length);
 
     for(int i = 0; i < length; i++)
     {
-        printf("char at index %d\n", index);
+        //printf("char at index %d\n", index);
         name[i] = data[index++];
         //lobbyRoom.players[lobbyRoom.pCount].name[i] = data[index++];
     }
@@ -160,6 +166,8 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
         if(!strcmp(name, lobbyRoom.players[i].name))
             return 0;
     }
+
+    printf("Player %s joined the lobby\n", name);
 
     strcpy(lobbyRoom.players[lobbyRoom.pCount].name, name);
     ChangeTextStr(&scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex], name);
@@ -176,15 +184,13 @@ int net_recvLobbyReady(char data[], Scene *scene)
     int length = Converter_BytesToInt32(data, &index);
     char name[24];
 
-    printf("Received player ready\n");
-
     for(int i = 0; i < length; i++)
     {
-        printf("char at index %d\n", index);
+        //printf("char at index %d\n", index);
         name[i] = data[index++];
     }
     name[length] = '\0';
-    printf("Name = %s\n", name);
+    printf("Player %s is ready\n", name);
 
     for(int i = 0; i < 4; i++)
     {
@@ -200,7 +206,7 @@ int net_recvPlayerStats(char data[], Scene* scene)
     int x,y, dmg, health, speed;
     int index = 1;
 
-    printf("CURRENT SCENE IS: %d\n", scene->sceneName);
+    //printf("CURRENT SCENE IS: %d\n", scene->sceneName);
 
     x = Converter_BytesToInt32(data, &index);
     y = Converter_BytesToInt32(data, &index);
@@ -217,7 +223,6 @@ int net_recvPlayerStats(char data[], Scene* scene)
             scene->objects[i].p_stats.damage = dmg;
             scene->objects[i].rect.x = x;
             scene->objects[i].rect.y = y;
-            printf("Received player stats");
             UI_HealthChanged(health);
             UI_DamageChanged(dmg);
             break;
@@ -242,8 +247,14 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     {
         if(scene->objects[i].objectID == objectId)
         {
+            if(scene->objects[i].objectType == OBJECT_PLAYER_OTHER)
+            {
+                SmoothMovement(20, &scene->objects[i], x, y);
+            }
             scene->objects[i].rect.x = x;
             scene->objects[i].rect.y = y;
+
+
             scene->objects[i].rotation = (double)angle;
             //printf("Object %s's position changed.\n",scene->objects[i].name);
             return 1;
@@ -268,10 +279,10 @@ int net_SetPlayerId(char data[])
 
 int net_PlayerShoot(GameObject player)
 {
-    char buffer[512];
+    char buffer[128];
     int index = 0;
 
-    printf("debug1\n");
+    //printf("debug1\n");
     buffer[index++] = NET_PLAYER_SHOOT;
     Converter_Int32ToBytes(buffer,&index, playerNetId);
     Converter_Int32ToBytes(buffer, &index, player.rect.x + player.rect.w/2);
@@ -280,7 +291,7 @@ int net_PlayerShoot(GameObject player)
     Converter_Int32ToBytes(buffer, &index, player.p_stats.damage);
     Converter_Int32ToBytes(buffer, &index, 20);
 
-    printf("Requesting to shoot with x = '%d' y = '%d'\n", player.rect.x + player.rect.w/2, player.rect.y + player.rect.h/2);
+    //printf("Requesting to shoot with x = '%d' y = '%d'\n", player.rect.x + player.rect.w/2, player.rect.y + player.rect.h/2);
 
     AddToPool(&sendPool,buffer);
     return EXIT_SUCCESS;
@@ -288,7 +299,7 @@ int net_PlayerShoot(GameObject player)
 
 int net_PlayerMove(int x, int y, int angle)
 {
-    char buffer[512];
+    char buffer[128];
     int index = 0;
     buffer[index++] = NET_PLAYER_MOVE;
     Converter_Int32ToBytes(buffer, &index, playerNetId);
@@ -317,19 +328,27 @@ int net_recvBullet(char data[], Scene* scene)
     type = data[index++];
 
     if(type == BULLET_PLAYER)
+    {
         newObject = createObject(scene, OBJECT_BULLET, "bullet", x, y, 20, 20, TXT_BULLET, false);
+        play_sound(SOUND_GUN);
+
+    }
+
     else if(type == BULLET_ZOMBIE)
+    {
         newObject = createObject(scene, OBJECT_BULLET, "bullet", x, y, 20, 20, TXT_ZBULLET, false);
+        printf("________________\nRECEIVED ZOMBIE BULLET\n________________\n");
+    }
 
     SetBulletStats(&scene->objects[newObject], speed, (double)angle, 0);
     scene->objects[newObject].rotation = (double)angle;
     scene->objects[newObject].objectID = id;
-    play_sound(SOUND_GUN);
+    scene->objects[newObject].bulletInfo.type = type;
 
-    printf("Received bullet from server.\n --angle = '%d'\n",angle);
-    printf("--x = '%d'\n", x);
-    printf("--y = '%d'\n", y);
-    printf("--speed = '%d'\n", speed);
+    //printf("Received bullet from server.\n --angle = '%d'\n",angle);
+    //printf("--x = '%d'\n", x);
+    //printf("--y = '%d'\n", y);
+    //printf("--speed = '%d'\n", speed);
     return EXIT_SUCCESS;
 
 }
@@ -338,7 +357,7 @@ int Create_Medkit(Scene* scene, int id, int x, int y, char* name)
 {
     SDL_Color white = {255,255,255};
     int newObject;
-    newObject = createObject(scene, OBJECT_ITEM, "Medkit", x, y, 20, 20, TXT_MEDKIT, false);
+    newObject = createObject(scene, OBJECT_ITEM, "Medkit", x, y, 30, 30, TXT_MEDKIT, false);
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Medkit", true, white, 10);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
@@ -352,7 +371,14 @@ int Create_Other_Player(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id;
     SetText(&scene->objects[newObject],name, true, white, 10);
 
+    scene->objects[newObject].interpolation.xSpeed = 0;
+    scene->objects[newObject].interpolation.ySpeed = 0;
+    scene->objects[newObject].interpolation.oldX = x;
+    scene->objects[newObject].interpolation.oldY = y;
+    scene->objects[newObject].p_stats.speed = 10;
+
     printf("Player was created at x=%d and y=%d\n", x, y);
+    printf("____________________________________\n");
 
     return EXIT_SUCCESS;
 }
@@ -368,7 +394,8 @@ int Create_Zombie_Normal(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id;
     SetText(&scene->objects[newObject],name, true, white, 10);
 
-    printf("zombie was created at x=%d and y=%d\n", x, y);
+    printf("Zombie was created at x=%d and y=%d\n", x, y);
+    printf("____________________________________\n");
 
     return EXIT_SUCCESS;
 }
@@ -383,7 +410,8 @@ int Create_Zombie_Spitter(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id;
     SetText(&scene->objects[newObject],name, true, white, 10);
 
-    printf("zombie was created at x=%d and y=%d\n", x, y);
+    printf("Zombie was created at x=%d and y=%d\n", x, y);
+    printf("____________________________________\n");
 
     return EXIT_SUCCESS;
 }

@@ -147,15 +147,15 @@ int WinMain(int argc, char *argv[])
     long frames = 0;
     int deltaTime = 0;
     bool netUpdateFrame = false;
-    int netUpdateTimer = 1;
-    int netUpdateRate = 1; // How many frames between each net update
+    int netUpdateTimer = 5;
+    int netUpdateRate = 5; // How many frames between each net update
 
     //Lobby
     playerClass_T pClass = CLASS_SCOUT;
     lobbyRoom.pCount = 0;
 
 
-    char netMsg[512];
+    char netMsg[128];
     int netMsgSize = 0;
     int netMsgIndex = 0;
     NetEvent_T netEvent = -1;
@@ -547,11 +547,9 @@ int WinMain(int argc, char *argv[])
                     mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
                     level.objects[player].rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
 
-                    if(oldRot != level.objects[player].rotation)
-                    {
-                        if(playerNetId != -1 && netUpdateFrame)
-                            net_PlayerMove(level.objects[player].rect.x, level.objects[player].rect.y, (int)level.objects[player].rotation);
-                    }
+                    if(playerNetId != -1 && netUpdateFrame)
+                        net_PlayerMove(level.objects[player].rect.x, level.objects[player].rect.y, (int)level.objects[player].rotation);
+
 
                 }
             }
@@ -656,7 +654,9 @@ int WinMain(int argc, char *argv[])
                 }
             }
         }
-        // ************ INPUTS END **********
+        // *************
+        // * INPUT END *
+        // *************
 
         if(activeScene->sceneName == SCENE_LEVEL) //Flyttar spelaren
         {
@@ -670,16 +670,17 @@ int WinMain(int argc, char *argv[])
             else if(moving.right)
                 x += level.objects[player].p_stats.speed;
 
-            if(x != 0 || y != 0)
-            {
-                MoveObject(&level.objects[player], activeScene, x, y, player);
+            MoveObject(&level.objects[player], activeScene, x, y, player);
 
-                if(playerNetId != -1 && netUpdateFrame)
-                    net_PlayerMove(level.objects[player].rect.x, level.objects[player].rect.y, (int)level.objects[player].rotation);
-            }
+            if(playerNetId != -1 && netUpdateFrame)
+                net_PlayerMove(level.objects[player].rect.x, level.objects[player].rect.y, (int)level.objects[player].rotation);
 
 
         }
+
+        // ***************
+        // * GAME UPDATE *
+        // ***************
 
         for(int i = 0; i < 100; i++) //Går igenom alla objekt som ska uppdateras
         {
@@ -711,7 +712,17 @@ int WinMain(int argc, char *argv[])
                     RemoveObjectFromScene(activeScene, i);
                 }*/
             }
+            /*
+            else if(activeScene->objects[i].objectType == OBJECT_PLAYER_OTHER)
+            {
+                if(activeScene->objects[i].interpolation.frameCount > 0)
+                {
+                    activeScene->objects[i].rect.x +=activeScene->objects[i].interpolation.xSpeed;
+                    activeScene->objects[i].rect.y +=activeScene->objects[i].interpolation.ySpeed;
+                    activeScene->objects[i].interpolation.frameCount--;
+                }
 
+            }*/
             else if(activeScene->objects[i].objectType == OBJECT_NPC)
             {
                 if(activeScene->objects[i].ai.ai == AI_ZOMBIE)
@@ -721,11 +732,10 @@ int WinMain(int argc, char *argv[])
 
                 if(activeScene->objects[i].ai.ai == AI_SPITTER)
                 {
-                    Zombie_UseBrain(activeScene, &activeScene->objects[i], i);
+                    //Zombie_UseBrain(activeScene, &activeScene->objects[i], i);
                 }
             }
             else if(activeScene->objects[i].objectType == OBJECT_BOMB){
-                //HÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR GURRIS!
                 activeScene->objects[i].bombInfo.timeToLive--;
                 if(activeScene->objects[i].bombInfo.timeToLive == 0){
 

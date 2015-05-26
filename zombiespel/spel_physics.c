@@ -186,7 +186,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 {
     int newObject = -1;
     //printf("CollisionHandler with object1:%s and object2:%s",collider1->name,collider2->name);
-    if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_NPC) //Bullet med zombie
+    if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_NPC && collider1->bulletInfo.type == BULLET_PLAYER) //Bullet med zombie
     {
         printf("Bullet collided with NPC\n");
         collider2->ai.health -= collider1->bulletInfo.damage;
@@ -201,8 +201,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
             SetItemInfo(&scene->objects[newObject], ITEM_MEDKIT, 10);
         }
 
-        RemoveObjectFromScene(scene, c1_index);
-
+        //RemoveObjectFromScene(scene, c1_index);
     }
 
     else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_PLAYER)
@@ -223,19 +222,34 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 
     else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_WALL) //Bullet med Wall
     {
-        printf("Bullet collided with Wall\n");
+        //printf("Bullet collided with Wall\n");
         RemoveObjectFromScene(scene, c1_index);
     }
     else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_CAR) //Bullet med car
     {
-        printf("Bullet collided with Car\n");
+        //printf("Bullet collided with Car\n");
         RemoveObjectFromScene(scene, c1_index);
     }
     else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_CAR)
     {
-        printf("Z Bullet collidated with car\n");
+        //printf("Z Bullet collidated with car\n");
         RemoveObjectFromScene(scene, c1_index);
     }
 
 
 }
+
+int SmoothMovement(int tickRate, GameObject *object, int newX, int newY)
+{
+    //ySpeed -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //Objektets y hastighet
+    //xSpeed -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //objektets x hastighet
+
+    object->interpolation.xSpeed = (newX - object->interpolation.oldX)/20;
+    object->interpolation.ySpeed = (newY - object->interpolation.oldY)/20;
+
+    object->interpolation.oldX = newX;
+    object->interpolation.oldY = newY;
+    object->interpolation.frameCount = tickRate;
+    return 0;
+}
+
