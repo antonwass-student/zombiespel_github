@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "spel_gfx.h"
 #include "spel_structs.h"
@@ -151,6 +152,7 @@ int WinMain(int argc, char *argv[])
     int netUpdateRate = 5; // How many frames between each net update
 
     //Lobby
+    bool playerReady = false;
     playerClass_T pClass = CLASS_SCOUT;
     lobbyRoom.pCount = 0;
 
@@ -160,6 +162,8 @@ int WinMain(int argc, char *argv[])
     int netMsgIndex = 0;
     NetEvent_T netEvent = -1;
     bool netDone = false;
+
+    srand(time(NULL));
 
     strcpy(ip,"192.168.56.101");
     //strcpy(ip,"130.229.132.73");
@@ -215,20 +219,21 @@ int WinMain(int argc, char *argv[])
 
     CreateUI(&level, player);
 
-    newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 4400, 40, 40, TXT_GUN, false);
-    SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
+    //newObject=createObject(&level, OBJECT_ITEM, "gun", 2600, 4400, 40, 40, TXT_GUN, false);
+    //SetItemInfo(&level.objects[newObject], ITEM_GUN_DEFAULT, 50);
 
-    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2800, 900, 118, 65, TXT_ZOMBIE, false);
-    SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20, 50);
-    level.objects[newObject].objectID = 25;
+    //newObject = createObject(&level, OBJECT_NPC, "ZOMBIE1", 2800, 900, 118, 65, TXT_ZOMBIE, false);
+    //SetAI(&level.objects[newObject], AI_ZOMBIE, 3, 500, 10, 100, 1.0f, 50, 20, 50);
+    //level.objects[newObject].objectID = 25;
 
-    newObject = createObject(&level, OBJECT_NPC, "ZOMBIE_SPIT", 1000, 1000, 128, 128, TXT_ZOMBIE_FAT, false);
-    SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 100, 100, 1.0f, 500, 10, 30);
-    level.objects[newObject].objectID = 26;
+   // newObject = createObject(&level, OBJECT_NPC, "ZOMBIE_SPIT", 1000, 1000, 128, 128, TXT_ZOMBIE_FAT, false);
+    //SetAI(&level.objects[newObject], AI_SPITTER, 5, 1000, 100, 100, 1.0f, 500, 10, 30);
+    //level.objects[newObject].objectID = 26;
 
 
 
     //item
+    /*
     newObject=createObject(&level, OBJECT_ITEM, "Gun", 2600, 730, 40, 40, TXT_GUN, false);
     SetItemInfo(&level.objects[newObject], ITEM_GUN, 50);
     SetText(&level.objects[newObject], level.objects[newObject].name, true, white, 10);
@@ -244,8 +249,7 @@ int WinMain(int argc, char *argv[])
     newObject=createObject(&level,OBJECT_ITEM, "Armor", 3300, 5000, 40, 40, TXT_BUTTON, false);
     SetItemInfo(&level.objects[newObject],ITEM_ARMOR, 10);
     SetText(&level.objects[newObject], level.objects[newObject].name, true, white, 10);
-
-
+    */
 
 
     //grans
@@ -360,6 +364,19 @@ int WinMain(int argc, char *argv[])
                              SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
     SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_READY, true), "Ready", true, black, 10);
 
+    newObject = createObject(&pregame, OBJECT_BUTTON, "C:Soldier", SCREEN_WIDTH * 0.6f, SCREEN_HEIGHT * 0.2f, 0.1f * SCREEN_WIDTH,
+                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
+    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_CLASS_SOLDIER, true), "Soldier", true, black, 10);
+    newObject = createObject(&pregame, OBJECT_BUTTON, "C:Scout", SCREEN_WIDTH * 0.7f, SCREEN_HEIGHT * 0.2f, 0.1f * SCREEN_WIDTH,
+                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
+    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_CLASS_SCOUT, true), "Scout", true, black, 10);
+    newObject = createObject(&pregame, OBJECT_BUTTON, "C:Soldier", SCREEN_WIDTH * 0.6f, SCREEN_HEIGHT * 0.3f, 0.1f * SCREEN_WIDTH,
+                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
+    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_CLASS_TANK, true), "Tank", true, black, 10);
+    newObject = createObject(&pregame, OBJECT_BUTTON, "C:Scout", SCREEN_WIDTH * 0.7f, SCREEN_HEIGHT * 0.3f, 0.1f * SCREEN_WIDTH,
+                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
+    SetText(SetButtonStats(&pregame.objects[newObject], BUTTON_CLASS_ENGINEER, true), "Engineer", true, black, 10);
+
     // Game loop
     while(!quit)
     {
@@ -379,6 +396,7 @@ int WinMain(int argc, char *argv[])
                 case NET_EVENT_START_GAME:
                     nextScene = &level;
                     printf("Set next scene to level\n");
+                    ChangeTextureWithClass(&level.objects[player], pClass);
                     netDone = true;
                     break;
             }
@@ -631,8 +649,39 @@ int WinMain(int argc, char *argv[])
                                             play_sound(SOUND_BUTTON);
                                             break;
                                         case BUTTON_READY:
+                                            playerReady = true;
+                                            net_SendPlayerClass(pClass);
                                             net_SendPlayerReady();
                                             printf("Sent ready notification to server\n");
+                                            break;
+                                        case BUTTON_CLASS_SCOUT:
+                                            if(!playerReady)
+                                            {
+                                                pClass = CLASS_SCOUT;
+                                                net_SendPlayerClass(pClass);
+                                            }
+
+                                            break;
+                                        case BUTTON_CLASS_SOLDIER:
+                                            if(!playerReady)
+                                            {
+                                                pClass = CLASS_SOLDIER;
+                                                net_SendPlayerClass(pClass);
+                                            }
+                                            break;
+                                        case BUTTON_CLASS_TANK:
+                                            if(!playerReady)
+                                            {
+                                                pClass = CLASS_TANK;
+                                                net_SendPlayerClass(pClass);
+                                            }
+                                            break;
+                                        case BUTTON_CLASS_ENGINEER:
+                                            if(!playerReady)
+                                            {
+                                                pClass = CLASS_ENGINEER;
+                                                net_SendPlayerClass(pClass);
+                                            }
                                             break;
                                     }
                                 }
@@ -661,6 +710,8 @@ int WinMain(int argc, char *argv[])
         if(activeScene->sceneName == SCENE_LEVEL) //Flyttar spelaren
         {
             int x = 0, y = 0;
+            bool my;
+
             if(moving.up)
                 y -= level.objects[player].p_stats.speed;
             else if(moving.down)
@@ -669,6 +720,30 @@ int WinMain(int argc, char *argv[])
                 x -= level.objects[player].p_stats.speed;
             else if(moving.right)
                 x += level.objects[player].p_stats.speed;
+
+
+            /*  //ANNAT STYRSYSTEM.
+            if(moving.up)
+            {
+                y -= sin((level.objects[player].rotation + 90) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //Objektets y hastighet
+                x -= cos((level.objects[player].rotation + 90) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //objektets x hastighet
+            }
+            else if(moving.down)
+            {
+                y += sin((level.objects[player].rotation + 90) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //Objektets y hastighet
+                x += cos((level.objects[player].rotation + 90) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //objektets x hastighet
+            }
+            if(moving.left)
+            {
+                y += sin((level.objects[player].rotation + 180) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //Objektets y hastighet
+                x += cos((level.objects[player].rotation + 180) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //objektets x hastighet
+            }
+            else if(moving.right)
+            {
+                y += sin((level.objects[player].rotation) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //Objektets y hastighet
+                x += cos((level.objects[player].rotation) * M_PI / 180.0f) * level.objects[player].p_stats.speed; //objektets x hastighet
+            }*/
+
 
             MoveObject(&level.objects[player], activeScene, x, y, player);
 
@@ -691,10 +766,15 @@ int WinMain(int argc, char *argv[])
 
             if(activeScene->objects[i].anim.animated)
             {
-                if(checkIfMoving(moving))
+                if(activeScene->objects[i].objectType == OBJECT_PLAYER && checkIfMoving(moving))
                     activeScene->objects[i].state = ANIM_MOVING;
-                else
+                else if(activeScene->objects[i].objectType == OBJECT_PLAYER)
                     activeScene->objects[i].state = ANIM_IDLE;
+
+                if(activeScene->objects[i].objectType == OBJECT_PLAYER_OTHER)
+                {
+
+                }
 
                 CalcAnimation(&activeScene->objects[i]);
             }
@@ -712,7 +792,6 @@ int WinMain(int argc, char *argv[])
                     RemoveObjectFromScene(activeScene, i);
                 }*/
             }
-            /*
             else if(activeScene->objects[i].objectType == OBJECT_PLAYER_OTHER)
             {
                 if(activeScene->objects[i].interpolation.frameCount > 0)
@@ -721,8 +800,12 @@ int WinMain(int argc, char *argv[])
                     activeScene->objects[i].rect.y +=activeScene->objects[i].interpolation.ySpeed;
                     activeScene->objects[i].interpolation.frameCount--;
                 }
+                else
+                {
+                    activeScene->objects[i].state = ANIM_IDLE;
+                }
 
-            }*/
+            }
             else if(activeScene->objects[i].objectType == OBJECT_NPC)
             {
                 if(activeScene->objects[i].ai.ai == AI_ZOMBIE)

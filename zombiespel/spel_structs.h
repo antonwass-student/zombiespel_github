@@ -30,7 +30,14 @@ typedef enum{
     NET_PLAYER_READY,
     NET_GAME_START,
     NET_OBJECT_BULLET,
-    NET_PLAYER_HEALTH
+    NET_PLAYER_HEALTH,
+    NET_PLAYER_CLASS,
+    NET_PLAYER_CLASS_REC,
+    NET_PLAYER_CLASS_FINAL,
+    NET_PLAYER_WEAPON,
+    NET_PLAYER_AMMO,
+    NET_PLAYER_ARMOR
+
 } NetMessages_T;
 
 typedef enum{
@@ -54,6 +61,7 @@ typedef enum{
     SERVEROBJ_AMMO,
     SERVEROBJ_GUN_1,
     SERVEROBJ_GUN_2,
+    SERVEROBJ_GUN_3,
     SERVEROBJ_ARMOR
 }ServerObject_T;
 
@@ -117,9 +125,19 @@ typedef enum{
 typedef enum{
     ITEM_MEDKIT,
     ITEM_AMMO,
-    ITEM_GUN,
+    ITEM_GUN_DEFAULT,
+    ITEM_GUN_1,
+    ITEM_GUN_2,
+    ITEM_GUN_3,
     ITEM_ARMOR
 } ItemType_T;
+
+typedef enum{
+    WEAPON_DEFAULT,
+    WEAPON_MACHINEGUN,
+    WEAPON_SHOTGUN,
+    WEAPON_REVOLVER
+} WeaponType_T;
 
 typedef struct{
     ItemType_T itemType;
@@ -139,14 +157,19 @@ typedef enum{
     BUTTON_SET_PORT,
     BUTTON_PLAY,
     BUTTON_CONNECT,
-    BUTTON_READY
+    BUTTON_READY,
+    BUTTON_CLASS_SCOUT,
+    BUTTON_CLASS_SOLDIER,
+    BUTTON_CLASS_TANK,
+    BUTTON_CLASS_ENGINEER
 } ButtonAction_T;
 
 
 typedef enum {
     CLASS_SOLDIER = 0,
     CLASS_SCOUT = 1,
-    CLASS_TANK = 2
+    CLASS_TANK = 2,
+    CLASS_ENGINEER = 3
 } playerClass_T;
 
 
@@ -176,7 +199,14 @@ typedef enum {
     TXT_CAR4,
     TXT_CAR42,
     TXT_PLAYER_SOLDIER,
-    TXT_MAXARMOR
+    TXT_MAXARMOR,
+    TXT_PLAYER_SCOUT,
+    TXT_PLAYER_TANK,
+    TXT_PLAYER_ENGINEER,
+    TXT_SHOTGUN,
+    TXT_REVOLVER,
+    TXT_MACHINEGUN,
+    TXT_ARMOR
 } textureID_t;
 
 typedef struct{
@@ -242,7 +272,9 @@ typedef struct{
 typedef struct{
 
     int health, ammo, speed, damage, reloadTime, fireRate, fireCount, armor, ammoTotal, bombs;
+    int bulletSpread, magazineCap;
     playerClass_T pClass;
+    WeaponType_T weapon;
     bool alive;
 }playerStats;
 

@@ -110,6 +110,21 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
             printf("Received health\n");
             net_recvPlayerHealth(data, scene);
             break;
+        case NET_PLAYER_CLASS_REC:
+            net_RecvPlayerClass(data, scene);
+            break;
+        case NET_PLAYER_CLASS_FINAL:
+            net_recvClassFinal(data, scene);
+            break;
+        case NET_PLAYER_WEAPON:
+            net_recvWeapon(data, scene);
+            break;
+        case NET_PLAYER_AMMO:
+            net_recvAmmo(data, scene);
+            break;
+        case NET_PLAYER_ARMOR:
+            net_recvArmor(data, scene);
+            break;
         default:
             printf("Could not identify header.\n");
             break;

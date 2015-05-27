@@ -115,6 +115,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
 
     if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_ITEM) //player med item
     {
+        /*
         if(obj2->itemInfo.itemType == ITEM_MEDKIT && distance < 64) {
             printf("collided with medkit\n");
             obj1->p_stats.health += obj2->itemInfo.amount;
@@ -144,6 +145,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
             play_sound(SOUND_PICKUP);
             }
         }
+        */
 
     }
     if(obj1->objectType == OBJECT_PLAYER && obj2->objectType == OBJECT_NPC){

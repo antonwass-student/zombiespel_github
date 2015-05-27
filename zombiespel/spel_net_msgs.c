@@ -2,6 +2,7 @@
 #include "spel_gameobject.h"
 #include "spel_network.h"
 #include "music.h"
+#include "time.h"
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
@@ -47,12 +48,20 @@ void net_NewObject(char data[], Scene* scene)
             printf("Received a medkit!\n");
             break;
         case SERVEROBJ_AMMO:
+            Create_Ammo(scene, id, x, y, name);
+            printf("Received ammo!\n");
             break;
         case SERVEROBJ_GUN_1:
+            Create_Machinegun(scene, id, x, y, name);
             break;
         case SERVEROBJ_GUN_2:
+            Create_Shotgun(scene, id, x, y, name);
+            break;
+        case SERVEROBJ_GUN_3:
+            Create_Revolver(scene, id, x, y, name);
             break;
         case SERVEROBJ_ARMOR:
+            Create_Armor(scene, id, x, y, name);
             break;
         default:
             break;
@@ -169,6 +178,8 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
 
     printf("Player %s joined the lobby\n", name);
 
+    //strcat(name, "(Scout)");
+
     strcpy(lobbyRoom.players[lobbyRoom.pCount].name, name);
     ChangeTextStr(&scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex], name);
     scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex].drawColor = lblue;
@@ -250,10 +261,10 @@ int net_ChangeObjectPos(char data[], Scene* scene)
             if(scene->objects[i].objectType == OBJECT_PLAYER_OTHER)
             {
                 SmoothMovement(20, &scene->objects[i], x, y);
+                scene->objects[i].state = ANIM_MOVING;
             }
             scene->objects[i].rect.x = x;
             scene->objects[i].rect.y = y;
-
 
             scene->objects[i].rotation = (double)angle;
             //printf("Object %s's position changed.\n",scene->objects[i].name);
@@ -266,6 +277,96 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+int net_recvWeapon(char data[], Scene* scene)
+{
+    int index = 1;
+    ServerObject_T weapon = data[index++];
+    WeaponType_T playerWeapon;
+    int damage, fireRate, spread, magSize;
+
+    printf("Received a weapon. %d\n", weapon);
+
+    switch(weapon)
+    {
+        case SERVEROBJ_GUN_1:
+            playerWeapon = WEAPON_MACHINEGUN;
+            damage = 20;
+            fireRate = 5;
+            spread = 10;
+            magSize = 30;
+            break;
+        case SERVEROBJ_GUN_2:
+            playerWeapon = WEAPON_SHOTGUN;
+            damage = 60;
+            fireRate = 50;
+            spread = 0;
+            magSize = 8;
+
+            printf("Player equipped shotgun\n");
+            break;
+        case SERVEROBJ_GUN_3:
+            playerWeapon = WEAPON_REVOLVER;
+            damage = 50;
+            fireRate = 40;
+            spread = 5;
+            magSize = 6;
+            break;
+    }
+
+    for(int i = 0; i < scene->objectLimit; i++)
+    {
+        if(scene->objects[i].objectType == OBJECT_PLAYER)
+        {
+            scene->objects[i].p_stats.ammoTotal += scene->objects[i].p_stats.ammo;
+            scene->objects[i].p_stats.ammo = 0;
+            scene->objects[i].p_stats.damage = damage;
+            scene->objects[i].p_stats.fireRate = fireRate;
+            scene->objects[i].p_stats.bulletSpread = spread;
+            scene->objects[i].p_stats.magazineCap = magSize;
+            scene->objects[i].p_stats.weapon = playerWeapon;
+            UI_AmmoChanged(0, scene->objects[i].p_stats.ammoTotal);
+            UI_DamageChanged(damage);
+            break;
+        }
+    }
+}
+
+int net_recvAmmo(char data[], Scene* scene)
+{
+    int index = 1;
+    int amount = Converter_BytesToInt32(data, &index);
+
+    for(int i = 0; i < scene->objectLimit; i++)
+    {
+        if(scene->objects[i].objectType == OBJECT_PLAYER)
+        {
+            scene->objects[i].p_stats.ammoTotal += amount;
+            printf("New ammo %d\n", scene->objects[i].p_stats.ammoTotal);
+            UI_AmmoChanged(scene->objects[i].p_stats.ammo, scene->objects[i].p_stats.ammoTotal);
+            break;
+        }
+
+    }
+}
+
+int net_recvArmor(char data[], Scene* scene)
+{
+    int index = 1;
+    int amount = Converter_BytesToInt32(data, &index);
+
+    for(int i = 0; i < scene->objectLimit; i++)
+    {
+        if(scene->objects[i].objectType == OBJECT_PLAYER)
+        {
+            scene->objects[i].p_stats.armor += amount;
+            printf("New armor %d\n", scene->objects[i].p_stats.armor);
+            UI_ArmorChanged(scene->objects[i].p_stats.armor);
+            break;
+        }
+
+    }
+}
+
 int net_SetPlayerId(char data[])
 {
     int id;
@@ -274,28 +375,86 @@ int net_SetPlayerId(char data[])
     id = Converter_BytesToInt32(data, &index);
     printf("Your netID is: %d\n", id);
     playerNetId = id;
+
     return EXIT_SUCCESS;
 }
+
+
 
 int net_PlayerShoot(GameObject player)
 {
     char buffer[128];
     int index = 0;
+    int newRot = player.rotation, newDamage;
+    int bullets = 1;
 
-    //printf("debug1\n");
-    buffer[index++] = NET_PLAYER_SHOOT;
-    Converter_Int32ToBytes(buffer,&index, playerNetId);
-    Converter_Int32ToBytes(buffer, &index, player.rect.x + player.rect.w/2);
-    Converter_Int32ToBytes(buffer, &index, player.rect.y + player.rect.h/2);
-    Converter_Int32ToBytes(buffer, &index, (int)player.rotation);
-    Converter_Int32ToBytes(buffer, &index, player.p_stats.damage);
-    Converter_Int32ToBytes(buffer, &index, 20);
+    switch(player.p_stats.weapon)
+    {
+        case WEAPON_DEFAULT:
+            break;
+        case WEAPON_MACHINEGUN:
+            break;
+        case WEAPON_SHOTGUN:
+            newDamage = player.p_stats.damage/3;
+            newRot = player.rotation;
+            bullets = 3;
+            break;
+        case WEAPON_REVOLVER:
+            break;
+    }
 
-    //printf("Requesting to shoot with x = '%d' y = '%d'\n", player.rect.x + player.rect.w/2, player.rect.y + player.rect.h/2);
 
-    AddToPool(&sendPool,buffer);
+    if(player.p_stats.weapon == WEAPON_SHOTGUN)
+    {
+        newRot-=10;
+
+        for(int i = 0; i < bullets; i++)
+        {
+            index = 0;
+            buffer[index++] = NET_PLAYER_SHOOT;
+            Converter_Int32ToBytes(buffer,&index, playerNetId);
+            Converter_Int32ToBytes(buffer, &index, player.rect.x + player.rect.w/2);
+            Converter_Int32ToBytes(buffer, &index, player.rect.y + player.rect.h/2);
+            Converter_Int32ToBytes(buffer, &index, (int)newRot + i * 10);
+            Converter_Int32ToBytes(buffer, &index, player.p_stats.damage);
+            Converter_Int32ToBytes(buffer, &index, 20);
+
+            AddToPool(&sendPool,buffer);
+
+
+        }
+    }
+
+    else
+    {
+        newRot += (rand() % (player.p_stats.bulletSpread * 2)) - player.p_stats.bulletSpread;
+        buffer[index++] = NET_PLAYER_SHOOT;
+        Converter_Int32ToBytes(buffer,&index, playerNetId);
+        Converter_Int32ToBytes(buffer, &index, player.rect.x + player.rect.w/2);
+        Converter_Int32ToBytes(buffer, &index, player.rect.y + player.rect.h/2);
+        Converter_Int32ToBytes(buffer, &index, newRot);
+        Converter_Int32ToBytes(buffer, &index, player.p_stats.damage);
+        Converter_Int32ToBytes(buffer, &index, 20);
+
+        AddToPool(&sendPool,buffer);
+    }
     return EXIT_SUCCESS;
 }
+
+int net_SendPlayerClass(playerClass_T pClass)
+{
+    char buffer[128];
+    int index = 0;
+
+    buffer[index++] = NET_PLAYER_CLASS;
+    Converter_Int32ToBytes(buffer, &index, playerNetId);
+    buffer[index++] = pClass;
+
+    AddToPool(&sendPool, buffer);
+    return EXIT_SUCCESS;
+
+}
+
 
 int net_PlayerMove(int x, int y, int angle)
 {
@@ -311,7 +470,89 @@ int net_PlayerMove(int x, int y, int angle)
     return EXIT_SUCCESS;
 }
 
+int net_RecvPlayerClass(char data[], Scene* scene)
+{
+    int index = 1;
+    int length = Converter_BytesToInt32(data, &index);
 
+    char name[24];
+
+    printf("Received player class\n");
+
+    for(int i = 0; i < length; i++)
+    {
+        //printf("char at index %d\n", index);
+        name[i] = data[index++];
+        //lobbyRoom.players[lobbyRoom.pCount].name[i] = data[index++];
+    }
+    name[length] = '\0';
+    playerClass_T pClass = data[index++];
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(!strcmp(name, lobbyRoom.players[i].name))
+        {
+            switch(pClass)
+            {
+                case CLASS_SCOUT:
+                    strcat(name, " (Scout)");
+                    break;
+                case CLASS_SOLDIER:
+                    strcat(name, " (Soldier)");
+                    break;
+                case CLASS_TANK:
+                    strcat(name, " (Tank)");
+                    break;
+                case CLASS_ENGINEER:
+                    strcat(name, " (Engineer)");
+                    break;
+            }
+            ChangeTextStr(&scene->objects[lobbyRoom.players[i].uiIndex], name);
+        }
+
+    }
+
+}
+
+int net_recvClassFinal(char data[], Scene* scene)
+{
+    int index = 1;
+    int playerId = Converter_BytesToInt32(data, &index);
+    playerClass_T pClass;
+    pClass = data[index++];
+    textureID_t texture;
+
+
+    switch(pClass)
+    {
+        case CLASS_SCOUT:
+            texture = TXT_PLAYER_SCOUT;
+            break;
+        case CLASS_SOLDIER:
+            texture = TXT_PLAYER_SOLDIER;
+            break;
+        case CLASS_TANK:
+            texture = TXT_PLAYER_TANK;
+            break;
+        case CLASS_ENGINEER:
+            texture = TXT_PLAYER_ENGINEER;
+            break;
+
+    }
+
+    printf("Received class final\n");
+
+    for(int i = 0; i < scene->objectLimit; i++)
+    {
+        if(scene->objects[i].objectID == playerId)
+        {
+            scene->objects[i].id = texture;
+            SetAnimation(&scene->objects[i], 10, 0, 1, 128, 2);
+            break;
+        }
+    }
+
+}
 
 int net_recvBullet(char data[], Scene* scene)
 {
@@ -353,6 +594,56 @@ int net_recvBullet(char data[], Scene* scene)
 
 }
 
+int Create_Machinegun(Scene* scene, int id, int x, int y, char* name)
+{
+    SDL_Color white = {255,255,255};
+    int newObject;
+    newObject = createObject(scene, OBJECT_ITEM, "Machine gun", x, y, 30, 30, TXT_MACHINEGUN, false);
+    scene->objects[newObject].objectID = id; //Remember to set ID!
+    SetText(&scene->objects[newObject],"Machine gun", true, white, 10);
+    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+}
+
+int Create_Revolver(Scene* scene, int id, int x, int y, char* name)
+{
+    SDL_Color white = {255,255,255};
+    int newObject;
+    newObject = createObject(scene, OBJECT_ITEM, "Revoler", x, y, 30, 30, TXT_REVOLVER, false);
+    scene->objects[newObject].objectID = id; //Remember to set ID!
+    SetText(&scene->objects[newObject],"Revolver", true, white, 10);
+    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+}
+
+int Create_Shotgun(Scene* scene, int id, int x, int y, char* name)
+{
+    SDL_Color white = {255,255,255};
+    int newObject;
+    newObject = createObject(scene, OBJECT_ITEM, "Shotgun", x, y, 30, 30, TXT_SHOTGUN, false);
+    scene->objects[newObject].objectID = id; //Remember to set ID!
+    SetText(&scene->objects[newObject],"Shotgun", true, white, 10);
+    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+}
+
+int Create_Ammo(Scene* scene, int id, int x, int y, char* name)
+{
+    SDL_Color white = {255,255,255};
+    int newObject;
+    newObject = createObject(scene, OBJECT_ITEM, "Ammo", x, y, 30, 30, TXT_BULLET, false);
+    scene->objects[newObject].objectID = id; //Remember to set ID!
+    SetText(&scene->objects[newObject],"Ammo", true, white, 10);
+    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+}
+
+int Create_Armor(Scene* scene, int id, int x, int y, char* name)
+{
+    SDL_Color white = {255,255,255};
+    int newObject;
+    newObject = createObject(scene, OBJECT_ITEM, "Armor", x, y, 30, 30, TXT_ARMOR, false);
+    scene->objects[newObject].objectID = id; //Remember to set ID!
+    SetText(&scene->objects[newObject],"Armor", true, white, 10);
+    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+}
+
 int Create_Medkit(Scene* scene, int id, int x, int y, char* name)
 {
     SDL_Color white = {255,255,255};
@@ -367,6 +658,8 @@ int Create_Other_Player(Scene* scene, int id, int x, int y, char* name)
 {
     SDL_Color white = {255,255,255};
     int newObject;
+    textureID_t texture;
+
     newObject = createObject(scene, OBJECT_PLAYER_OTHER, name,x, y, 128, 128, TXT_PLAYER_SOLDIER, false);
     scene->objects[newObject].objectID = id;
     SetText(&scene->objects[newObject],name, true, white, 10);
