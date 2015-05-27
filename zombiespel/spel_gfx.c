@@ -175,8 +175,8 @@ void loadSprites()
     sprites[23].id = TXT_MAXARMOR;
     sprites[23].texture = loadTexture("textures/maxarmor.png");
 
-    sprites[24].id = TXT_PLAYER_SOLDIER;
-    sprites[24].texture = loadTexture("textures/man2.png");
+    sprites[24].id = TXT_ZBULLET;
+    sprites[24].texture = loadTexture("textures/bullet_zombie.png");
 
     sprites[25].id = TXT_PLAYER_SCOUT;
     sprites[25].texture = loadTexture("textures/man4.png");
@@ -199,8 +199,11 @@ void loadSprites()
     sprites[31].id = TXT_MACHINEGUN;
     sprites[31].texture = loadTexture("textures/vapen1.png");
 
+    sprites[32].id = TXT_PLAYER_SOLDIER;
+    sprites[32].texture = loadTexture("textures/man2.png");
 
-    spritesCount = 32;
+
+    spritesCount = 33;
 }
 
 SDL_Texture* loadTexture(char* path)

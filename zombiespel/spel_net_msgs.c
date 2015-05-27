@@ -144,6 +144,7 @@ int net_recvPlayerHealth(char data[], Scene *scene)
             scene->objects[newObject].timeToLive = 10;
         }
     }
+    return EXIT_SUCCESS;
 }
 
 int net_recvLobbyPlayer(char data[], Scene *scene)
@@ -652,6 +653,7 @@ int Create_Medkit(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Medkit", true, white, 10);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+    return EXIT_SUCCESS;
 }
 
 int Create_Other_Player(Scene* scene, int id, int x, int y, char* name)

@@ -121,7 +121,7 @@ void CreateUI(Scene *scene, int player)
 
 }
 
-int WinMain(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     bool quit = false;
     bool typing = false;
@@ -151,6 +151,7 @@ int WinMain(int argc, char *argv[])
     int netUpdateTimer = 5;
     int netUpdateRate = 5; // How many frames between each net update
 
+
     //Lobby
     bool playerReady = false;
     playerClass_T pClass = CLASS_SCOUT;
@@ -166,6 +167,9 @@ int WinMain(int argc, char *argv[])
     srand(time(NULL));
 
     strcpy(ip,"192.168.56.101");
+    //strcpy(ip,"10.0.2.15");
+    //strcpy(ip,"130.229.151.143");
+    //strcpy(ip,"192.168.1.17");
     //strcpy(ip,"130.229.132.73");
     strcpy(port,"2000");
 
