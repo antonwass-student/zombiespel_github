@@ -401,6 +401,7 @@ int main(int argc, char *argv[])
                                         case BUTTON_READY:
                                             playerReady = true;
                                             net_SendPlayerClass(pClass);
+                                            SDL_Delay(10);
                                             net_SendPlayerReady();
                                             printf("Sent ready notification to server\n");
                                             break;
