@@ -137,7 +137,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         scene->objects[newObject].timeToLive = 10;
 
     }
-
+    /*
     else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_PLAYER)
     {
         play_sound(SOUND_CHARACTER_HIT);
@@ -157,7 +157,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
     {
         //printf("Z Bullet collidated with car\n");
         RemoveObjectFromScene(scene, c1_index);
-    }
+    }*/
 
 
 }

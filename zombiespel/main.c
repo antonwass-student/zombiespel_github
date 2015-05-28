@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
     long frames = 0;
     int deltaTime = 0;
     bool netUpdateFrame = false;
-    int netUpdateTimer = 12;
-    int netUpdateRate = 12; // How many frames between each net update
+    int netUpdateTimer = 6;
+    int netUpdateRate = 6; // How many frames between each net update
 
 
     //Lobby

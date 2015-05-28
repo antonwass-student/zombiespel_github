@@ -66,8 +66,6 @@ bool RemoveObjectFromScene(Scene *scene, int index)
     printf("Removing object %s from scene.\nINDEX: %d\n",scene->objects[index].name,index);
     scene->objects[index].objectType = OBJECT_EMPTY;
     //scene->objectCount--;
-
-
     return EXIT_SUCCESS;
 }
 
@@ -79,6 +77,7 @@ bool RemoveObjectFromSceneId(Scene *scene, int id)
         {
             scene->objects[i].objectType = OBJECT_EMPTY;
             printf("Removing object %s from scene.\nID = %d\n",scene->objects[i].name,id);
+            break;
         }
     }
     return EXIT_SUCCESS;
