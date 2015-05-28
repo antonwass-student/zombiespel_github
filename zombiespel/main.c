@@ -97,11 +97,9 @@ int WinMain(int argc, char *argv[])
 
     srand(time(NULL));
 
-    strcpy(ip,"192.168.56.101");
-    //strcpy(ip,"10.0.2.15");
-    //strcpy(ip,"130.229.151.143");
+    //strcpy(ip,"192.168.56.101");
     //strcpy(ip,"192.168.1.17");
-    //strcpy(ip,"130.229.132.73");
+    strcpy(ip,"130.237.84.235");//skola
     strcpy(port,"2000");
 
     SceneInit(&level, SCENE_LEVEL);

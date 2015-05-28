@@ -42,7 +42,7 @@ bool reload(Scene* scene, int reloader)
         //printf("%d\n",scene->objects[reloader].p_stats.ammoTotal);
         UI_AmmoChanged(scene->objects[reloader].p_stats.ammo,scene->objects[reloader].p_stats.ammoTotal);
         scene->objects[reloader].p_stats.reloadTime = 60;
-        play_sound(SOUND_RELOAD);
+        //play_sound(SOUND_RELOAD);
         return true;
     }
     else{

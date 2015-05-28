@@ -330,6 +330,7 @@ int net_recvWeapon(char data[], Scene* scene)
             break;
         }
     }
+    return EXIT_SUCCESS;
 }
 
 int net_recvAmmo(char data[], Scene* scene)
@@ -348,6 +349,7 @@ int net_recvAmmo(char data[], Scene* scene)
         }
 
     }
+    return EXIT_SUCCESS;
 }
 
 int net_recvArmor(char data[], Scene* scene)
@@ -366,6 +368,7 @@ int net_recvArmor(char data[], Scene* scene)
         }
 
     }
+    return EXIT_SUCCESS;
 }
 
 int net_SetPlayerId(char data[])
@@ -512,7 +515,7 @@ int net_RecvPlayerClass(char data[], Scene* scene)
         }
 
     }
-
+    return EXIT_SUCCESS;
 }
 
 int net_recvClassFinal(char data[], Scene* scene)
@@ -552,7 +555,7 @@ int net_recvClassFinal(char data[], Scene* scene)
             break;
         }
     }
-
+    return EXIT_SUCCESS;
 }
 
 int net_recvBullet(char data[], Scene* scene)
@@ -603,6 +606,7 @@ int Create_Machinegun(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Machine gun", true, white, 10);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+    return EXIT_SUCCESS;
 }
 
 int Create_Revolver(Scene* scene, int id, int x, int y, char* name)
@@ -613,6 +617,7 @@ int Create_Revolver(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Revolver", true, white, 10);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+    return EXIT_SUCCESS;
 }
 
 int Create_Shotgun(Scene* scene, int id, int x, int y, char* name)
@@ -623,6 +628,7 @@ int Create_Shotgun(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Shotgun", true, white, 10);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+    return EXIT_SUCCESS;
 }
 
 int Create_Ammo(Scene* scene, int id, int x, int y, char* name)
@@ -633,6 +639,7 @@ int Create_Ammo(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Ammo", true, white, 10);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+    return EXIT_SUCCESS;
 }
 
 int Create_Armor(Scene* scene, int id, int x, int y, char* name)
@@ -643,6 +650,7 @@ int Create_Armor(Scene* scene, int id, int x, int y, char* name)
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Armor", true, white, 10);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
+    return EXIT_SUCCESS;
 }
 
 int Create_Medkit(Scene* scene, int id, int x, int y, char* name)
