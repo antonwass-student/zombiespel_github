@@ -169,14 +169,42 @@ void loadSprites()
     sprites[21].id = TXT_EXPLOSION;
     sprites[21].texture = loadTexture("textures/explosion.png");
 
-    sprites[22].id = TXT_PLAYER_SOLDIER;
-    sprites[22].texture = loadTexture("textures/man3wep.png");
+    sprites[22].id = TXT_ARMOR;
+    sprites[22].texture = loadTexture("textures/armor.png");
 
     sprites[23].id = TXT_MAXARMOR;
     sprites[23].texture = loadTexture("textures/chat2.png");
 
 
-    spritesCount = 24;
+    sprites[24].id = TXT_ZBULLET;
+    sprites[24].texture = loadTexture("textures/bullet_zombie.png");
+
+    sprites[25].id = TXT_PLAYER_SCOUT;
+    sprites[25].texture = loadTexture("textures/man4.png");
+
+    sprites[26].id = TXT_PLAYER_TANK;
+    sprites[26].texture = loadTexture("textures/man1.png");
+
+    sprites[27].id = TXT_PLAYER_ENGINEER;
+    sprites[27].texture = loadTexture("textures/man3_anim.png");
+
+    sprites[28].id = TXT_ZBULLET;
+    sprites[28].texture = loadTexture("textures/bullet_zombie.png");
+
+    sprites[29].id = TXT_SHOTGUN;
+    sprites[29].texture = loadTexture("textures/vapen2.png");
+
+    sprites[30].id = TXT_REVOLVER;
+    sprites[30].texture = loadTexture("textures/vapen3.png");
+
+    sprites[31].id = TXT_MACHINEGUN;
+    sprites[31].texture = loadTexture("textures/vapen1.png");
+
+    sprites[32].id = TXT_PLAYER_SOLDIER;
+    sprites[32].texture = loadTexture("textures/man2.png");
+
+
+    spritesCount = 33;
 }
 
 SDL_Texture* loadTexture(char* path)

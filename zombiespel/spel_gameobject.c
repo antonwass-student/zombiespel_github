@@ -84,6 +84,30 @@ bool RemoveObjectFromSceneId(Scene *scene, int id)
     return EXIT_SUCCESS;
 }
 
+bool ChangeTextureWithClass(GameObject* object, playerClass_T pClass)
+{
+    textureID_t texture;
+    switch(pClass)
+    {
+        case CLASS_SCOUT:
+            texture = TXT_PLAYER_SCOUT;
+            break;
+        case CLASS_SOLDIER:
+            texture = TXT_PLAYER_SOLDIER;
+            break;
+        case CLASS_TANK:
+            texture = TXT_PLAYER_TANK;
+            break;
+        case CLASS_ENGINEER:
+            texture = TXT_PLAYER_ENGINEER;
+            break;
+
+    }
+
+    object->id = texture;
+    return true;
+}
+
 GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, int reloadTime, int fireRate, int ammoTotal, int bombs,playerClass_T pClass)
 {
     player->p_stats.ammo = ammo;
@@ -98,6 +122,9 @@ GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,
     player->p_stats.fireCount = 0;
     player->p_stats.ammoTotal = ammoTotal;
     player->p_stats.bombs = bombs;
+    player->p_stats.weapon = WEAPON_DEFAULT;
+    player->p_stats.bulletSpread = 5;
+    player->p_stats.magazineCap = 13;
     return player;
 }
 
