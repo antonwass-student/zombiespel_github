@@ -141,18 +141,6 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
     else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_PLAYER)
     {
         play_sound(SOUND_CHARACTER_HIT);
-        collider2->p_stats.health -= NewDamage(collider1,collider2);
-        UI_HealthChanged(collider2->p_stats.health);
-            if(collider2->p_stats.health <= 0)
-            {
-                printf("Player died!\n");
-                collider2->rect.x = 3000;
-                collider2->rect.y = 5200;
-                collider2->p_stats.health = 100;
-                collider2->ai.target = NULL;
-                UI_HealthChanged(collider2->p_stats.health);
-            }
-        RemoveObjectFromScene(scene, c1_index);
     }
 
     else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_WALL) //Bullet med Wall

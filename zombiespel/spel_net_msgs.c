@@ -258,12 +258,12 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     for(int i = 0; i < scene->objectLimit; i++)
     {
         if(scene->objects[i].objectID == objectId)
-        {
+        {/*
             if(scene->objects[i].objectType == OBJECT_PLAYER_OTHER)
             {
                 SmoothMovement(20, &scene->objects[i], x, y);
                 scene->objects[i].state = ANIM_MOVING;
-            }
+            }*/
             scene->objects[i].rect.x = x;
             scene->objects[i].rect.y = y;
 

@@ -20,7 +20,6 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include "main.h"
 #include "spel_gfx.h"
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -81,8 +80,8 @@ int main(int argc, char *argv[])
     long frames = 0;
     int deltaTime = 0;
     bool netUpdateFrame = false;
-    int netUpdateTimer = 5;
-    int netUpdateRate = 5; // How many frames between each net update
+    int netUpdateTimer = 12;
+    int netUpdateRate = 12; // How many frames between each net update
 
 
     //Lobby
@@ -100,8 +99,8 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     //strcpy(ip,"192.168.56.101");
-    //strcpy(ip,"192.168.1.17");
-    strcpy(ip,"130.237.84.235");//skola
+    strcpy(ip,"130.229.177.106");
+    //strcpy(ip,"130.237.84.235");//skola
     strcpy(port,"2000");
 
     SceneInit(&level, SCENE_LEVEL);
