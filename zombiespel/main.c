@@ -141,7 +141,8 @@ int main(int argc, char *argv[])
         // ***********
         // * Network *
         // ***********
-
+        if(recvPool.Size > 0)
+            printf("pool size = %d\n", recvPool.Size);
         while(recvPool.Size > 0)
         {
             //printf("reading net message...\n");

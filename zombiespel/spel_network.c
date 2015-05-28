@@ -168,7 +168,7 @@ int SendThread(void* ptr)
     while(1)
     {
         while(sendPool.Size <= 0){
-            SDL_Delay(20);
+            SDL_Delay(10);
         }
         while(sendPool.Size > 0)
         {
@@ -183,11 +183,13 @@ int SendThread(void* ptr)
 int RecvThread(void* ptr) //Lyssnar efter meddelanden från servern och lägger dem i en stack som main läser av varje update.
 {
     TCPsocket sd = (TCPsocket)ptr;
+
     int temp;
     int index = 0;
 
     char msg[128];
-    while(SDLNet_TCP_Recv(sd, msg, 128))
+
+    while(SDLNet_TCP_Recv(sd, msg, 128) > 0)
     {
         //printf("Message received\n");
         AddToPool(&recvPool, msg);
