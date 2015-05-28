@@ -35,9 +35,9 @@ int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y
 
 int SceneInit(Scene* scene, SceneName_T name)
 {
-    scene->objectLimit = 100;
+    scene->objectLimit = 512;
     scene->sceneName = name;
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < scene->objectLimit; i++)
     {
         scene->objects[i].objectType = OBJECT_EMPTY;
     }
@@ -49,7 +49,7 @@ int SceneInit(Scene* scene, SceneName_T name)
 int addObjectToScene(Scene* level, GameObject newObject)
 {
 
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < level->objectLimit; i++)
     {
         if(level->objects[i].objectType == OBJECT_EMPTY)
         {

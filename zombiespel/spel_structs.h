@@ -373,13 +373,13 @@ typedef struct{
 
 typedef struct{
     SceneName_T sceneName;
-    GameObject objects[128];
+    GameObject objects[512];
     int objectLimit;
 } Scene;
 
 typedef struct{
     SDL_mutex* mtx;
-    char pool [128][128];
+    char pool [512][128];
     int Size;
 } threadCom;
 
