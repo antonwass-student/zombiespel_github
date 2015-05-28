@@ -22,7 +22,7 @@ bool shoot(Scene* scene, int shooter, GameObject* bullet){
         SetBulletStats(&scene->objects[bulletIndex], 25, scene->objects[shooter].rotation,scene->objects[shooter].p_stats.damage );
         scene->objects[bulletIndex].rotation = scene->objects[shooter].rotation;*/
         scene->objects[shooter].p_stats.ammo -= 1;
-        UI_AmmoChanged(scene->objects[shooter].p_stats.ammo);
+        UI_AmmoChanged(scene->objects[shooter].p_stats.ammo,scene->objects[shooter].p_stats.ammoTotal);
         //play_sound(SOUND_GUN);
         return true;
     }
@@ -45,9 +45,8 @@ bool reload(Scene* scene, int reloader)
             scene->objects[reloader].p_stats.ammo += scene->objects[reloader].p_stats.ammoTotal;
             scene->objects[reloader].p_stats.ammoTotal -= scene->objects[reloader].p_stats.ammoTotal;
         }
-
-        UI_AmmoChanged(scene->objects[reloader].p_stats.ammo);
-        UI_TotalAmmo(scene->objects[reloader].p_stats.ammoTotal);
+        printf("%d\n",scene->objects[reloader].p_stats.ammoTotal);
+        UI_AmmoChanged(scene->objects[reloader].p_stats.ammo,scene->objects[reloader].p_stats.ammoTotal);
         scene->objects[reloader].p_stats.reloadTime = 60;
         play_sound(SOUND_RELOAD);
         return true;
@@ -57,6 +56,7 @@ bool reload(Scene* scene, int reloader)
         return false;
     }
 }
+
 bool bomb(Scene* scene, int player){
 
 
@@ -72,6 +72,7 @@ bool bomb(Scene* scene, int player){
     }
     return false;
 }
+
 void explosion(Scene* scene, int placer){
     int explosionIndex;
     explosionIndex = createObject(scene, OBJECT_EXPLOSION, "EXPLOSION", scene->objects[placer].rect.x, scene->objects[placer].rect.y, 100, 100, TXT_EXPLOSION, false);

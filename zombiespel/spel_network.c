@@ -90,6 +90,10 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
             printf("Received lobby player\n");
             net_recvLobbyPlayer(data, scene);
             break;
+        case NET_PLAYER_READY:
+            printf("Received player ready\n");
+            net_recvLobbyReady(data, scene);
+            break;
         case NET_GAME_START:
             printf("Game started\n");
             return NET_EVENT_START_GAME;
@@ -101,6 +105,10 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
         case NET_OBJECT_BULLET:
             printf("Received a bullet\n");
             net_recvBullet(data, scene);
+            break;
+        case NET_PLAYER_HEALTH:
+            printf("Received health\n");
+            net_recvPlayerHealth(data, scene);
             break;
         default:
             printf("Could not identify header.\n");
@@ -166,7 +174,7 @@ int RecvThread(void* ptr) //Lyssnar efter meddelanden från servern och lägger de
     char msg[512];
     while(SDLNet_TCP_Recv(sd, msg, 512))
     {
-        printf("Message received\n");
+        //printf("Message received\n");
         AddToPool(&recvPool, msg);
     }
     return 1;
