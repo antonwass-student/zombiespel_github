@@ -32,12 +32,6 @@
 
 extern TTF_Font* gFont;
 
-//extern GameObject* gUI_Health = NULL;
-//extern GameObject* gUI_Ammo = NULL;
-//extern GameObject* gUI_Damage = NULL;
-//extern GameObject* gUI_Armor = NULL;
-//extern GameObject* gUI_Bomb = NULL;
-
 int playerNetId = -1;
 
 LobbyRoom lobbyRoom;
@@ -98,9 +92,11 @@ int main(int argc, char *argv[])
 
     srand(time(NULL));
 
-    //strcpy(ip,"192.168.56.101");
+    //strcpy(ip,"192.168.1.17");
+
     strcpy(ip,"130.229.177.106");
     //strcpy(ip,"130.237.84.235");//skola
+
     strcpy(port,"2000");
 
     SceneInit(&level, SCENE_LEVEL);
@@ -125,9 +121,10 @@ int main(int argc, char *argv[])
     SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, 0, 10, 26, 3, CLASS_SOLDIER);
     SetAnimation(&level.objects[player], 10, 0, 1, 128, 2);
 
-    CreateUI(&level, player);
+    
     InitMenu(&meny);
     InitLevel(&level);
+    CreateUI(&level, player);
     InitOptions(&options);
     InitLobby(&lobby, &button_lobbyIp, &button_lobbyPort, &button_connect, &button_newName, &button_showName);
     InitPregame(&pregame, &lobbyRoom);
@@ -145,6 +142,7 @@ int main(int argc, char *argv[])
             printf("pool size = %d\n", recvPool.Size);
         while(recvPool.Size > 0)
         {
+            
             //printf("reading net message...\n");
             ReadPool(&recvPool, netMsg);
             netEvent = ProcessMessage(netMsg, activeScene); //Reads message and calls function pointed by message.

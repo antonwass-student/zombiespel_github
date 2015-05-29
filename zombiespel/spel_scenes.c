@@ -11,7 +11,7 @@ GameObject* gUI_Bomb = NULL;
 void InitLevel(Scene* level)
 {
     int newObject;
-    newObject=createObject(level, OBJECT_WALL, "block", 2210, 510, 1000, 20, TXT_NONE, true);//1
+    newObject=createObject(level, OBJECT_WALL, "block", 2210, 510, 1000, 30, TXT_NONE, true);//1
     newObject=createObject(level, OBJECT_WALL, "block", 2210, 365, 30, 1300, TXT_NONE, true);//2
     newObject=createObject(level, OBJECT_WALL, "block", 3170, 360, 40, 2380, TXT_NONE, true);//3
     newObject=createObject(level, OBJECT_WALL, "block", 550, 1680, 1680, 30, TXT_NONE, true);//4
@@ -23,16 +23,14 @@ void InitLevel(Scene* level)
     newObject=createObject(level, OBJECT_WALL, "block", 2640, 4505, 20, 1500, TXT_NONE, true);//10
     newObject=createObject(level, OBJECT_WALL, "block", 3600, 3450, 30, 2250, TXT_NONE, true);//11
     newObject=createObject(level, OBJECT_WALL, "block", 2650, 5620, 1000, 40, TXT_NONE, true);//12
-
-    //car
-    newObject=createObject(level, OBJECT_CAR, "block", 2520, 3975, 150, 300, TXT_CAR4, true);//1
-    newObject=createObject(level, OBJECT_CAR, "block", 1632, 3720, 150, 300, TXT_CAR2, true);//2
-    newObject=createObject(level, OBJECT_CAR, "block", 999, 4090, 300, 150, TXT_CAR22, true);//3
-    newObject=createObject(level, OBJECT_CAR, "block", 1116, 3130, 150, 300, TXT_CAR1, true);//4
-    newObject=createObject(level, OBJECT_CAR, "block", 1256, 2143, 150, 300, TXT_CAR3, true);//5
-    newObject=createObject(level, OBJECT_CAR, "block", 1520, 1993, 300, 150, TXT_CAR42, true);//6
-    newObject=createObject(level, OBJECT_CAR, "block", 2290, 560, 150, 300, TXT_CAR3, true);//7
-    newObject=createObject(level, OBJECT_CAR, "block", 2980, 550, 150, 300, TXT_CAR4, true);//8
+    newObject=createObject(level, OBJECT_CAR, "block", 2520, 3975, 150, 300, TXT_CAR4, true);//13
+    newObject=createObject(level, OBJECT_CAR, "block", 1632, 3720, 150, 300, TXT_CAR2, true);//14
+    newObject=createObject(level, OBJECT_CAR, "block", 999, 4090, 300, 150, TXT_CAR22, true);//15
+    newObject=createObject(level, OBJECT_CAR, "block", 1116, 3130, 150, 300, TXT_CAR1, true);//16
+    newObject=createObject(level, OBJECT_CAR, "block", 1256, 2143, 150, 300, TXT_CAR3, true);//17
+    newObject=createObject(level, OBJECT_CAR, "block", 1550, 1993, 300, 150, TXT_CAR42, true);//18
+    newObject=createObject(level, OBJECT_CAR, "block", 2290, 560, 150, 300, TXT_CAR3, true);//19
+    newObject=createObject(level, OBJECT_CAR, "block", 2980, 550, 150, 300, TXT_CAR4, true);//20
 }
 
 void InitMenu(Scene* meny)
@@ -110,20 +108,21 @@ void InitPregame(Scene* pregame, LobbyRoom* lobbyRoom)
     SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_READY, true), "Ready", true, black, 10);
 
     newObject = createObject(pregame, OBJECT_BUTTON, "C:Soldier", SCREEN_WIDTH * 0.6f, SCREEN_HEIGHT * 0.2f, 0.1f * SCREEN_WIDTH,
-                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_SOLDIER, true), "Soldier", true, black, 10);
+                             SCREEN_HEIGHT * 0.1f, TXT_PLAYER_SOLDIER_LOBBY, false);
+    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_SOLDIER, true), "", true, black, 10);
 
     newObject = createObject(pregame, OBJECT_BUTTON, "C:Scout", SCREEN_WIDTH * 0.7f, SCREEN_HEIGHT * 0.2f, 0.1f * SCREEN_WIDTH,
-                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_SCOUT, true), "Scout", true, black, 10);
+                             SCREEN_HEIGHT * 0.1f, TXT_PLAYER_SCOUT_LOBBY, false);
+    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_SCOUT, true), "", true, black, 10);
 
     newObject = createObject(pregame, OBJECT_BUTTON, "C:Soldier", SCREEN_WIDTH * 0.6f, SCREEN_HEIGHT * 0.3f, 0.1f * SCREEN_WIDTH,
-                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_TANK, true), "Tank", true, black, 10);
+                             SCREEN_HEIGHT * 0.1f, TXT_PLAYER_TANK_LOBBY, false);
+    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_TANK, true), "", true, black, 10);
 
     newObject = createObject(pregame, OBJECT_BUTTON, "C:Scout", SCREEN_WIDTH * 0.7f, SCREEN_HEIGHT * 0.3f, 0.1f * SCREEN_WIDTH,
-                             SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_ENGINEER, true), "Engineer", true, black, 10);
+                             SCREEN_HEIGHT * 0.1f, TXT_PLAYER_ENGINEER_LOBBY, false);
+    SetText(SetButtonStats(&pregame->objects[newObject], BUTTON_CLASS_ENGINEER, true), "", true, black, 10);
+
 }
 
 void InitLobby(Scene* lobby, int* button_lobbyIp, int* button_lobbyPort, int* button_connect, int* button_newName, int* button_showName)
@@ -153,13 +152,13 @@ void InitLobby(Scene* lobby, int* button_lobbyIp, int* button_lobbyPort, int* bu
     lobby->objects[newObject].drawColor = lblue;
 
 
-    *button_lobbyIp = createObject(lobby, OBJECT_BUTTON, "IP", SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.3f, 0.15f * SCREEN_WIDTH,
+    *button_lobbyIp = createObject(lobby, OBJECT_BUTTON, "IP", SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.3f, 0.21f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
-    SetText(SetButtonStats(&lobby->objects[*button_lobbyIp], BUTTON_SET_IP, true), "127.0.0.1", true, black, 10);
+    SetText(SetButtonStats(&lobby->objects[*button_lobbyIp], BUTTON_SET_IP, true), "...", true, black, 10);
 
     *button_lobbyPort = createObject(lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.4f, 0.1f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
-    SetText(SetButtonStats(&lobby->objects[*button_lobbyPort], BUTTON_SET_PORT, true), "2000", true, black, 10);
+    SetText(SetButtonStats(&lobby->objects[*button_lobbyPort], BUTTON_SET_PORT, true), "...", true, black, 10);
 
     *button_connect = createObject(lobby, OBJECT_BUTTON, "PORT",SCREEN_WIDTH * 0.2f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.55f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
@@ -173,7 +172,7 @@ void InitLobby(Scene* lobby, int* button_lobbyIp, int* button_lobbyPort, int* bu
 
     *button_showName = createObject(lobby, OBJECT_BUTTON, "PlayerName", SCREEN_WIDTH * 0.3f - (0.3f * SCREEN_WIDTH/2), SCREEN_HEIGHT * 0.2f, 0.15f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1, TXT_BUTTON, false);
-    SetText(SetButtonStats(&lobby->objects[*button_showName], BUTTON_NEW_NAME, true), "\"Player1\"", true, black, 10);
+    SetText(SetButtonStats(&lobby->objects[*button_showName], BUTTON_NEW_NAME, true), "...", true, black, 10);
     lobby->objects[*button_showName].drawColor = white;
 }
 
@@ -188,35 +187,36 @@ void CreateUI(Scene *scene, int player)
     newObject = createObject(scene, OBJECT_BUTTON, "Go to menu", 0, 0, 100,40,TXT_BUTTON,false);
     SetText(SetButtonStats(&scene->objects[newObject], BUTTON_GOTO_MENU, true), "Menu", true, black, 5);
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 638, 200, 40, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerHealth", 0, 600, 200, 40, TXT_BUTTON, false);
     gUI_Health = &scene->objects[newObject];
     sprintf(str, "Health:%d", scene->objects[player].p_stats.health);
     SetText(&scene->objects[newObject], str, true, black, 10);
     scene->objects[newObject].drawColor = red;
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 0,677,200,40, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerAmmo", 0, 638,200,40, TXT_BUTTON, false);
     gUI_Ammo = &scene->objects[newObject];
     sprintf(str, "AMMO:%d || %d", scene->objects[player].p_stats.ammo,scene->objects[player].p_stats.ammoTotal);
     SetText(&scene->objects[newObject], str, true, black, 20);
     scene->objects[newObject].drawColor = white;
 
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerDamage", 0,716,200,40, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerDamage", 0,677,200,40, TXT_BUTTON, false);
     gUI_Damage = &scene->objects[newObject];
     sprintf(str, "Damage: %d", scene->objects[player].p_stats.damage);
     SetText(&scene->objects[newObject], str, true, black, 10);
     scene->objects[newObject].drawColor = red;
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerArmer", 0,755,200,40, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerArmer", 0,716,200,40, TXT_BUTTON, false);
     gUI_Armor = &scene->objects[newObject];
     sprintf(str, "Armor: %d", scene->objects[player].p_stats.armor);
     SetText(&scene->objects[newObject], str, true, black, 10);
     scene->objects[newObject].drawColor = white;
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 100,100,200,40, TXT_BUTTON, false);
+    newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 0,755,200,40, TXT_BUTTON, false);
     gUI_Bomb = &scene->objects[newObject];
     sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
     SetText(&scene->objects[newObject], str, true, black, 10);
+    scene->objects[newObject].drawColor = red;
 
 }
 
