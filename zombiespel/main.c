@@ -216,8 +216,8 @@ int main(int argc, char *argv[])
                             printf("IP was set.\n");
                             break;
                         case INPUT_TEXT_PNAME:
-                            options.objects[button_showName].drawColor = lblue;
-                            ChangeTextStr(&options.objects[button_showName],inputText);
+                            lobby.objects[button_showName].drawColor = white;
+                            ChangeTextStr(&lobby.objects[button_showName],inputText);
                             printf("Name was set.\n");
                             break;
                         case INPUT_TEXT_PORT:
@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
                             ChangeTextStr(&lobby.objects[button_lobbyIp],inputText);
                             break;
                         case INPUT_TEXT_PNAME:
-                            ChangeTextStr(&options.objects[button_showName],inputText);
+                            ChangeTextStr(&lobby.objects[button_showName],inputText);
                             nameLength--;
                             break;
                         case INPUT_TEXT_PORT:
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
                 if(currentInput == INPUT_TEXT_PNAME)
                 {
                     strcpy(playerName, inputText);
-                    ChangeTextStr(&options.objects[button_showName],inputText);
+                    ChangeTextStr(&lobby.objects[button_showName],inputText);
                     nameLength++;
                 }
                 else if(currentInput == INPUT_TEXT_IP)
@@ -365,7 +365,7 @@ int main(int argc, char *argv[])
                                             SDL_StartTextInput();
                                             inputText[0] = '\0';
                                             //options.objects[button_saveName].drawText = true;
-                                            options.objects[button_showName].drawColor = lime;
+                                            lobby.objects[button_showName].drawColor = lime;
                                             break;
                                         case BUTTON_SAVE_NAME:
                                             SDL_StopTextInput();
