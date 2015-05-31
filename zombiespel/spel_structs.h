@@ -191,11 +191,9 @@ typedef enum {
     TXT_EXPLOSION,
     TXT_BOMB,
     TXT_CAR1,
-    TXT_CAR12,
     TXT_CAR2,
     TXT_CAR22,
     TXT_CAR3,
-    TXT_CAR32,
     TXT_CAR4,
     TXT_CAR42,
     TXT_PLAYER_SOLDIER,
@@ -206,7 +204,11 @@ typedef enum {
     TXT_SHOTGUN,
     TXT_REVOLVER,
     TXT_MACHINEGUN,
-    TXT_ARMOR
+    TXT_ARMOR,
+    TXT_PLAYER_SCOUT_LOBBY,
+    TXT_PLAYER_TANK_LOBBY,
+    TXT_PLAYER_ENGINEER_LOBBY,
+    TXT_PLAYER_SOLDIER_LOBBY
 } textureID_t;
 
 typedef struct{
