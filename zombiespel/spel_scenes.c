@@ -213,10 +213,10 @@ void CreateUI(Scene *scene, int player)
     SetText(&scene->objects[newObject], str, true, black, 10);
     scene->objects[newObject].drawColor = white;
 
-    newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 100,100,200,40, TXT_BUTTON, false);
-    gUI_Bomb = &scene->objects[newObject];
-    sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
-    SetText(&scene->objects[newObject], str, true, black, 10);
+    //newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 100,100,200,40, TXT_BUTTON, false);
+    //gUI_Bomb = &scene->objects[newObject];
+    //sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
+    //SetText(&scene->objects[newObject], str, true, black, 10);
 
 }
 
@@ -246,5 +246,5 @@ void UI_ArmorChanged(int armor)
 }
 void UI_BombChanged(int bombs){
     printf("Changing Bomb\n");
-    ChangeTextInt(gUI_Bomb, "Bomb: ", bombs);
+    //ChangeTextInt(gUI_Bomb, "Bomb: ", bombs);
 }
