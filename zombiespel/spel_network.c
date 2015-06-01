@@ -126,7 +126,7 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
             net_recvArmor(data, scene);
             break;
         default:
-            printf("Could not identify header.\n");
+            printf("Could not identify header: (%d)\n", data[0]);
             break;
     }
     return -1;

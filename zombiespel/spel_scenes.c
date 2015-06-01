@@ -89,19 +89,19 @@ void InitPregame(Scene* pregame, LobbyRoom* lobbyRoom)
 
     lobbyRoom->players[0].uiIndex = createObject(pregame, OBJECT_BUTTON, "Player1", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.1f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[0].uiIndex], BUTTON_VOID, true), "Open Slot", true, black, 10);
+    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[0].uiIndex], BUTTON_VOID, true), "Open Slot", true, white, 10);
 
     lobbyRoom->players[1].uiIndex = createObject(pregame, OBJECT_BUTTON, "Player2", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.3f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[1].uiIndex], BUTTON_VOID, true), "Open Slot", true, black, 10);
+    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[1].uiIndex], BUTTON_VOID, true), "Open Slot", true, white, 10);
 
     lobbyRoom->players[2].uiIndex = createObject(pregame, OBJECT_BUTTON, "Player3", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.5f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[2].uiIndex], BUTTON_VOID, true), "Open Slot", true, black, 10);
+    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[2].uiIndex], BUTTON_VOID, true), "Open Slot", true, white, 10);
 
     lobbyRoom->players[3].uiIndex = createObject(pregame, OBJECT_BUTTON, "Player4", SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.7f, 0.2f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.2f, TXT_BUTTON, false);
-    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[3].uiIndex], BUTTON_VOID, true), "Open Slot", true, black, 10);
+    SetText(SetButtonStats(&pregame->objects[lobbyRoom->players[3].uiIndex], BUTTON_VOID, true), "Open Slot", true, white, 10);
 
     newObject = createObject(pregame, OBJECT_BUTTON, "Ready", SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.4f * SCREEN_WIDTH,
                              SCREEN_HEIGHT * 0.1f, TXT_BUTTON, false);
@@ -217,11 +217,11 @@ void CreateUI(Scene *scene, int player)
     //sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
     //SetText(&scene->objects[newObject], str, true, black, 10);
 
-    //newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 0,755,200,40, TXT_BUTTON, false);
-    //gUI_Bomb = &scene->objects[newObject];
-    //sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
-    //SetText(&scene->objects[newObject], str, true, black, 10);
-    //scene->objects[newObject].drawColor = red;
+    newObject = createObject(scene, OBJECT_UI, "PlayerBombs", 0,755,200,40, TXT_BUTTON, false);
+    gUI_Bomb = &scene->objects[newObject];
+    sprintf(str, "Bombs: %d", scene->objects[player].p_stats.bombs);
+    SetText(&scene->objects[newObject], str, true, black, 10);
+    scene->objects[newObject].drawColor = red;
 
 }
 

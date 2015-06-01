@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
 
     //strcpy(ip,"192.168.1.17");
 
-    strcpy(ip,"130.229.177.106");
-    //strcpy(ip,"130.237.84.235");//skola
+    //strcpy(ip,"130.229.177.106");
+    strcpy(ip,"130.237.84.235");//skola
 
     strcpy(port,"2000");
 
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, 0, 10, 26, 3, CLASS_SOLDIER);
     SetAnimation(&level.objects[player], 10, 0, 1, 128, 2);
 
-    
+
     InitMenu(&meny);
     InitLevel(&level);
     CreateUI(&level, player);
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
             printf("pool size = %d\n", recvPool.Size);
         while(recvPool.Size > 0)
         {
-            
+
             //printf("reading net message...\n");
             ReadPool(&recvPool, netMsg);
             netEvent = ProcessMessage(netMsg, activeScene); //Reads message and calls function pointed by message.

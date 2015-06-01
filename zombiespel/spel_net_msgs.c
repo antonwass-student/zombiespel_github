@@ -499,16 +499,20 @@ int net_RecvPlayerClass(char data[], Scene* scene)
             switch(pClass)
             {
                 case CLASS_SCOUT:
-                    strcat(name, " (Scout)");
+                    //strcat(name, " (Scout)");
+                    scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_SCOUT_LOBBY;
                     break;
                 case CLASS_SOLDIER:
-                    strcat(name, " (Soldier)");
+                    //strcat(name, " (Soldier)");
+                    scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_SOLDIER_LOBBY;
                     break;
                 case CLASS_TANK:
-                    strcat(name, " (Tank)");
+                    //strcat(name, " (Tank)");
+                    scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_TANK_LOBBY;
                     break;
                 case CLASS_ENGINEER:
-                    strcat(name, " (Engineer)");
+                    //strcat(name, " (Engineer)");
+                    scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_ENGINEER_LOBBY;
                     break;
             }
             ChangeTextStr(&scene->objects[lobbyRoom.players[i].uiIndex], name);
