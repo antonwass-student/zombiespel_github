@@ -13,7 +13,6 @@
 #elif __linux
 #endif
 
-
 #include <stdbool.h>
 #include "spel_structs.h"
 #include "spel_gameobject.h"
@@ -47,7 +46,7 @@ void SetFont(int size)
     }
 }
 
-//Sets a gameobjects text options (a text displayed on the object).
+//Sets a gameobject's text options (a text displayed on the object).
 GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor, int padding)
 {
     strcpy(object->text, text);

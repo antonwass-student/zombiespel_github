@@ -171,7 +171,7 @@ int net_recvLobbyPlayer(unsigned char data[], Scene *scene)
 
     //playerClass_T pClass = data[index++];
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
         if(!strcmp(name, lobbyRoom.players[i].name)) //If player is in your lobby, ignore message.
             return 0;
@@ -201,7 +201,7 @@ int net_recvLobbyReady(unsigned char data[], Scene *scene)
     name[length] = '\0';
     printf("Player %s is ready\n", name);
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
         if(!strcmp(name, lobbyRoom.players[i].name))
             scene->objects[lobbyRoom.players[i].uiIndex].drawColor = lime;
@@ -489,7 +489,7 @@ int net_RecvPlayerClass(unsigned char data[], Scene* scene)
     name[length] = '\0';
     playerClass_T pClass = data[index++];
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
         if(!strcmp(name, lobbyRoom.players[i].name)) //Change the players class.
         {

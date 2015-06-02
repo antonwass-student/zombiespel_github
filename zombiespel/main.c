@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
     //Creates the player object
     player = createObject(&level, OBJECT_PLAYER, playerName,3000, 5200, 128, 128, TXT_PLAYER, true);
-    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, 0, 10, 26, 3, CLASS_SOLDIER);
+    SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, 0, 10, 100, 3, CLASS_SOLDIER);
     SetAnimation(&level.objects[player], 10, 0, 1, 128, 2);
 
 
