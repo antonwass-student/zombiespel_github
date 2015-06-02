@@ -5,7 +5,8 @@
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
-int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid) // Skapar nytt GameObject och returnerar denna
+//Creates a GameObject and puts it in a free spot in the passed in scene. Returns the index of which the object resides.
+int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y, int w, int h, textureID_t texture, bool solid)
 {
     SDL_Color white = {255,255,255};
     GameObject temp;
@@ -33,6 +34,7 @@ int createObject(Scene* scene, ObjectType_T objectType, char* name, int x, int y
     return addObjectToScene(scene, temp);
 }
 
+//Used to init scene with necessery parameters.
 int SceneInit(Scene* scene, SceneName_T name)
 {
     scene->objectLimit = 512;
@@ -46,6 +48,7 @@ int SceneInit(Scene* scene, SceneName_T name)
     return EXIT_SUCCESS;
 }
 
+//Adds a new object to the scene.
 int addObjectToScene(Scene* level, GameObject newObject)
 {
 
@@ -61,6 +64,7 @@ int addObjectToScene(Scene* level, GameObject newObject)
     return -1;
 }
 
+//Removes object from scene at index.
 bool RemoveObjectFromScene(Scene *scene, int index)
 {
     printf("Removing object %s from scene.\nINDEX: %d\n",scene->objects[index].name,index);
@@ -69,6 +73,7 @@ bool RemoveObjectFromScene(Scene *scene, int index)
     return EXIT_SUCCESS;
 }
 
+//Removes object from scene using the objects ID.
 bool RemoveObjectFromSceneId(Scene *scene, int id)
 {
     for(int i = 0; i < scene->objectLimit; i++)
@@ -83,6 +88,7 @@ bool RemoveObjectFromSceneId(Scene *scene, int id)
     return EXIT_SUCCESS;
 }
 
+//Pass a class and it will set the object to it's corresponding class.
 bool ChangeTextureWithClass(GameObject* object, playerClass_T pClass)
 {
     textureID_t texture;
@@ -107,6 +113,7 @@ bool ChangeTextureWithClass(GameObject* object, playerClass_T pClass)
     return true;
 }
 
+//Initializes the parameters for a player object.
 GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,int damage,int armor, int reloadTime, int fireRate, int ammoTotal, int bombs,playerClass_T pClass)
 {
     player->p_stats.ammo = ammo;
@@ -127,6 +134,7 @@ GameObject* SetPlayerStats(GameObject* player, int health, int ammo, int speed ,
     return player;
 }
 
+//Initializes the parameters for a bullet object
 GameObject* SetBulletStats(GameObject* bullet, int velocity, double angle, int damage)
 {
     bullet->bulletInfo.angle = angle;
@@ -136,11 +144,14 @@ GameObject* SetBulletStats(GameObject* bullet, int velocity, double angle, int d
 
     return bullet;
 }
+
+//Initializes the parameters for a bomb object.
 GameObject* SetBombStats(GameObject* bomb, int timeToLive, int damage){
     bomb->bombInfo.timeToLive = timeToLive;
 
     return bomb;
 }
+
 GameObject* SetExplosionStats(GameObject* explosions, int timeToLive, int damage){
     explosions->ExplosionInfo.timeToLive = timeToLive;
     explosions->ExplosionInfo.damage = damage;
@@ -156,6 +167,7 @@ GameObject* SetButtonStats(GameObject* button, ButtonAction_T action, bool activ
     return button;
 }
 
+//Initializes a Zombie object.
 GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int damage, int health, float attackCooldown, int attackRange, int bulletSpeed, int fireRate)
 {
     object->ai.speed = speed;
@@ -175,6 +187,7 @@ GameObject* SetAI(GameObject* object, AI_T aiType , int speed, int range, int da
     return object;
 }
 
+//Sets an animation for an object.
 GameObject* SetAnimation(GameObject* object, float animSpeed, int idleOffset, int idleFrames, int movingOffset, int movingFrames)
 {
     object->anim.animated = true;
@@ -191,6 +204,7 @@ GameObject* SetAnimation(GameObject* object, float animSpeed, int idleOffset, in
 
 }
 
+//Initializes an item object.
 GameObject* SetItemInfo(GameObject* object, ItemType_T type, int amount)
 {
     object->itemInfo.itemType = type;

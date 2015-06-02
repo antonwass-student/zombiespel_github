@@ -47,6 +47,7 @@ void SetFont(int size)
     }
 }
 
+//Sets a gameobjects text options (a text displayed on the object).
 GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor, int padding)
 {
     strcpy(object->text, text);
@@ -61,6 +62,7 @@ GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textCol
     return object;
 }
 
+//Creates a new texture from text with a string.
 GameObject* ChangeTextStr(GameObject* object, char* text)
 {
     strcpy(object->text, text);
@@ -72,6 +74,7 @@ GameObject* ChangeTextStr(GameObject* object, char* text)
 
     return object;
 }
+//Creates a new texture from text with one value.
 GameObject* ChangeTextInt(GameObject* object, char* text, int value)
 {
     char str[15];
@@ -85,6 +88,8 @@ GameObject* ChangeTextInt(GameObject* object, char* text, int value)
 
     return object;
 }
+
+//Creates a new texture from text with two values.
 GameObject* ChangeTextInt2(GameObject* object, char* text, int value, int value2)
 {
     char str[15];
@@ -101,7 +106,7 @@ GameObject* ChangeTextInt2(GameObject* object, char* text, int value, int value2
 
 
 
-void loadSprites()
+void loadSprites() //Loads all the textures and adds them to an array.
 {
     sprites[0].id = TXT_PLAYER;
     sprites[0].texture = loadTexture("textures/man3_anim.png");
@@ -150,10 +155,10 @@ void loadSprites()
 
     sprites[15].id =TXT_CAR4;
     sprites[15].texture = loadTexture("textures/bil4.png");
-    
+
     sprites[16].id =TXT_CAR42;
     sprites[16].texture = loadTexture("textures/bil42.png");
-    
+
     sprites[17].id = TXT_BLOOD_SPLATTER;
     sprites[17].texture = loadTexture("textures/blood_splatter.png");
 
@@ -195,16 +200,16 @@ void loadSprites()
 
     sprites[30].id = TXT_PLAYER_SOLDIER;
     sprites[30].texture = loadTexture("textures/man2.png");
-    
+
     sprites[31].id = TXT_PLAYER_SOLDIER_LOBBY;
     sprites[31].texture = loadTexture("textures/guy2.png");
-    
+
     sprites[32].id = TXT_PLAYER_ENGINEER_LOBBY;
     sprites[32].texture = loadTexture("textures/guy3.png");
-    
+
     sprites[33].id = TXT_PLAYER_TANK_LOBBY;
     sprites[33].texture = loadTexture("textures/guy1.png");
-    
+
     sprites[34].id = TXT_PLAYER_SCOUT_LOBBY;
     sprites[34].texture = loadTexture("textures/guy4.png");
 
@@ -212,6 +217,7 @@ void loadSprites()
     spritesCount = 35;
 }
 
+//Used to load a texture to the program.
 SDL_Texture* loadTexture(char* path)
 {
     SDL_Texture* newTexture = NULL;
@@ -235,6 +241,7 @@ SDL_Texture* loadTexture(char* path)
     return newTexture;
 }
 
+//Initializes SDL graphics.
 void graphics_start() //
 {
 
@@ -270,6 +277,7 @@ void graphics_start() //
                     printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
                 }
 
+                //Loads all sprites in to the game.
                 loadSprites();
 
             }
@@ -280,6 +288,7 @@ void graphics_start() //
     printf("Graphics initialized successfully!\n");
 }
 
+//Calculates the animation frame.
 void CalcAnimation(GameObject* object)
 {
     if(object->state == ANIM_MOVING)
@@ -307,7 +316,9 @@ void CalcAnimation(GameObject* object)
     }
 }
 
-void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i objects
+
+//Renders the passed scene to the screen.
+void graphics_render(Scene level, GameObject* relative)
 {
     SDL_RenderClear(gRenderer);
     SDL_Rect newRect;
@@ -315,11 +326,11 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
     SDL_Surface* surface;
     SDL_Texture* textTexture;
 
-    for(int i = 0; i < level.objectLimit; i++) // Denna loop går igenom alla GameObjects i scenen som skickats med
+    for(int i = 0; i < level.objectLimit; i++) // Loops through all objects which are not void.
     {
         if(level.objects[i].objectType == OBJECT_EMPTY)
             continue;
-        for(int j = 0; j < spritesCount; j++) //Denna loop letar reda på rätt textur i sprite arrayen
+        for(int j = 0; j < spritesCount; j++) //Get the texture associated with the objects texture ID.
         {
             if(sprites[j].id == level.objects[i].id)
             {
@@ -335,12 +346,14 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
                     srcRect.h = 128;
                 }
 
-                if(level.objects[i].objectType != OBJECT_BUTTON && level.objects[i].objectType != OBJECT_BACKGROUND && level.objects[i].objectType != OBJECT_UI) //Räknar ut den relativa positionen för objekten (ej knappar, UI)
+                //Calculates the relative position to the player which the camera is following.
+                if(level.objects[i].objectType != OBJECT_BUTTON && level.objects[i].objectType != OBJECT_BACKGROUND && level.objects[i].objectType != OBJECT_UI)
                 {
                     newRect.x = newRect.x - relative->rect.x + SCREEN_WIDTH/2 - relative->rect.w/2;
                     newRect.y = newRect.y - relative->rect.y + SCREEN_HEIGHT/2 - relative->rect.h/2;
                 }
 
+                //Colors the texture.
                 SDL_SetTextureColorMod( sprites[j].texture, level.objects[i].drawColor.r, level.objects[i].drawColor.g, level.objects[i].drawColor.b);
 
                 if(level.objects[i].anim.animated)
@@ -352,10 +365,7 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
                     SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
                 }
 
-                if(level.objects[i].drawText) //Ritar ut text
-                {
-                    //Textpadding
-
+                if(level.objects[i].drawText){ //Prints out text on top of the object with padding.
 
                     TTF_SizeText(gFont, level.objects[i].text, &newRect.w, &newRect.h);
                     newRect.x += level.objects[i].rect.w/2 -(newRect.w/2);
@@ -363,7 +373,6 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
                     if(level.objects[i].objectType == OBJECT_NPC || level.objects[i].objectType == OBJECT_ITEM)
                         newRect.y -= 40;
                     SDL_RenderCopy(gRenderer, level.objects[i].textTexture, NULL, &newRect);
-                    //TTF_Font
                 }
 
 
@@ -372,12 +381,13 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
         }
     }
 
+    //Presents the result to the screen.
     SDL_RenderPresent(gRenderer);
 }
 
 void graphics_stop()
 {
-    for(int i = 0; i < spritesCount; i++) //Släpper alla inladdade texturer.
+    for(int i = 0; i < spritesCount; i++) //Releases all the loaded textures.
     {
         SDL_DestroyTexture(sprites[i].texture);
     }

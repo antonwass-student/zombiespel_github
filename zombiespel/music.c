@@ -34,14 +34,14 @@ void music_init(){
     printf("MUSIC_INIT!\n");
 
 
-    if( SDL_Init(SDL_INIT_AUDIO ) < 0 )
+    if( SDL_Init(SDL_INIT_AUDIO ) < 0 ) //Initiates SDL audio.
     {
         printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
     }
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ){
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ){ //Opens audio channel
         printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
-    load_music();
+    load_music(); //Loads music files
 }
 
 void load_music(){
@@ -68,7 +68,7 @@ void load_music(){
     sound[5].name = SOUND_EXPLOSION;
     sound[5].soundEffect = Mix_LoadWAV("music/explosion.wav");
 }
-void play_sound(soundID_t id){
+void play_sound(soundID_t id){ //Plays sound file
     //MAIN MUSIC START
     if(id == SOUND_ODE_TO_DUB_STEP){
             //If there is no music playing
@@ -95,16 +95,16 @@ void play_sound(soundID_t id){
     if(id == SOUND_GUN){
         Mix_PlayChannel( -1, sound[1].soundEffect, 0 );
     }
-    if(id == SOUND_RELOAD){
+    else if(id == SOUND_RELOAD){
         Mix_PlayChannel( -1, sound[2].soundEffect, 0 );
     }
-    if(id == SOUND_NPC_HIT){
+    else if(id == SOUND_NPC_HIT){
         Mix_PlayChannel(-1, sound[3].soundEffect, 0);
     }
-    if(id == SOUND_BUTTON){
+    else if(id == SOUND_BUTTON){
         Mix_PlayChannel(-1, sound[4].soundEffect, 0);
     }
-    if(id == SOUND_EXPLOSION){
+    else if(id == SOUND_EXPLOSION){
         Mix_PlayChannel(-1, sound[5].soundEffect, 0);
     }
 

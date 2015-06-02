@@ -17,16 +17,16 @@
 #define EXIT_FAILURE 1
 #define EXIT_SUCCESS 0
 
-void Zombie_UseBrain(Scene* scene, GameObject* zombie, int index)
+void Zombie_UseBrain(Scene* scene, GameObject* zombie, int index) //Zombie logic.
 {
     int dx, dy;
 
-    if(zombie->ai.atkTimer > 0)
+    if(zombie->ai.atkTimer > 0) //Calculates zombie attack timer
     {
         zombie->ai.atkTimer--;
     }
 
-    if(zombie->ai.target == NULL || zombie->ai.targetIsAlive)
+    if(zombie->ai.target == NULL || zombie->ai.targetIsAlive) //Checks if zombie has a target or the target is dead.
     {
         zombie->ai.target = FindPlayer(scene, zombie,zombie->ai.detectRange);
     }
@@ -40,13 +40,14 @@ void Zombie_UseBrain(Scene* scene, GameObject* zombie, int index)
     dx = 0;
     dy = 0;
 
-    dy -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //Objektets y hastighet
-    dx -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //objektets x hastighet
+    dy -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //Calculates the objects y velocity
+    dx -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //Calculates x velocity.
 
-    if(GetDistance(*zombie->ai.target,zombie->rect) > zombie->ai.attackRange)
+    if(GetDistance(*zombie->ai.target,zombie->rect) > zombie->ai.attackRange) //If zombie is too far from target, move closer
     {
         MoveObject(zombie, scene, dx,dy, index);
     }
+    //If zombie is close enough, attack.
     if(zombie->ai.ai == AI_SPITTER && GetDistance(*zombie->ai.target,zombie->rect) < zombie->ai.attackRange)
     {
         Zombie_Shoot(zombie, scene);
@@ -70,7 +71,7 @@ int Zombie_Shoot(GameObject* zombie, Scene* scene)
 
 }
 
-SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range)
+SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range) //Used to find a player withing the passed int range.
 {
     for(int i = 0; i < scene->objectLimit ; i++)
     {
@@ -78,6 +79,7 @@ SDL_Rect* FindPlayer(Scene* scene, GameObject* zombie, int range)
 
         if(scene->objects[i].objectType == OBJECT_PLAYER && scene->objects[i].p_stats.alive)
         {
+            //distance is the distance between the two objects (player and zombie).
             distance = (int)(sqrt(pow(zombie->rect.x - scene->objects[i].rect.x, 2) + pow(zombie->rect.y - scene->objects[i].rect.y, 2)));
 
             if(distance < range)

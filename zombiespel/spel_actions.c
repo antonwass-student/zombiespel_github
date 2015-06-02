@@ -5,7 +5,8 @@
 
 extern int playerNetId;
 
-bool shoot(Scene* scene, int shooter, GameObject* bullet){
+bool shoot(Scene* scene, int shooter, GameObject* bullet) //Called when the player wants to shoot
+{
     int bulletIndex;
 
     if(scene->objects[shooter].p_stats.ammo > 0 && scene->objects[shooter].p_stats.reloadTime == 0  && scene->objects[shooter].p_stats.fireCount == 0){
@@ -13,10 +14,10 @@ bool shoot(Scene* scene, int shooter, GameObject* bullet){
         scene->objects[shooter].p_stats.fireCount = scene->objects[shooter].p_stats.fireRate;
 
         if(playerNetId != -1)
-            net_PlayerShoot(scene->objects[shooter]);
+            net_PlayerShoot(scene->objects[shooter]); //Sends a network message to the server that the player wants to shoot.
 
         scene->objects[shooter].p_stats.ammo -= 1;
-        UI_AmmoChanged(scene->objects[shooter].p_stats.ammo,scene->objects[shooter].p_stats.ammoTotal);
+        UI_AmmoChanged(scene->objects[shooter].p_stats.ammo,scene->objects[shooter].p_stats.ammoTotal); //Update UI with new ammo
         //play_sound(SOUND_GUN);
         return true;
     }
@@ -24,7 +25,7 @@ bool shoot(Scene* scene, int shooter, GameObject* bullet){
         return false;
 }
 
-bool reload(Scene* scene, int reloader)
+bool reload(Scene* scene, int reloader) //Reloads the weapon.
 {
     int difference;
     if(scene->objects[reloader].p_stats.reloadTime == 0 && scene->objects[reloader].p_stats.ammoTotal > 0){
@@ -51,7 +52,7 @@ bool reload(Scene* scene, int reloader)
     }
 }
 
-bool bomb(Scene* scene, int player){
+bool bomb(Scene* scene, int player){ //Drops a bomb. No network code for this.
 
 
     if(scene->objects[player].p_stats.bombs > 0){

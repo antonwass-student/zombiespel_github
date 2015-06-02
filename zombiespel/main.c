@@ -36,7 +36,7 @@ int playerNetId = -1;
 
 LobbyRoom lobbyRoom;
 
-bool checkIfMoving(PlayerMovement mv)
+bool checkIfMoving(PlayerMovement mv) //Is the player moving
 {
     if(mv.down || mv.up || mv.left ||mv.right)
     {
@@ -91,20 +91,17 @@ int main(int argc, char *argv[])
     bool netDone = false;
 
     srand(time(NULL));
+    strcpy(ip,"130.237.84.235");//Default IP to "Jungfru server"
+    strcpy(port,"2000");//Default port
 
-    //strcpy(ip,"192.168.1.17");
-
-    //strcpy(ip,"130.229.177.106");
-    strcpy(ip,"130.237.84.235");//skola
-
-    strcpy(port,"2000");
-
+    //Inits necessery parameters for the Scene structs
     SceneInit(&level, SCENE_LEVEL);
     SceneInit(&meny, SCENE_MENU);
     SceneInit(&options, SCENE_OPTIONS);
     SceneInit(&lobby, SCENE_LOBBY);
     SceneInit(&pregame, SCENE_PREGAME);
 
+    //Sets the current Scene
     activeScene = &level;
     nextScene = &level;
 
@@ -114,14 +111,17 @@ int main(int argc, char *argv[])
     music_init(); // Load music files
     SDL_StopTextInput(); // debug
 
+
+    //Creates the background object
     newObject = createObject(&level, OBJECT_GAME_BACKGROUND, "Playground", 0,0, 4000, 6000, TXT_PLAYGROUND, false);
 
-
+    //Creates the player object
     player = createObject(&level, OBJECT_PLAYER, playerName,3000, 5200, 128, 128, TXT_PLAYER, true);
     SetPlayerStats(&level.objects[player], 100, 13, 4, 20, 0, 0, 10, 26, 3, CLASS_SOLDIER);
     SetAnimation(&level.objects[player], 10, 0, 1, 128, 2);
 
 
+    //Creates objects for each scene.
     InitMenu(&meny);
     InitLevel(&level);
     CreateUI(&level, player);
@@ -132,6 +132,7 @@ int main(int argc, char *argv[])
     // Game loop
     while(!quit)
     {
+        //Used for update delta
         timeStamp = SDL_GetTicks();
         netDone = false;
 
@@ -143,11 +144,10 @@ int main(int argc, char *argv[])
         while(recvPool.Size > 0)
         {
 
-            //printf("reading net message...\n");
-            ReadPool(&recvPool, netMsg);
+            ReadPool(&recvPool, netMsg);// Reads the next message in message pool (received from server)
             netEvent = ProcessMessage(netMsg, activeScene); //Reads message and calls function pointed by message.
 
-            switch(netEvent) //Hackig lösning
+            switch(netEvent) //Used to catch special events when processing network messages.
             {
                 case NET_EVENT_START_GAME:
                     nextScene = &level;
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
                     }
                 }
 
-                if(e.key.keysym.sym == SDLK_RETURN)
+                if(e.key.keysym.sym == SDLK_RETURN) //Finish textinput (done)
                 {
                     switch(currentInput)
                     {
@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
                 }
 
             }
-            else if( e.type == SDL_KEYUP )
+            else if( e.type == SDL_KEYUP) //registers when done moving the character (key is relesaed)
             {
                 if(activeScene->sceneName == SCENE_LEVEL || activeScene->sceneName == SCENE_PREGAME)
                 {
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            else if (e.type == SDL_TEXTINPUT)
+            else if (e.type == SDL_TEXTINPUT) // If a textbox is active, reads input to assigned string.
             {
                 strcat(inputText, e.text.text);
 
@@ -306,7 +306,7 @@ int main(int argc, char *argv[])
                 printf("New text: %s\n", inputText);
                 break;
             }
-            else if(e.type == SDL_MOUSEMOTION)
+            else if(e.type == SDL_MOUSEMOTION) //Registers mouse movement, used to set player rotation
             {
                 if(activeScene->sceneName == SCENE_LEVEL)
                 {
@@ -321,17 +321,16 @@ int main(int argc, char *argv[])
             }
             else if(e.type == SDL_MOUSEBUTTONDOWN){
                 if(e.button.button == SDL_BUTTON_LEFT){
-                    //Vänsterklick
-                    for(int i = 0; i < activeScene->objectLimit; i++) //Kollar efter alla knappar i den aktiva scenen.
+                    //Leftclick
+                    for(int i = 0; i < activeScene->objectLimit; i++) //Checks all buttons in the active scene.
                     {
-                        //behövs denna bool changedScene = false;
                         if(activeScene->objects[i].objectType == OBJECT_BUTTON)
                         {
                             if(e.button.x > activeScene->objects[i].rect.x && e.button.x < activeScene->objects[i].rect.x + activeScene->objects[i].rect.w)
                             {
                                 if(e.button.y > activeScene->objects[i].rect.y && e.button.y < activeScene->objects[i].rect.y + activeScene->objects[i].rect.h)
                                 {
-                                    switch(activeScene->objects[i].btnInfo.btnAction)
+                                    switch(activeScene->objects[i].btnInfo.btnAction) //If a button was pressed
                                     {
                                         case BUTTON_PLAY:
                                             break;
@@ -438,7 +437,7 @@ int main(int argc, char *argv[])
                         }
                     }
 
-                    if(activeScene->sceneName == SCENE_LEVEL) //Skjuter
+                    if(activeScene->sceneName == SCENE_LEVEL) // Shooting only available while in-game.
                     {
                         GameObject bullet;
                         shoot(activeScene, player, &bullet);
@@ -486,12 +485,12 @@ int main(int argc, char *argv[])
 
         for(int i = 0; i < level.objectLimit; i++)
         {
-            if(activeScene->objects[i].objectType == OBJECT_EMPTY)
+            if(activeScene->objects[i].objectType == OBJECT_EMPTY) //Don't update void objects.
                 continue;
 
             int x = 0,y = 0;
 
-            if(activeScene->objects[i].anim.animated)
+            if(activeScene->objects[i].anim.animated) //Animate objects.
             {
                 if(activeScene->objects[i].objectType == OBJECT_PLAYER && checkIfMoving(moving))
                     activeScene->objects[i].state = ANIM_MOVING;
@@ -501,13 +500,13 @@ int main(int argc, char *argv[])
                 CalcAnimation(&activeScene->objects[i]);
             }
 
-            if(activeScene->objects[i].objectType == OBJECT_BULLET || activeScene->objects[i].objectType == OBJECT_ZBULLET) // Skapar en kula och räknar ut x och y hastigheter, samt flyttar dem.
+            if(activeScene->objects[i].objectType == OBJECT_BULLET || activeScene->objects[i].objectType == OBJECT_ZBULLET) //Updates active bullets in scene
             {
                 y -= sin((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 x -= cos((activeScene->objects[i].bulletInfo.angle + 90) * M_PI / 180.0f) * activeScene->objects[i].bulletInfo.velocity;
                 MoveObject(&activeScene->objects[i],activeScene, x, y, i);
             }
-            else if(activeScene->objects[i].objectType == OBJECT_PLAYER_OTHER)
+            else if(activeScene->objects[i].objectType == OBJECT_PLAYER_OTHER) //Makes other player movements smoother
             {
                 if(activeScene->objects[i].interpolation.frameCount > 0)
                 {
@@ -521,7 +520,7 @@ int main(int argc, char *argv[])
                 }
 
             }
-            else if(activeScene->objects[i].objectType == OBJECT_BOMB){
+            else if(activeScene->objects[i].objectType == OBJECT_BOMB){ //Not used for online play. Only visual on client.
                 activeScene->objects[i].bombInfo.timeToLive--;
                 if(activeScene->objects[i].bombInfo.timeToLive == 0){
 

@@ -6,7 +6,8 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 
 void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene);
 
-int NewDamage(GameObject* NPC, GameObject* Player){
+int NewDamage(GameObject* NPC, GameObject* Player) //Calculates the damage depending on the player armor.
+{
     int NewDamage=0;
     if(NPC->objectType == OBJECT_NPC){
         printf("hej\n");
@@ -20,6 +21,7 @@ int NewDamage(GameObject* NPC, GameObject* Player){
     return NewDamage;
 }
 
+//Moves an object and checks collision with other objects in the same scene.
 bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, int objectIndex)
 {
     bool colUp = false, colDown = false, colLeft = false, colRight = false;
@@ -29,6 +31,7 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
 
     for(int i = 0; i < scene->objectLimit; i++) // Kollar kollision mellan alla objekt i scene
     {
+        //The following objects are not being checked with collisions.
         if(scene->objects[i].objectType == OBJECT_EMPTY)
             continue;
         if(scene->objects[i].objectType == OBJECT_BUTTON)
@@ -45,35 +48,35 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
             continue;
 
 
+        //Calculates which side of the object it collided with.
         if(movingObject->rect.x <= scene->objects[i].rect.x + scene->objects[i].rect.w &&
-           movingObject->rect.x >= scene->objects[i].rect.x) // kollision vänster av objekt
+           movingObject->rect.x >= scene->objects[i].rect.x) //Collision from the left side of moved object.
         {
             colLeft = true;
         }
         else if(movingObject->rect.x + movingObject->rect.w  >= scene->objects[i].rect.x &&
-           movingObject->rect.x + movingObject->rect.w  <= scene->objects[i].rect.x + scene->objects[i].rect.w) // kollision höer av objekt
-        {
+           movingObject->rect.x + movingObject->rect.w  <= scene->objects[i].rect.x + scene->objects[i].rect.w)
+        { //Collision with the right side of moved object.
             colRight = true;
         }
 
         if(movingObject->rect.y <= scene->objects[i].rect.y + scene->objects[i].rect.h &&
-           movingObject->rect.y >= scene->objects[i].rect.y) // kollision ovanifrån objekt
+           movingObject->rect.y >= scene->objects[i].rect.y) // Collision with the uppder side of moving object.
         {
             colUp = true;
         }
         else if(movingObject->rect.y + movingObject->rect.h >= scene->objects[i].rect.y &&
-           movingObject->rect.y + movingObject->rect.h <= scene->objects[i].rect.y + scene->objects[i].rect.h) // kollision underifrån objekt
-        {
+           movingObject->rect.y + movingObject->rect.h <= scene->objects[i].rect.y + scene->objects[i].rect.h)
+        {//Collision from the south side of moving object.
             colDown = true;
         }
 
         if((colLeft || colRight) && (colUp || colDown)) // Collision between objects!
         {
-            //printf("Collision detected with %s and %s\n", scene->objects[i].name, movingObject->name);
             CollisionHandler(movingObject, &scene->objects[i], objectIndex, i, scene);
         }
 
-        if(movingObject->solid && scene->objects[i].solid) //Rättar till positionen om en kollision uppsttått
+        if(movingObject->solid && scene->objects[i].solid) //If both objects are solid, the moving object must be moved back to its original position
         {
             if(colLeft && (colUp || colDown))
             {
@@ -85,8 +88,6 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
                 movingObject->rect.x -= speedX;
             }
 
-
-
             if(colUp && (colLeft || colRight))
             {
                 movingObject->rect.y -= speedY;
@@ -97,8 +98,8 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
             }
         }
 
+        //This call checks for objects within a certain distance of each other.
         ProximityCheck(movingObject, &scene->objects[i], objectIndex, i, scene);
-
 
         colLeft = false;
         colRight = false;
@@ -125,6 +126,7 @@ void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_
 
 }
 
+//Handles collision with objects. These have been moved to server. The server is authorative.
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene)
 {
     int newObject = -1;
@@ -161,6 +163,7 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
 
 }
 
+//Smoothen out movement of network objects.
 int SmoothMovement(int tickRate, GameObject *object, int newX, int newY)
 {
     //ySpeed -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //Objektets y hastighet

@@ -10,7 +10,7 @@
 extern int playerNetId;
 extern LobbyRoom lobbyRoom;
 
-void net_NewObject(char data[], Scene* scene)
+void net_NewObject(char data[], Scene* scene) //Creates a new object that was sent from the server
 {
     int index = 1;
     int id, x, y, nameLength;
@@ -32,7 +32,7 @@ void net_NewObject(char data[], Scene* scene)
 
     printf("Received object %s from server\n",name);
 
-    switch(type)
+    switch(type) //Depending on which object was sent, create it.
     {
         case SERVEROBJ_ZOMBIE_NORMAL:
             Create_Zombie_Normal(scene, id, x, y, name);
@@ -69,6 +69,7 @@ void net_NewObject(char data[], Scene* scene)
 
 }
 
+//Remove object from scene, commanded by the server.
 void net_recvObjectRemove(char data[], Scene* scene)
 {
     int index = 1, id;
@@ -81,13 +82,11 @@ void net_recvObjectRemove(char data[], Scene* scene)
     RemoveObjectFromSceneId(scene, id);
 }
 
-
+//Send the player name to the server
 int net_SendPlayerName(char* name, int length, playerClass_T pClass)
 {
     char buffer[128];
     int size = 0;
-
-    //printf("name length according to strlen = '%d'\n",strlen(name));
 
     buffer[size++] = NET_PLAYER_NAME;
 
@@ -107,6 +106,8 @@ int net_SendPlayerName(char* name, int length, playerClass_T pClass)
 
     return 0;
 }
+
+//Tells the server that the client is ready.
 int net_SendPlayerReady()
 {
     char data[128];
@@ -121,6 +122,7 @@ int net_SendPlayerReady()
     return 0;
 }
 
+//Receives player health from server.
 int net_recvPlayerHealth(char data[], Scene *scene)
 {
     int index = 1;
@@ -131,7 +133,7 @@ int net_recvPlayerHealth(char data[], Scene *scene)
     {
         if(scene->objects[i].objectType == OBJECT_PLAYER)
         {
-            if(scene->objects[i].p_stats.health > health)
+            if(scene->objects[i].p_stats.health > health) //If damaged, show damage taken effect
             {
                 newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", scene->objects[i].rect.x, scene->objects[i].rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
             }
@@ -147,10 +149,11 @@ int net_recvPlayerHealth(char data[], Scene *scene)
     return EXIT_SUCCESS;
 }
 
+//A client has connected to the lobby you are in.
 int net_recvLobbyPlayer(char data[], Scene *scene)
 {
     int index = 1;
-    int length = Converter_BytesToInt32(data, &index);
+    int length = Converter_BytesToInt32(data, &index); //Reads the name length from buffer.
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
     SDL_Color green = {0,255,0};
@@ -159,13 +162,9 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
 
     char name[24];
 
-    //printf("Name length = %d\n", length);
-
-    for(int i = 0; i < length; i++)
+    for(int i = 0; i < length; i++) //Reads name from buffer
     {
-        //printf("char at index %d\n", index);
         name[i] = data[index++];
-        //lobbyRoom.players[lobbyRoom.pCount].name[i] = data[index++];
     }
     name[length] = '\0';
 
@@ -173,13 +172,11 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
 
     for(int i = 0; i < 4; i++)
     {
-        if(!strcmp(name, lobbyRoom.players[i].name))
+        if(!strcmp(name, lobbyRoom.players[i].name)) //If player is in your lobby, ignore message.
             return 0;
     }
 
     printf("Player %s joined the lobby\n", name);
-
-    //strcat(name, "(Scout)");
 
     strcpy(lobbyRoom.players[lobbyRoom.pCount].name, name);
     ChangeTextStr(&scene->objects[lobbyRoom.players[lobbyRoom.pCount].uiIndex], name);
@@ -189,16 +186,16 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
     return 0;
 }
 
+//A player in your lobby is ready.
 int net_recvLobbyReady(char data[], Scene *scene)
 {
     SDL_Color lime = {149, 240, 137};
     int index = 1;
-    int length = Converter_BytesToInt32(data, &index);
+    int length = Converter_BytesToInt32(data, &index); //Length of player name
     char name[24];
 
     for(int i = 0; i < length; i++)
     {
-        //printf("char at index %d\n", index);
         name[i] = data[index++];
     }
     name[length] = '\0';
@@ -213,6 +210,8 @@ int net_recvLobbyReady(char data[], Scene *scene)
     return EXIT_SUCCESS;
 }
 
+
+//Receives the players stats from server according to the selected class.
 int net_recvPlayerStats(char data[], Scene* scene)
 {
     int x,y, dmg, health, speed;
@@ -243,6 +242,7 @@ int net_recvPlayerStats(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+//A command from the server was received to move an object in your scene.
 int net_ChangeObjectPos(char data[], Scene* scene)
 {
     int readingIndex = 1;
@@ -253,22 +253,14 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     y = Converter_BytesToInt32(data, &readingIndex);
     angle = Converter_BytesToInt32(data, &readingIndex);
 
-    //printf("Changing object (id=%d)'s position to x='%d' and y ='%d'\n",objectId, x, y);
-
-    for(int i = 0; i < scene->objectLimit; i++)
+    for(int i = 0; i < scene->objectLimit; i++) //Searches the scene for the object to modify.
     {
         if(scene->objects[i].objectID == objectId)
-        {/*
-            if(scene->objects[i].objectType == OBJECT_PLAYER_OTHER)
-            {
-                SmoothMovement(20, &scene->objects[i], x, y);
-                scene->objects[i].state = ANIM_MOVING;
-            }*/
+        {
             scene->objects[i].rect.x = x;
             scene->objects[i].rect.y = y;
 
             scene->objects[i].rotation = (double)angle;
-            //printf("Object %s's position changed.\n",scene->objects[i].name);
             return 1;
         }
     }
@@ -278,6 +270,7 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+//Server sent a new weapon to the client.
 int net_recvWeapon(char data[], Scene* scene)
 {
     int index = 1;
@@ -333,6 +326,7 @@ int net_recvWeapon(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+//Receives ammo from server and updates UI.
 int net_recvAmmo(char data[], Scene* scene)
 {
     int index = 1;
@@ -352,6 +346,7 @@ int net_recvAmmo(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+//Receive armor from the server and updates UI.
 int net_recvArmor(char data[], Scene* scene)
 {
     int index = 1;
@@ -371,6 +366,7 @@ int net_recvArmor(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+//Sets the clients player id, this is your ID on the server.
 int net_SetPlayerId(char data[])
 {
     int id;
@@ -383,8 +379,7 @@ int net_SetPlayerId(char data[])
     return EXIT_SUCCESS;
 }
 
-
-
+//Called when a player wants to shoot. Sends a request to the server.
 int net_PlayerShoot(GameObject player)
 {
     char buffer[128];
@@ -445,6 +440,7 @@ int net_PlayerShoot(GameObject player)
     return EXIT_SUCCESS;
 }
 
+//Send your selected class
 int net_SendPlayerClass(playerClass_T pClass)
 {
     char buffer[128];
@@ -459,7 +455,7 @@ int net_SendPlayerClass(playerClass_T pClass)
 
 }
 
-
+//Sends a request to the server that the player wants to move.
 int net_PlayerMove(int x, int y, int angle)
 {
     char buffer[128];
@@ -474,6 +470,7 @@ int net_PlayerMove(int x, int y, int angle)
     return EXIT_SUCCESS;
 }
 
+//Received a players class from the server.
 int net_RecvPlayerClass(char data[], Scene* scene)
 {
     int index = 1;
@@ -494,7 +491,7 @@ int net_RecvPlayerClass(char data[], Scene* scene)
 
     for(int i = 0; i < 4; i++)
     {
-        if(!strcmp(name, lobbyRoom.players[i].name))
+        if(!strcmp(name, lobbyRoom.players[i].name)) //Change the players class.
         {
             switch(pClass)
             {
@@ -522,6 +519,7 @@ int net_RecvPlayerClass(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+//Receives other players final classes, receieved when game starts.
 int net_recvClassFinal(char data[], Scene* scene)
 {
     int index = 1;
@@ -562,6 +560,7 @@ int net_recvClassFinal(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
+//Receives a bullet from server.
 int net_recvBullet(char data[], Scene* scene)
 {
     int index = 1;
@@ -594,10 +593,6 @@ int net_recvBullet(char data[], Scene* scene)
     scene->objects[newObject].objectID = id;
     scene->objects[newObject].bulletInfo.type = type;
 
-    //printf("Received bullet from server.\n --angle = '%d'\n",angle);
-    //printf("--x = '%d'\n", x);
-    //printf("--y = '%d'\n", y);
-    //printf("--speed = '%d'\n", speed);
     return EXIT_SUCCESS;
 
 }

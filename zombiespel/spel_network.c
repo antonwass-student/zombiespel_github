@@ -64,7 +64,7 @@ TCPsocket net_start(char* ip_p, char*port_p){
     return sd;
 }
 
-NetEvent_T ProcessMessage(char data[], Scene* scene)
+NetEvent_T ProcessMessage(char data[], Scene* scene) //Processes the netmessage, calling function depending on flag: data[0]
 {
     switch(data[0])
     {
@@ -132,10 +132,11 @@ NetEvent_T ProcessMessage(char data[], Scene* scene)
     return -1;
 }
 
-int Converter_BytesToInt32(unsigned char data[], int* index){ // Gör om en byte-array till en int.
+//Reads 4 bytes from the passed data array from positon = index
+int Converter_BytesToInt32(unsigned char data[], int* index){
 
     int value = 0;
-    value += (((int)data[*index]) << 24);
+    value += (((int)data[*index]) << 24); //Bitshifts the bytes to reform an integer.
     value += (((int)data[*index + 1]) << 16);
     value += (((int)data[*index + 2]) << 8);
     value += (((int)data[*index + 3]));
@@ -145,9 +146,11 @@ int Converter_BytesToInt32(unsigned char data[], int* index){ // Gör om en byte-
     return value;
 }
 
-int Converter_Int32ToBytes(unsigned char data[], int* size, int value) //Gör om en int till en byte array.
+//Writes an int into the byte array at position = size.
+int Converter_Int32ToBytes(unsigned char data[], int* size, int value)
 {
     int temp = value;
+    //Shifts each byte of the int so that they can fit in a byte.
     data[(*size + 3)] = (unsigned char)(value);
     data[*size + 2] = (unsigned char)((value) >> 8);
     data[*size + 1] = (unsigned char)((value) >> 16);
@@ -158,6 +161,7 @@ int Converter_Int32ToBytes(unsigned char data[], int* size, int value) //Gör om 
     return 0;
 }
 
+//This is the thread that handles the sending of TCP messages.
 int SendThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
@@ -167,7 +171,7 @@ int SendThread(void* ptr)
 
     while(1)
     {
-        while(sendPool.Size <= 0){
+        while(sendPool.Size <= 0){ //Waits until there are messages in the send pool.
             SDL_Delay(10);
         }
         while(sendPool.Size > 0)
@@ -180,7 +184,8 @@ int SendThread(void* ptr)
     return 1;
 }
 
-int RecvThread(void* ptr) //Lyssnar efter meddelanden från servern och lägger dem i en stack som main läser av varje update.
+//Thread that receives messages from the server and puts them in a pool that the main loop reads once every loop.
+int RecvThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
 
@@ -197,7 +202,8 @@ int RecvThread(void* ptr) //Lyssnar efter meddelanden från servern och lägger de
     return 1;
 }
 
-int AddToPool(threadCom* pool, char* msg) // Funktion för att lägga till meddelanden i stacks ( pools).
+//Adds a netmessage (byte array) to a pool.
+int AddToPool(threadCom* pool, char* msg)
 {
     SDL_LockMutex(pool->mtx);
     memcpy(pool->pool[pool->Size], msg, 128);
@@ -206,6 +212,7 @@ int AddToPool(threadCom* pool, char* msg) // Funktion för att lägga till meddela
     return 1;
 }
 
+//Reads a netmessage from a pool and reduces it's size.
 int ReadPool(threadCom* pool, char* msg)
 {
     SDL_LockMutex(pool->mtx);

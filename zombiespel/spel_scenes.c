@@ -8,6 +8,8 @@ GameObject* gUI_Damage = NULL;
 GameObject* gUI_Armor = NULL;
 GameObject* gUI_Bomb = NULL;
 
+//This file contains the initializations of all the games scenes.
+//Normally objects are sent from the server, but some like user interface and buttons are created in the client.
 void InitLevel(Scene* level)
 {
     int newObject;
