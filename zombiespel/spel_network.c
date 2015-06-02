@@ -1,5 +1,4 @@
 #ifdef _WIN32
-//define something for Windows (32-bit and 64-bit, this part is common)
 #include <SDL_net.h>
 #include <SDL.h>
 
@@ -8,6 +7,8 @@
 #include <SDL2_net/SDL_net.h>
 
 #elif __linux
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_net.h>
 #endif
 
 #include <stdio.h>

@@ -9,6 +9,8 @@
 #include <SDL2_mixer/SDL_mixer.h>
 
 #elif __linux
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #endif
 
 
@@ -102,7 +104,7 @@ void play_sound(soundID_t id){ //Plays sound file
         Mix_PlayChannel(-1, sound[3].soundEffect, 0);
     }
     else if(id == SOUND_BUTTON){
-        Mix_PlayChannel(-1, sound[4].soundEffect, 0);
+       // Mix_PlayChannel(-1, sound[4].soundEffect, 0);
     }
     else if(id == SOUND_EXPLOSION){
         Mix_PlayChannel(-1, sound[5].soundEffect, 0);

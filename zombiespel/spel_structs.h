@@ -8,6 +8,8 @@
 #include <SDL2_mixer/SDL_mixer.h>
 
 #elif __linux
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #endif
 
 #ifndef SPEL_STRUCTS_H_INCLUDED

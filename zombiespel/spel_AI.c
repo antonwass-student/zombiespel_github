@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 
 #elif __linux
+#include <SDL2/SDL.h>
 #endif
 
 

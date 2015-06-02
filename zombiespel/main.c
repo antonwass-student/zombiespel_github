@@ -7,7 +7,8 @@
 #include <SDL2_net/SDL_net.h>
 
 #elif __linux
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_net.h>
 #endif
 
 //#define EXIT_SUCCESS 0
@@ -56,6 +57,7 @@ int main(int argc, char *argv[])
     char ip[30] = {"\0"};
     char port[5] = {"\0"};
     int nameLength = 0;
+    TCPsocket sd;
     TextInput_T currentInput = INPUT_TEXT_NONE;
     SDL_Event e;
     Scene *activeScene, *nextScene;
@@ -217,8 +219,10 @@ int main(int argc, char *argv[])
                             ChangeTextStr(&lobby.objects[button_lobbyPort],inputText);
                             printf("Port was set.\n");
                             break;
+                        default:
+                            break;
                     }
-                    currentInput == INPUT_TEXT_NONE;
+                    currentInput = INPUT_TEXT_NONE;
                     inputText[0] = '\0';
                     SDL_StopTextInput();
                     break;
@@ -241,6 +245,8 @@ int main(int argc, char *argv[])
                             break;
                         case INPUT_TEXT_PORT:
                             ChangeTextStr(&lobby.objects[button_lobbyPort],inputText);
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -382,7 +388,7 @@ int main(int argc, char *argv[])
                                             break;
                                         case BUTTON_CONNECT:
                                             printf("Connecting to: %s %s\n",ip,port);
-                                            TCPsocket sd = net_start(ip, port);/* Socket descriptor */
+                                            sd = net_start(ip, port);/* Socket descriptor */
                                             printf("Sending playername %s\n",playerName);
                                             net_SendPlayerName(playerName, nameLength, pClass);
                                             nextScene = &pregame;
@@ -424,6 +430,8 @@ int main(int argc, char *argv[])
                                                 pClass = CLASS_ENGINEER;
                                                 net_SendPlayerClass(pClass);
                                             }
+                                            break;
+                                        default:
                                             break;
                                     }
                                 }
@@ -569,9 +577,9 @@ int main(int argc, char *argv[])
         frames++;
     }
 
-    //SDLNet_TCP_Send(sd, "exit",10);
-    //SDLNet_TCP_Close(sd);
-    //SDLNet_Quit();
+    SDLNet_TCP_Send(sd, "exit",10);
+    SDLNet_TCP_Close(sd);
+    SDLNet_Quit();
 
     graphics_stop();
     music_stop();

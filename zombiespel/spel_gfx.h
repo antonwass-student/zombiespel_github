@@ -9,6 +9,7 @@
 #include <SDL2_ttf/SDL_ttf.h>
 
 #elif __linux
+#include <SDL2/SDL_ttf.h>
 #endif
 
 

@@ -6,6 +6,7 @@
 #include <SDL2_net/SDL_net.h>
 
 #elif __linux
+#include <SDL2/SDL_net.h>
 #endif
 
 #ifndef SPEL_NETWORK_H_INCLUDED
