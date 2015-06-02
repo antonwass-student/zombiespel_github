@@ -112,19 +112,8 @@ void play_sound(soundID_t id){ //Plays sound file
 }
 void music_stop(){
     printf("Releasing music\n");
-    //Free the sound effects
     Mix_FreeChunk( sound[1].Music );
-    //Mix_FreeChunk( gHigh );
-    //Mix_FreeChunk( gMedium );
-    //Mix_FreeChunk( gLow );
-
     sound[1].Music = NULL;
-    //gHigh = NULL;
-    //gMedium = NULL;
-    //gLow = NULL;
-
-
-    //Free the music
     Mix_FreeMusic( sound[0].Music );
     sound[0].Music = NULL;
 

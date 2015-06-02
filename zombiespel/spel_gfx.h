@@ -17,9 +17,18 @@
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 800
 
+void SetFont(int size);
 SDL_Texture* loadTexture(char* path);
 void graphics_start();
+void CalcAnimation(GameObject* object);
 void graphics_render(Scene level, GameObject* relative);
 void graphics_stop();
+void loadSprites();
+GameObject* ChangeTextInt2(GameObject* object, char* text, int value, int value2);
+GameObject* ChangeTextInt(GameObject* object, char* text, int value);
+GameObject* ChangeTextStr(GameObject* object, char* text);
+GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor, int padding);
+
+void SetFont(int size);
 
 #endif // SPEL_GFX_H_INCLUDED

@@ -13,20 +13,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "spel_structs.h"
+#include "spel_net_msgs.h"
+#include "spel_network.h"
 
 threadCom sendPool;
 threadCom recvPool;
 
-int RecvThread(void* ptr);
-int SendThread(void* ptr);
+
 
 TCPsocket net_start(char* ip_p, char*port_p){
     IPaddress ip;		/* Server address */
     TCPsocket sd;
-
-    char buffer[128];
-    int bufferSize = 0;
-    int readIndex = 0;
 
     if (SDLNet_Init() < 0)
     {
@@ -64,7 +61,8 @@ TCPsocket net_start(char* ip_p, char*port_p){
     return sd;
 }
 
-NetEvent_T ProcessMessage(char data[], Scene* scene) //Processes the netmessage, calling function depending on flag: data[0]
+
+NetEvent_T ProcessMessage(unsigned char data[], Scene* scene)//Processes the netmessage, calling function depending on flag: data[0]
 {
     switch(data[0])
     {
@@ -149,7 +147,6 @@ int Converter_BytesToInt32(unsigned char data[], int* index){
 //Writes an int into the byte array at position = size.
 int Converter_Int32ToBytes(unsigned char data[], int* size, int value)
 {
-    int temp = value;
     //Shifts each byte of the int so that they can fit in a byte.
     data[(*size + 3)] = (unsigned char)(value);
     data[*size + 2] = (unsigned char)((value) >> 8);
@@ -165,9 +162,9 @@ int Converter_Int32ToBytes(unsigned char data[], int* size, int value)
 int SendThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
-    char buffer[128];
+    unsigned char buffer[128];
 
-    int tempIndex = 0;
+    //int tempIndex = 0;
 
     while(1)
     {
@@ -189,21 +186,20 @@ int RecvThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
 
-    int temp;
-    int index = 0;
+    //int temp;
+    //int index = 0;
 
-    char msg[128];
+    unsigned char msg[128];
 
     while(SDLNet_TCP_Recv(sd, msg, 128) > 0)
     {
-        //printf("Message received\n");
         AddToPool(&recvPool, msg);
     }
     return 1;
 }
 
 //Adds a netmessage (byte array) to a pool.
-int AddToPool(threadCom* pool, char* msg)
+int AddToPool(threadCom* pool,unsigned char* msg)
 {
     SDL_LockMutex(pool->mtx);
     memcpy(pool->pool[pool->Size], msg, 128);
@@ -213,7 +209,7 @@ int AddToPool(threadCom* pool, char* msg)
 }
 
 //Reads a netmessage from a pool and reduces it's size.
-int ReadPool(threadCom* pool, char* msg)
+int ReadPool(threadCom* pool, unsigned char* msg)
 {
     SDL_LockMutex(pool->mtx);
     if(pool->Size > 0)

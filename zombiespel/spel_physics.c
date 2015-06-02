@@ -1,16 +1,13 @@
 #include "spel_gameobject.h"
 #include "spel_physics.h"
-
-
-void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene);
-
-void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene);
+#include "music.h"
+#include "spel_physics.h"
+#include "spel_AI.h"
 
 int NewDamage(GameObject* NPC, GameObject* Player) //Calculates the damage depending on the player armor.
 {
     int NewDamage=0;
     if(NPC->objectType == OBJECT_NPC){
-        printf("hej\n");
         NewDamage= ((100 - Player->p_stats.armor)/100.0f) * NPC->ai.damage;
         return NewDamage;
     }
@@ -112,7 +109,7 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
 void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene)
 {
     int distance = GetDistance(obj1->rect, obj2->rect);
-    int newObject =-1;
+    //int newObject =-1;
 
     if(obj1->objectType == OBJECT_NPC&& obj2->objectType == OBJECT_EXPLOSION){
         if(obj1->objectType == OBJECT_NPC && distance < 100){
