@@ -13,6 +13,7 @@
 #include "spel_structs.h"
 #include "spel_gameobject.h"
 #include "spel_AI.h"
+#include "spel_physics.h"
 
 #define EXIT_FAILURE 1
 #define EXIT_SUCCESS 0

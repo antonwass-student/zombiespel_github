@@ -1,5 +1,4 @@
 #ifdef _WIN32
-//define something for Windows (32-bit and 64-bit, this part is common)
 #include <SDL.h>
 #include <SDL_net.h>
 
@@ -28,6 +27,8 @@
 #include "spel_AI.h"
 #include "spel_network.h"
 #include "spel_scenes.h"
+#include "music.h"
+#include "spel_net_msgs.h"
 
 
 extern TTF_Font* gFont;
@@ -50,7 +51,6 @@ bool checkIfMoving(PlayerMovement mv)
 int main(int argc, char *argv[])
 {
     bool quit = false;
-    bool typing = false;
     char inputText[128] = {"\0"};
     char playerName[128] = {"\0"};
     char ip[30] = {"\0"};
@@ -59,16 +59,13 @@ int main(int argc, char *argv[])
     TextInput_T currentInput = INPUT_TEXT_NONE;
     SDL_Event e;
     Scene *activeScene, *nextScene;
-    Scene level, meny, options, pause, lobby, pregame;
-    int player, newObject, button_newName, button_saveName, button_showName, button_connect;
-    int pg_player1, pg_player2, pg_player3, pg_player4;
+    Scene level, meny, options, lobby, pregame;
+    int player, newObject, button_newName, button_showName, button_connect;
+    //int pg_player1, pg_player2, pg_player3, pg_player4;
     int button_lobbyIp, button_lobbyPort;
     PlayerMovement moving = {false, false, false, false};
     int mouseX, mouseY;
-    SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
-    SDL_Color green = {0,255,0};
-    SDL_Color lblue = {95,157,237};
     SDL_Color lime = {149, 240, 137};
     int timeStamp = 0;
     long frames = 0;
@@ -77,27 +74,20 @@ int main(int argc, char *argv[])
     int netUpdateTimer = 6;
     int netUpdateRate = 6; // How many frames between each net update
 
-
     //Lobby
     bool playerReady = false;
     playerClass_T pClass = CLASS_SCOUT;
     lobbyRoom.pCount = 0;
 
 
-    char netMsg[128];
-    int netMsgSize = 0;
-    int netMsgIndex = 0;
+    unsigned char netMsg[128];
     NetEvent_T netEvent = -1;
     bool netDone = false;
 
-    srand(time(NULL));
+    srand((int)time(NULL));
+    strcpy(ip,"130.237.84.235");//ServerIP
+    strcpy(port,"2000");//Port
 
-    //strcpy(ip,"192.168.1.17");
-
-    //strcpy(ip,"130.229.177.106");
-    strcpy(ip,"130.237.84.235");//skola
-
-    strcpy(port,"2000");
 
     SceneInit(&level, SCENE_LEVEL);
     SceneInit(&meny, SCENE_MENU);
@@ -106,7 +96,7 @@ int main(int argc, char *argv[])
     SceneInit(&pregame, SCENE_PREGAME);
 
     activeScene = &level;
-    nextScene = &level;
+    nextScene = &meny;
 
     printf("Starting graphics engine...\n");
 
@@ -233,7 +223,7 @@ int main(int argc, char *argv[])
                 {
                     int length;
 
-                    length = strlen(inputText);
+                    length = (int)strlen(inputText);
                     inputText[length-1] = '\0';
 
                     switch(currentInput)
@@ -310,7 +300,7 @@ int main(int argc, char *argv[])
             {
                 if(activeScene->sceneName == SCENE_LEVEL)
                 {
-                    double oldRot = level.objects[player].rotation;
+                    //double oldRot = level.objects[player].rotation;
                     mouseX = e.motion.x - (SCREEN_WIDTH/2);
                     mouseY = (e.motion.y - (SCREEN_HEIGHT/2))*(-1);
                     level.objects[player].rotation = 90 - (atan2(mouseY,mouseX)*180/M_PI); //Roterar spelaren
@@ -461,7 +451,7 @@ int main(int argc, char *argv[])
         if(activeScene->sceneName == SCENE_LEVEL)
         {
             int x = 0, y = 0;
-            bool my;
+            //bool my;
 
             if(moving.up)
                 y -= level.objects[player].p_stats.speed;

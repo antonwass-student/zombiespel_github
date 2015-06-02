@@ -1,5 +1,6 @@
 #include "spel_structs.h"
 #include <strings.h>
+#include "spel_gameobject.h"
 
 
 #define EXIT_SUCCESS 0

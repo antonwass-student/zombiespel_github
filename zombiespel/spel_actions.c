@@ -1,13 +1,14 @@
 #include "spel_gameobject.h"
 #include <unistd.h>
+#include "spel_net_msgs.h"
+#include "spel_scenes.h"
+#include "music.h"
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
 extern int playerNetId;
 
 bool shoot(Scene* scene, int shooter, GameObject* bullet){
-    int bulletIndex;
-
     if(scene->objects[shooter].p_stats.ammo > 0 && scene->objects[shooter].p_stats.reloadTime == 0  && scene->objects[shooter].p_stats.fireCount == 0){
 
         scene->objects[shooter].p_stats.fireCount = scene->objects[shooter].p_stats.fireRate;

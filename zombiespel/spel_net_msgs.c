@@ -3,14 +3,16 @@
 #include "spel_network.h"
 #include "music.h"
 #include "time.h"
+#include "spel_scenes.h"
+#include "spel_gfx.h"
+#include "spel_net_msgs.h"
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
 extern int playerNetId;
 extern LobbyRoom lobbyRoom;
-
-void net_NewObject(char data[], Scene* scene)
+void net_NewObject(unsigned char data[], Scene* scene)
 {
     int index = 1;
     int id, x, y, nameLength;
@@ -69,7 +71,7 @@ void net_NewObject(char data[], Scene* scene)
 
 }
 
-void net_recvObjectRemove(char data[], Scene* scene)
+void net_recvObjectRemove(unsigned char data[], Scene* scene)
 {
     int index = 1, id;
     data[0] = NET_OBJECT_REMOVE;
@@ -84,7 +86,7 @@ void net_recvObjectRemove(char data[], Scene* scene)
 
 int net_SendPlayerName(char* name, int length, playerClass_T pClass)
 {
-    char buffer[128];
+    unsigned char buffer[128];
     int size = 0;
 
     //printf("name length according to strlen = '%d'\n",strlen(name));
@@ -109,7 +111,7 @@ int net_SendPlayerName(char* name, int length, playerClass_T pClass)
 }
 int net_SendPlayerReady()
 {
-    char data[128];
+    unsigned char data[128];
     int index = 1;
 
     data[0] = NET_PLAYER_READY;
@@ -121,7 +123,7 @@ int net_SendPlayerReady()
     return 0;
 }
 
-int net_recvPlayerHealth(char data[], Scene *scene)
+int net_recvPlayerHealth(unsigned char data[], Scene *scene)
 {
     int index = 1;
     int health = Converter_BytesToInt32(data, &index);
@@ -147,14 +149,10 @@ int net_recvPlayerHealth(char data[], Scene *scene)
     return EXIT_SUCCESS;
 }
 
-int net_recvLobbyPlayer(char data[], Scene *scene)
+int net_recvLobbyPlayer(unsigned char data[], Scene *scene)
 {
     int index = 1;
     int length = Converter_BytesToInt32(data, &index);
-    SDL_Color black = {0,0,0};
-    SDL_Color white = {255,255,255};
-    SDL_Color green = {0,255,0};
-    SDL_Color lime = {149, 240, 137};
     SDL_Color lblue = {95,157,237};
 
     char name[24];
@@ -169,7 +167,7 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
     }
     name[length] = '\0';
 
-    playerClass_T pClass = data[index++];
+    //playerClass_T pClass = data[index++];
 
     for(int i = 0; i < 4; i++)
     {
@@ -189,7 +187,7 @@ int net_recvLobbyPlayer(char data[], Scene *scene)
     return 0;
 }
 
-int net_recvLobbyReady(char data[], Scene *scene)
+int net_recvLobbyReady(unsigned char data[], Scene *scene)
 {
     SDL_Color lime = {149, 240, 137};
     int index = 1;
@@ -213,7 +211,7 @@ int net_recvLobbyReady(char data[], Scene *scene)
     return EXIT_SUCCESS;
 }
 
-int net_recvPlayerStats(char data[], Scene* scene)
+int net_recvPlayerStats(unsigned char data[], Scene* scene)
 {
     int x,y, dmg, health, speed;
     int index = 1;
@@ -243,7 +241,7 @@ int net_recvPlayerStats(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
-int net_ChangeObjectPos(char data[], Scene* scene)
+int net_ChangeObjectPos(unsigned char data[], Scene* scene)
 {
     int readingIndex = 1;
     int objectId, x, y, angle;
@@ -278,12 +276,12 @@ int net_ChangeObjectPos(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
-int net_recvWeapon(char data[], Scene* scene)
+int net_recvWeapon(unsigned char data[], Scene* scene)
 {
     int index = 1;
     ServerObject_T weapon = data[index++];
-    WeaponType_T playerWeapon;
-    int damage, fireRate, spread, magSize;
+    WeaponType_T playerWeapon=0;
+    int damage=0, fireRate=0, spread=0, magSize=0;
 
     printf("Received a weapon. %d\n", weapon);
 
@@ -333,7 +331,7 @@ int net_recvWeapon(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
-int net_recvAmmo(char data[], Scene* scene)
+int net_recvAmmo(unsigned char data[], Scene* scene)
 {
     int index = 1;
     int amount = Converter_BytesToInt32(data, &index);
@@ -352,7 +350,7 @@ int net_recvAmmo(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
-int net_recvArmor(char data[], Scene* scene)
+int net_recvArmor(unsigned char data[], Scene* scene)
 {
     int index = 1;
     int amount = Converter_BytesToInt32(data, &index);
@@ -371,7 +369,7 @@ int net_recvArmor(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
-int net_SetPlayerId(char data[])
+int net_SetPlayerId(unsigned char data[])
 {
     int id;
     int index = 1;
@@ -387,7 +385,7 @@ int net_SetPlayerId(char data[])
 
 int net_PlayerShoot(GameObject player)
 {
-    char buffer[128];
+    unsigned char buffer[128];
     int index = 0;
     int newRot = player.rotation, newDamage;
     int bullets = 1;
@@ -447,7 +445,7 @@ int net_PlayerShoot(GameObject player)
 
 int net_SendPlayerClass(playerClass_T pClass)
 {
-    char buffer[128];
+    unsigned char buffer[128];
     int index = 0;
 
     buffer[index++] = NET_PLAYER_CLASS;
@@ -462,7 +460,7 @@ int net_SendPlayerClass(playerClass_T pClass)
 
 int net_PlayerMove(int x, int y, int angle)
 {
-    char buffer[128];
+    unsigned char buffer[128];
     int index = 0;
     buffer[index++] = NET_PLAYER_MOVE;
     Converter_Int32ToBytes(buffer, &index, playerNetId);
@@ -474,7 +472,7 @@ int net_PlayerMove(int x, int y, int angle)
     return EXIT_SUCCESS;
 }
 
-int net_RecvPlayerClass(char data[], Scene* scene)
+int net_RecvPlayerClass(unsigned char data[], Scene* scene)
 {
     int index = 1;
     int length = Converter_BytesToInt32(data, &index);
@@ -522,7 +520,7 @@ int net_RecvPlayerClass(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
-int net_recvClassFinal(char data[], Scene* scene)
+int net_recvClassFinal(unsigned char data[], Scene* scene)
 {
     int index = 1;
     int playerId = Converter_BytesToInt32(data, &index);
@@ -562,7 +560,7 @@ int net_recvClassFinal(char data[], Scene* scene)
     return EXIT_SUCCESS;
 }
 
-int net_recvBullet(char data[], Scene* scene)
+int net_recvBullet(unsigned char data[], Scene* scene)
 {
     int index = 1;
     int id, x, y, angle, speed, newObject;
@@ -663,7 +661,7 @@ int Create_Medkit(Scene* scene, int id, int x, int y, char* name)
     int newObject;
     newObject = createObject(scene, OBJECT_ITEM, "Medkit", x, y, 30, 30, TXT_MEDKIT, false);
     scene->objects[newObject].objectID = id; //Remember to set ID!
-    SetText(&scene->objects[newObject],"Medkit", true, white, 10);
+    SetText(&scene->objects[newObject],"Medkit", true, white, 30);
     //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
     return EXIT_SUCCESS;
 }
@@ -672,7 +670,7 @@ int Create_Other_Player(Scene* scene, int id, int x, int y, char* name)
 {
     SDL_Color white = {255,255,255};
     int newObject;
-    textureID_t texture;
+    //textureID_t texture;
 
     newObject = createObject(scene, OBJECT_PLAYER_OTHER, name,x, y, 128, 128, TXT_PLAYER_SOLDIER, false);
     scene->objects[newObject].objectID = id;
@@ -694,7 +692,6 @@ int Create_Other_Player(Scene* scene, int id, int x, int y, char* name)
 int Create_Zombie_Normal(Scene* scene, int id, int x, int y, char* name)
 {
     int newObject;
-    SDL_Color red = {201, 81, 81};
     SDL_Color white = {255,255,255};
     newObject = createObject(scene, OBJECT_NPC, name,x, y, 118, 65, TXT_ZOMBIE, false);
     SetAI(&scene->objects[newObject], AI_ZOMBIE, 5, 300, 10, 100, 1.0f, 20, 0, 30);
@@ -710,7 +707,6 @@ int Create_Zombie_Normal(Scene* scene, int id, int x, int y, char* name)
 int Create_Zombie_Spitter(Scene* scene, int id, int x, int y, char* name)
 {
     int newObject;
-    SDL_Color red = {201, 81, 81};
     SDL_Color white = {255,255,255};
     newObject = createObject(scene, OBJECT_NPC, "ZombieSpitter",x, y, 118, 65, TXT_ZOMBIE_FAT, false);
     SetAI(&scene->objects[newObject], AI_SPITTER, 5, 300, 10, 100, 1.0f, 20, 0, 30);

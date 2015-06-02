@@ -67,7 +67,8 @@ GameObject* ChangeTextStr(GameObject* object, char* text)
 
     SDL_Surface* srf;
     srf = TTF_RenderText_Solid(gFont, text, object->textColor);
-    SDL_DestroyTexture(object->textTexture);
+    if(object->textTexture==NULL){
+        SDL_DestroyTexture(object->textTexture);}
     object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
 
     return object;
@@ -312,8 +313,8 @@ void graphics_render(Scene level, GameObject* relative) // Ritar ut objekten i o
     SDL_RenderClear(gRenderer);
     SDL_Rect newRect;
     SDL_Rect srcRect;
-    SDL_Surface* surface;
-    SDL_Texture* textTexture;
+    //SDL_Surface* surface;
+    //SDL_Texture* textTexture;
 
     for(int i = 0; i < level.objectLimit; i++) // Denna loop går igenom alla GameObjects i scenen som skickats med
     {

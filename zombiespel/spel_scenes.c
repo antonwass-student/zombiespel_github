@@ -77,9 +77,6 @@ void InitPregame(Scene* pregame, LobbyRoom* lobbyRoom)
     int newObject;
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
-    SDL_Color green = {0,255,0};
-    SDL_Color lblue = {95,157,237};
-    SDL_Color lime = {149, 240, 137};
 
     newObject = createObject(pregame, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
 
@@ -130,9 +127,7 @@ void InitLobby(Scene* lobby, int* button_lobbyIp, int* button_lobbyPort, int* bu
     int newObject;
     SDL_Color black = {0,0,0};
     SDL_Color white = {255,255,255};
-    SDL_Color green = {0,255,0};
     SDL_Color lblue = {95,157,237};
-    SDL_Color lime = {149, 240, 137};
 
 
     newObject = createObject(lobby, OBJECT_BACKGROUND, "Background", 0,0, 1024, 800, TXT_MENU_BACKGROUND, false);
