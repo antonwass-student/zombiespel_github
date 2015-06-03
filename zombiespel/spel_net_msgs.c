@@ -169,7 +169,7 @@ int net_recvLobbyPlayer(unsigned char data[], Scene *scene)
     }
     name[length] = '\0';
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < N_CLIENTS; i++)
     {
         if(!strcmp(name, lobbyRoom.players[i].name)) //If player is in your lobby, ignore message.
             return 0;
@@ -199,7 +199,7 @@ int net_recvLobbyReady(unsigned char data[], Scene *scene)
     name[length] = '\0';
     printf("Player %s is ready\n", name);
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < N_CLIENTS; i++)
     {
         if(!strcmp(name, lobbyRoom.players[i].name))
             scene->objects[lobbyRoom.players[i].uiIndex].drawColor = lime;
@@ -213,8 +213,6 @@ int net_recvPlayerStats(unsigned char data[], Scene* scene)
 {
     int x,y, dmg, health, speed;
     int index = 1;
-
-    //printf("CURRENT SCENE IS: %d\n", scene->sceneName);
 
     x = Converter_BytesToInt32(data, &index);
     y = Converter_BytesToInt32(data, &index);
@@ -377,30 +375,6 @@ int net_SetPlayerId(unsigned char data[])
     return EXIT_SUCCESS;
 }
 
-/*int net_playerBomb(GameObject player)
-{
-    unsigned char buffer[128];
-    int bullets=1;
-    
-    for(int i = 0; i < bullets; i++)
-    {
-        int index = 0;
-        buffer[index++] = NET_PLAYER_SHOOT;
-        Converter_Int32ToBytes(buffer,&index, playerNetId);
-        Converter_Int32ToBytes(buffer, &index, player.rect.x + player.rect.w/2);
-        Converter_Int32ToBytes(buffer, &index, player.rect.y + player.rect.h/2);
-        Converter_Int32ToBytes(buffer, &index, player.p_stats.bombs);
-        Converter_Int32ToBytes(buffer, &index, 20);
-        
-        AddToPool(&sendPool,buffer);
-        
-        
-    }
-
-    
-    
-    return EXIT_SUCCESS;
-}*/
 
 //Called when a player wants to shoot. Sends a request to the server.
 int net_PlayerShoot(GameObject player)
@@ -511,7 +485,7 @@ int net_RecvPlayerClass(unsigned char data[], Scene* scene)
     name[length] = '\0';
     playerClass_T pClass = data[index++];
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < N_CLIENTS; i++)
     {
         if(!strcmp(name, lobbyRoom.players[i].name)) //Change the players class.
         {

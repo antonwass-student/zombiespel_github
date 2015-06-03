@@ -26,7 +26,7 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
     movingObject->rect.x += speedX;
     movingObject->rect.y += speedY;
 
-    for(int i = 0; i < scene->objectLimit; i++) // Kollar kollision mellan alla objekt i scene
+    for(int i = 0; i < scene->objectLimit; i++) // collisions between all the object in scene
     {
         //The following objects are not being checked with collisions.
         if(scene->objects[i].objectType == OBJECT_EMPTY)
@@ -43,7 +43,6 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
             continue;
         if(scene->objects[i].objectType == OBJECT_EMPTY)
             continue;
-
 
         //Calculates which side of the object it collided with.
         if(movingObject->rect.x <= scene->objects[i].rect.x + scene->objects[i].rect.w &&

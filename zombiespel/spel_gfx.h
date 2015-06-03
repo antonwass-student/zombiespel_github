@@ -29,6 +29,4 @@ GameObject* ChangeTextInt(GameObject* object, char* text, int value);
 GameObject* ChangeTextStr(GameObject* object, char* text);
 GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor, int padding);
 
-
-
 #endif // SPEL_GFX_H_INCLUDED

@@ -448,8 +448,7 @@ int main(int argc, char *argv[])
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
                     //rightclick
-                    GameObject bomb1;
-                    bomb(activeScene, player,&bomb1);
+                    bomb(activeScene, player);
 
                 }
             }

@@ -324,8 +324,6 @@ void graphics_render(Scene level, GameObject* relative)
     SDL_RenderClear(gRenderer);
     SDL_Rect newRect;
     SDL_Rect srcRect;
-    //SDL_Surface* surface;
-    //SDL_Texture* textTexture;
 
     for(int i = 0; i < level.objectLimit; i++) // Loops through all objects which are not void.
     {
