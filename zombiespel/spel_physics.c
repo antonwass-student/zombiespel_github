@@ -109,25 +109,26 @@ bool MoveObject(GameObject* movingObject, Scene* scene, int speedX, int speedY, 
 void ProximityCheck(GameObject* obj1, GameObject* obj2, int obj1_index,int obj2_index, Scene* scene)
 {
     int distance = GetDistance(obj1->rect, obj2->rect);
-    //int newObject =-1;
 
-    if(obj1->objectType == OBJECT_NPC&& obj2->objectType == OBJECT_EXPLOSION){
-        if(obj1->objectType == OBJECT_NPC && distance < 100){
+    if(obj1->objectType == OBJECT_NPC&& obj2->objectType == OBJECT_EXPLOSION)
+    {
+        if(obj1->objectType == OBJECT_NPC && distance < 100)
+        {
             obj1->ai.health -= obj2->ExplosionInfo.damage;
-            if(obj1->ai.health <= 0){
+            if(obj1->ai.health <= 0)
+            {
                 printf("NPC died %s! from explosion\nIndex:%d\n",obj1->name,obj1_index);
                 RemoveObjectFromScene(scene, obj1_index);
             }
         }
     }
-
 }
 
 //Handles collision with objects. These have been moved to server. The server is authorative.
 void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index, int c2_index, Scene* scene)
 {
     int newObject = -1;
-    if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_NPC && collider1->bulletInfo.type == BULLET_PLAYER) //Bullet med zombie
+    if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_NPC && collider1->bulletInfo.type == BULLET_PLAYER) //Bullet with zombie
     {
         printf("Bullet collided with NPC\n");
         play_sound(SOUND_NPC_HIT);
@@ -135,43 +136,18 @@ void CollisionHandler(GameObject* collider1, GameObject* collider2, int c1_index
         scene->objects[newObject].timeToLive = 10;
 
     }
-    /*
-    else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_PLAYER)
-    {
-        play_sound(SOUND_CHARACTER_HIT);
-    }
-
-    else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_WALL) //Bullet med Wall
-    {
-        //printf("Bullet collided with Wall\n");
-        RemoveObjectFromScene(scene, c1_index);
-    }
-    else if(collider1->objectType == OBJECT_BULLET && collider2->objectType == OBJECT_CAR) //Bullet med car
-    {
-        //printf("Bullet collided with Car\n");
-        RemoveObjectFromScene(scene, c1_index);
-    }
-    else if(collider1->objectType == OBJECT_ZBULLET && collider2->objectType == OBJECT_CAR)
-    {
-        //printf("Z Bullet collidated with car\n");
-        RemoveObjectFromScene(scene, c1_index);
-    }*/
-
-
 }
 
 //Smoothen out movement of network objects.
 int SmoothMovement(int tickRate, GameObject *object, int newX, int newY)
 {
-    //ySpeed -= sin((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //Objektets y hastighet
-    //xSpeed -= cos((zombie->rotation + 90) * M_PI / 180.0f) * zombie->ai.speed; //objektets x hastighet
-
     object->interpolation.xSpeed = (newX - object->interpolation.oldX)/20;
     object->interpolation.ySpeed = (newY - object->interpolation.oldY)/20;
 
     object->interpolation.oldX = newX;
     object->interpolation.oldY = newY;
     object->interpolation.frameCount = tickRate;
+    
     return 0;
 }
 

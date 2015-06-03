@@ -11,8 +11,8 @@
 #include <SDL2/SDL_net.h>
 #endif
 
-//#define EXIT_SUCCESS 0
-//#define EXIT_FAILURE 1
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE 1
 
 #include <math.h>
 #include <stdio.h>
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     char ip[30] = {"\0"};
     char port[5] = {"\0"};
     int nameLength = 0;
-    TCPsocket sd;
+    TCPsocket sd = NULL;
     TextInput_T currentInput = INPUT_TEXT_NONE;
     SDL_Event e;
     Scene *activeScene, *nextScene;
@@ -447,8 +447,9 @@ int main(int argc, char *argv[])
                     }
                 }
                 if(e.button.button == SDL_BUTTON_RIGHT){
-                    //högerklick
-                    bomb(activeScene, player);
+                    //rightclick
+                    GameObject bomb1;
+                    bomb(activeScene, player,&bomb1);
 
                 }
             }

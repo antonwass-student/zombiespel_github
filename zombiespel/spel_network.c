@@ -20,9 +20,8 @@
 threadCom sendPool;
 threadCom recvPool;
 
-
-
-TCPsocket net_start(char* ip_p, char*port_p){
+TCPsocket net_start(char* ip_p, char*port_p)
+{
     IPaddress ip;		/* Server address */
     TCPsocket sd;
 
@@ -61,7 +60,6 @@ TCPsocket net_start(char* ip_p, char*port_p){
 
     return sd;
 }
-
 
 NetEvent_T ProcessMessage(unsigned char data[], Scene* scene)//Processes the netmessage, calling function depending on flag: data[0]
 {
@@ -169,7 +167,8 @@ int SendThread(void* ptr)
 
     while(1)
     {
-        while(sendPool.Size <= 0){ //Waits until there are messages in the send pool.
+        while(sendPool.Size <= 0) //Waits until there are messages in the send pool.
+        {
             SDL_Delay(10);
         }
         while(sendPool.Size > 0)
@@ -186,9 +185,6 @@ int SendThread(void* ptr)
 int RecvThread(void* ptr)
 {
     TCPsocket sd = (TCPsocket)ptr;
-
-    //int temp;
-    //int index = 0;
 
     unsigned char msg[128];
 

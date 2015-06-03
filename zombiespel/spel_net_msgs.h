@@ -33,6 +33,7 @@ int Create_Armor(Scene* scene, int id, int x, int y, char* name);
 int Create_Medkit(Scene* scene, int id, int x, int y, char* name);
 int Create_Other_Player(Scene* scene, int id, int x, int y, char* name);
 int net_SendPlayerClass(playerClass_T pClass);
+//int net_playerBomb(GameObject player);
 
 
 int Create_Zombie_Spitter(Scene* scene, int id, int x, int y, char* name);

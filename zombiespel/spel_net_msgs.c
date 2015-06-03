@@ -25,7 +25,6 @@ void net_NewObject(unsigned char data[], Scene* scene)//Creates a new object tha
     y = Converter_BytesToInt32(data, &index);
     type = data[index++];
     nameLength = Converter_BytesToInt32(data, &index);
-    //printf("NameLength = %d\n", nameLength);
 
     for(int i = 0; i < nameLength; i++)
     {
@@ -69,7 +68,6 @@ void net_NewObject(unsigned char data[], Scene* scene)//Creates a new object tha
         default:
             break;
     }
-
 }
 
 //Remove object from scene, commanded by the server.
@@ -103,7 +101,7 @@ int net_SendPlayerName(char* name, int length, playerClass_T pClass)
     size += length;
 
     buffer[size++] = 2; //pClass;
-    printf("Class %d was sent to server.\n",buffer[size - 1], size - 1);
+    printf("Class %d was sent to server.\n", buffer[size - 1], size - 1);
 
     AddToPool(&sendPool, buffer);
 
@@ -131,7 +129,12 @@ int net_recvPlayerHealth(unsigned char data[], Scene *scene)
     int index = 1;
     int health = Converter_BytesToInt32(data, &index);
     int newObject = -1;
-
+    
+    if(health<=0)
+    {
+        exit(0);
+    }
+    
     for(int i = 0; i < scene->objectLimit; i++)
     {
         if(scene->objects[i].objectType == OBJECT_PLAYER)
@@ -139,9 +142,6 @@ int net_recvPlayerHealth(unsigned char data[], Scene *scene)
             if(scene->objects[i].p_stats.health > health) //If damaged, show damage taken effect
             {
                 newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", scene->objects[i].rect.x, scene->objects[i].rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
-            }
-            else{
-                //newObject = createObject(scene, OBJECT_EFFECT, "BloodSplatter\n", scene->objects[i].rect.x, scene->objects[i].rect.y, 100,100, TXT_BLOOD_SPLATTER, false);
             }
             scene->objects[i].p_stats.health = health;
             UI_HealthChanged(health);
@@ -168,8 +168,6 @@ int net_recvLobbyPlayer(unsigned char data[], Scene *scene)
         name[i] = data[index++];
     }
     name[length] = '\0';
-
-    //playerClass_T pClass = data[index++];
 
     for(int i = 0; i < 4; i++)
     {
@@ -304,6 +302,8 @@ int net_recvWeapon(unsigned char data[], Scene* scene)
             spread = 5;
             magSize = 6;
             break;
+        default:
+            break;
     }
 
     for(int i = 0; i < scene->objectLimit; i++)
@@ -340,7 +340,6 @@ int net_recvAmmo(unsigned char data[], Scene* scene)
             UI_AmmoChanged(scene->objects[i].p_stats.ammo, scene->objects[i].p_stats.ammoTotal);
             break;
         }
-
     }
     return EXIT_SUCCESS;
 }
@@ -367,7 +366,6 @@ int net_recvArmor(unsigned char data[], Scene* scene)
 
 //Sets the clients player id, this is your ID on the server.
 int net_SetPlayerId(unsigned char data[])
-
 {
     int id;
     int index = 1;
@@ -378,6 +376,31 @@ int net_SetPlayerId(unsigned char data[])
 
     return EXIT_SUCCESS;
 }
+
+/*int net_playerBomb(GameObject player)
+{
+    unsigned char buffer[128];
+    int bullets=1;
+    
+    for(int i = 0; i < bullets; i++)
+    {
+        int index = 0;
+        buffer[index++] = NET_PLAYER_SHOOT;
+        Converter_Int32ToBytes(buffer,&index, playerNetId);
+        Converter_Int32ToBytes(buffer, &index, player.rect.x + player.rect.w/2);
+        Converter_Int32ToBytes(buffer, &index, player.rect.y + player.rect.h/2);
+        Converter_Int32ToBytes(buffer, &index, player.p_stats.bombs);
+        Converter_Int32ToBytes(buffer, &index, 20);
+        
+        AddToPool(&sendPool,buffer);
+        
+        
+    }
+
+    
+    
+    return EXIT_SUCCESS;
+}*/
 
 //Called when a player wants to shoot. Sends a request to the server.
 int net_PlayerShoot(GameObject player)
@@ -400,6 +423,8 @@ int net_PlayerShoot(GameObject player)
             break;
         case WEAPON_REVOLVER:
             break;
+        default:
+            break;
     }
 
 
@@ -420,10 +445,8 @@ int net_PlayerShoot(GameObject player)
 
             AddToPool(&sendPool,buffer);
 
-
         }
     }
-
     else
     {
         newRot += (rand() % (player.p_stats.bulletSpread * 2)) - player.p_stats.bulletSpread;
@@ -482,10 +505,9 @@ int net_RecvPlayerClass(unsigned char data[], Scene* scene)
 
     for(int i = 0; i < length; i++)
     {
-        //printf("char at index %d\n", index);
         name[i] = data[index++];
-        //lobbyRoom.players[lobbyRoom.pCount].name[i] = data[index++];
     }
+    
     name[length] = '\0';
     playerClass_T pClass = data[index++];
 
@@ -496,25 +518,22 @@ int net_RecvPlayerClass(unsigned char data[], Scene* scene)
             switch(pClass)
             {
                 case CLASS_SCOUT:
-                    //strcat(name, " (Scout)");
                     scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_SCOUT_LOBBY;
                     break;
                 case CLASS_SOLDIER:
-                    //strcat(name, " (Soldier)");
                     scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_SOLDIER_LOBBY;
                     break;
                 case CLASS_TANK:
-                    //strcat(name, " (Tank)");
                     scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_TANK_LOBBY;
                     break;
                 case CLASS_ENGINEER:
-                    //strcat(name, " (Engineer)");
                     scene->objects[lobbyRoom.players[i].uiIndex].id = TXT_PLAYER_ENGINEER_LOBBY;
+                    break;
+                default:
                     break;
             }
             ChangeTextStr(&scene->objects[lobbyRoom.players[i].uiIndex], name);
         }
-
     }
     return EXIT_SUCCESS;
 }
@@ -527,7 +546,6 @@ int net_recvClassFinal(unsigned char data[], Scene* scene)
     playerClass_T pClass;
     pClass = data[index++];
     textureID_t texture;
-
 
     switch(pClass)
     {
@@ -615,7 +633,6 @@ int Create_Revolver(Scene* scene, int id, int x, int y, char* name)
     newObject = createObject(scene, OBJECT_ITEM, "Revoler", x, y, 30, 30, TXT_REVOLVER, false);
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Revolver", true, white, 10);
-    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
     return EXIT_SUCCESS;
 }
 
@@ -626,7 +643,6 @@ int Create_Shotgun(Scene* scene, int id, int x, int y, char* name)
     newObject = createObject(scene, OBJECT_ITEM, "Shotgun", x, y, 30, 30, TXT_SHOTGUN, false);
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Shotgun", true, white, 10);
-    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
     return EXIT_SUCCESS;
 }
 
@@ -637,7 +653,6 @@ int Create_Ammo(Scene* scene, int id, int x, int y, char* name)
     newObject = createObject(scene, OBJECT_ITEM, "Ammo", x, y, 30, 30, TXT_BULLET, false);
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Ammo", true, white, 10);
-    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
     return EXIT_SUCCESS;
 }
 
@@ -648,7 +663,6 @@ int Create_Armor(Scene* scene, int id, int x, int y, char* name)
     newObject = createObject(scene, OBJECT_ITEM, "Armor", x, y, 30, 30, TXT_ARMOR, false);
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Armor", true, white, 10);
-    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
     return EXIT_SUCCESS;
 }
 
@@ -659,7 +673,6 @@ int Create_Medkit(Scene* scene, int id, int x, int y, char* name)
     newObject = createObject(scene, OBJECT_ITEM, "Medkit", x, y, 30, 30, TXT_MEDKIT, false);
     scene->objects[newObject].objectID = id; //Remember to set ID!
     SetText(&scene->objects[newObject],"Medkit", true, white, 30);
-    //scene->objects[newObject].itemInfo.itemType = ITEM_MEDKIT;
     return EXIT_SUCCESS;
 }
 

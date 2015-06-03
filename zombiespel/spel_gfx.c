@@ -1,6 +1,5 @@
 
 #ifdef _WIN32
-//define something for Windows (32-bit and 64-bit, this part is common)
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -15,7 +14,6 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #endif
-
 
 #include <stdbool.h>
 #include "spel_structs.h"
@@ -37,9 +35,6 @@ SDL_Window* window = NULL;
 TTF_Font* gFont = NULL;
 Sprite sprites[100];
 int spritesCount = 0;
-
-
-
 
 void SetFont(int size)
 {
@@ -72,12 +67,15 @@ GameObject* ChangeTextStr(GameObject* object, char* text)
 
     SDL_Surface* srf;
     srf = TTF_RenderText_Solid(gFont, text, object->textColor);
-    if(object->textTexture==NULL){
-        SDL_DestroyTexture(object->textTexture);}
+    if(object->textTexture==NULL)
+    {
+        SDL_DestroyTexture(object->textTexture);
+    }
     object->textTexture = SDL_CreateTextureFromSurface(gRenderer, srf);
 
     return object;
 }
+
 //Creates a new texture from text with one value.
 GameObject* ChangeTextInt(GameObject* object, char* text, int value)
 {
@@ -285,7 +283,6 @@ void graphics_start() //
                 loadSprites();
 
             }
-
         }
     }
 
@@ -341,7 +338,6 @@ void graphics_render(Scene level, GameObject* relative)
                 newRect = level.objects[i].rect;
                 srcRect = level.objects[i].rect;
 
-
                 if(level.objects[i].anim.animated)
                 {
                     srcRect.x = level.objects[i].anim.currentCycle * level.objects[i].anim.movingOffset;
@@ -369,8 +365,8 @@ void graphics_render(Scene level, GameObject* relative)
                     SDL_RenderCopyEx(gRenderer, sprites[j].texture, NULL, &newRect, level.objects[i].rotation, level.objects[i].center, level.objects[i].flip);
                 }
 
-                if(level.objects[i].drawText){ //Prints out text on top of the object with padding.
-
+                if(level.objects[i].drawText) //Prints out text on top of the object with padding.
+                {
                     TTF_SizeText(gFont, level.objects[i].text, &newRect.w, &newRect.h);
                     newRect.x += level.objects[i].rect.w/2 -(newRect.w/2);
                     newRect.y += level.objects[i].rect.h/2 -(newRect.h/2);
@@ -378,8 +374,7 @@ void graphics_render(Scene level, GameObject* relative)
                         newRect.y -= 40;
                     SDL_RenderCopy(gRenderer, level.objects[i].textTexture, NULL, &newRect);
                 }
-
-
+                
                 break;
             }
         }

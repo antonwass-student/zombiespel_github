@@ -2,7 +2,6 @@
 #define SPEL_GFX_H_INCLUDED
 
 #ifdef _WIN32
-//define something for Windows (32-bit and 64-bit, this part is common)
 #include "SDL_ttf.h"
 
 #elif __APPLE__
@@ -11,7 +10,6 @@
 #elif __linux
 #include <SDL2/SDL_ttf.h>
 #endif
-
 
 #include "spel_gameobject.h"
 
@@ -25,11 +23,12 @@ void CalcAnimation(GameObject* object);
 void graphics_render(Scene level, GameObject* relative);
 void graphics_stop();
 void loadSprites();
+void SetFont(int size);
 GameObject* ChangeTextInt2(GameObject* object, char* text, int value, int value2);
 GameObject* ChangeTextInt(GameObject* object, char* text, int value);
 GameObject* ChangeTextStr(GameObject* object, char* text);
 GameObject* SetText(GameObject* object, char* text, bool draw, SDL_Color textColor, int padding);
 
-void SetFont(int size);
+
 
 #endif // SPEL_GFX_H_INCLUDED

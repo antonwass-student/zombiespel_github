@@ -1,5 +1,4 @@
 #ifdef _WIN32
-//define something for Windows (32-bit and 64-bit, this part is common)
 #include <SDL.h>
 #include <SDL_mixer.h>
 
@@ -24,6 +23,7 @@ typedef enum{
     NET_PLAYER_MOVE,
     NET_PLAYER_SHOOT,
     NET_OBJECT_NEW,
+   // NET_OBJECT_BOMB,
     NET_OBJECT_REMOVE,
     NET_PLAYER_ID,
     NET_PLAYER_NAME,
@@ -253,7 +253,6 @@ typedef enum
 
 typedef struct
 {
-    //Mix_Music *Music;
     Mix_Music* Music;
     Mix_Chunk* soundEffect;
     soundID_t name;
