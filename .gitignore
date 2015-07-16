@@ -53,3 +53,6 @@ zombiespel/bin/Debug/libtiff-5.dll
 *.dll
 *.exe
 *.depend
+*.depend
+zombiespel/zombiespel.depend
+zombiespel/zombiespel.depend
